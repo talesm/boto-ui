@@ -9,13 +9,14 @@ namespace dui {
 inline void
 label(Frame* frame,
       std::string_view text,
-      SDL_Point p,
+      const SDL_Point& p,
       SDL_Color color = {0, 0, 0, 255})
 {
-  for (auto ch : text) {
-    frame->character({p.x, p.y, 8, 8}, color, ch);
-    p.x += 8; // TODO measure this
-  }
+  frame->string(p, color, text);
+  auto adv = frame->measure(text);
+  adv.x += p.x;
+  adv.y += p.y;
+  frame->advance(adv);
 }
 
 } // namespace dui

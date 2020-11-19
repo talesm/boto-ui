@@ -1,6 +1,7 @@
 #ifndef _DUI_FRAME_HPP
 #define _DUI_FRAME_HPP
 
+#include <string_view>
 #include "State.hpp"
 
 namespace dui {
@@ -11,6 +12,7 @@ namespace dui {
 class Frame
 {
   State* state;
+  SDL_Point caret{0};
 
 public:
   Frame(State* state = nullptr);
@@ -32,17 +34,35 @@ public:
   void reset(State* state);
   void end();
 
-  void box(const SDL_Rect& rect, SDL_Color color)
+  void box(SDL_Rect rect, SDL_Color color)
   {
     SDL_assert(state->inFrame);
+    rect.x += caret.x;
+    rect.y += caret.y;
     state->dList.insert(rect, color, 0);
   }
 
-  void character(const SDL_Rect& rect, SDL_Color color, char ch)
+  void character(const SDL_Point& p, SDL_Color color, char ch)
   {
     SDL_assert(state->inFrame);
-    state->dList.insert(rect, color, ch);
+    state->dList.insert({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
   }
+
+  SDL_Point measure(char ch) { return {8, 8}; }
+
+  void string(SDL_Point p, SDL_Color color, std::string_view text)
+  {
+    SDL_assert(state->inFrame);
+
+    for (auto ch : text) {
+      state->dList.insert({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
+      p.x += 8;
+    }
+  }
+
+  SDL_Point measure(std::string_view text) { return {int(8 * text.size()), 8}; }
+
+  void advance(const SDL_Point& p) { caret.y += p.y + 2; }
 };
 
 inline Frame::Frame(State* state)
@@ -65,6 +85,7 @@ inline Frame::~Frame()
 inline Frame::Frame(Frame&& rhs)
 {
   state = rhs.state;
+  caret = rhs.caret;
   rhs.state = nullptr;
 }
 
@@ -72,6 +93,7 @@ inline Frame&
 Frame::operator=(Frame&& rhs)
 {
   std::swap(state, rhs.state);
+  caret = rhs.caret;
   return *this;
 }
 
@@ -87,6 +109,7 @@ Frame::reset(State* state)
 {
   this->~Frame();
   new (this) Frame(state);
+  caret = {0};
 }
 } // namespace dui
 
