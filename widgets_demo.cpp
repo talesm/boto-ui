@@ -27,7 +27,7 @@ main(int argc, char** argv)
         return 0;
       }
     }
-    dui::Frame f{&state};
+    auto f = dui::frame(state);
     dui::label(f, "Hello world", {10, 10});
     dui::label(f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
 

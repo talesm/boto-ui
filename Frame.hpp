@@ -65,6 +65,12 @@ public:
   void advance(const SDL_Point& p) { caret.y += p.y + 2; }
 };
 
+inline Frame
+frame(State& state)
+{
+  return {&state};
+}
+
 inline Frame::Frame(State* state)
   : state(state)
 {
