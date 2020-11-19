@@ -28,8 +28,8 @@ main(int argc, char** argv)
       }
     }
     dui::Frame f{&state};
-    dui::label(&f, "Hello world", {10, 10});
-    dui::label(&f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
+    dui::label(f, "Hello world", {10, 10});
+    dui::label(f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
 
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
     SDL_RenderClear(renderer);
