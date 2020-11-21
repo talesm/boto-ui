@@ -18,8 +18,18 @@ main(int argc, char** argv)
     return 1;
   }
 
+  // The ui state
   dui::State state{renderer};
+
+  // Some test variables
   bool toggleOption = false;
+  enum MultiOption
+  {
+    OPTION1,
+    OPTION2,
+    OPTION3,
+  };
+  MultiOption multiOption{};
 
   for (;;) {
     SDL_Event ev;
@@ -43,6 +53,11 @@ main(int argc, char** argv)
       SDL_Log("Toggled options, new value is, %s",
               toggleOption ? "true" : "false");
     }
+    if (dui::choiceButton(f, "Option 1", &multiOption, OPTION1, {10, 5})) {
+      SDL_Log("Selected Option %d", 1 + multiOption);
+    }
+    dui::choiceButton(f, "Option 2", &multiOption, OPTION2, {10, 0});
+    dui::choiceButton(f, "Option 3", &multiOption, OPTION3, {10, 0});
 
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
     SDL_RenderClear(renderer);

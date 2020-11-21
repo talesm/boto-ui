@@ -85,6 +85,22 @@ toggleButton(Frame& frame,
   return false;
 }
 
+template<class T, class U>
+inline bool
+choiceButton(Frame& frame,
+             std::string_view text,
+             T* value,
+             U option,
+             const SDL_Point& p)
+{
+  bool selected = *value == option;
+  if (button(frame, text, selected, p) && !selected) {
+    *value = option;
+    return true;
+  }
+  return false;
+}
+
 } // namespace dui
 
 #endif // DUI_BASE_WIDGETS_HPP_
