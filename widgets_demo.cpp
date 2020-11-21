@@ -40,7 +40,10 @@ main(int argc, char** argv)
       }
     }
     auto f = dui::frame(state);
-    dui::label(f, "Hello world", {10, 10});
+    {
+      auto g = dui::group(f, "group1", {10, 10});
+      dui::label(g, "Hello world");
+    }
     dui::label(f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
     if (dui::button(f, "Click me!", {10, 0})) {
       SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,

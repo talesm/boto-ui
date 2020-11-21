@@ -3,6 +3,7 @@
 
 #include "DisplayList.hpp"
 #include "Frame.hpp"
+#include "Group.hpp"
 #include "State.hpp"
 #include "baseWidgets.hpp"
 

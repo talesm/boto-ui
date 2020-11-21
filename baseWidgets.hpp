@@ -2,7 +2,7 @@
 #define DUI_BASE_WIDGETS_HPP_
 
 #include <string_view>
-#include "Frame.hpp"
+#include "Group.hpp"
 
 namespace dui {
 
@@ -16,82 +16,85 @@ constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
 }
 
 inline void
-renderLabel(Frame& frame,
+renderLabel(Group& target,
             std::string_view text,
             const SDL_Point& p,
             SDL_Color color = style::TEXT)
 {
-  frame.string(p, color, text);
+  target.string(p, color, text);
 }
 
 inline void
-label(Frame& frame,
+label(Group& target,
       std::string_view text,
-      const SDL_Point& p,
+      const SDL_Point& p = {0},
       SDL_Color color = style::TEXT)
 {
-  auto adv = frame.measure(text);
+  auto adv = target.measure(text);
   adv.x += p.x + 2;
   adv.y += p.y + 2;
-  renderLabel(frame, text, {p.x + 1, p.y + 1}, color);
-  frame.advance(adv);
+  renderLabel(target, text, {p.x + 1, p.y + 1}, color);
+  target.advance(adv);
 }
 
 inline void
-renderButton(Frame& frame,
+renderButton(Group& target,
              const SDL_Rect& r,
              SDL_Color b = style::BUTTON,
              SDL_Color l = style::BUTTON_LIGHT,
              SDL_Color d = style::BUTTON_DARK)
 {
-  frame.box({r.x + 1, r.y, r.w - 2, 1}, {l.r, l.g, l.b, l.a});
-  frame.box({r.x, r.y + 1, 1, r.h - 2}, {l.r, l.g, l.b, l.a});
-  frame.box({r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
-  frame.box({r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
-  frame.box({r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
+  target.box({r.x + 1, r.y, r.w - 2, 1}, {l.r, l.g, l.b, l.a});
+  target.box({r.x, r.y + 1, 1, r.h - 2}, {l.r, l.g, l.b, l.a});
+  target.box({r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
+  target.box({r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
+  target.box({r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
 }
 
 inline void
-renderButtonPressed(Frame& frame,
+renderButtonPressed(Group& target,
                     const SDL_Rect& r,
                     SDL_Color b = style::BUTTON,
                     SDL_Color l = style::BUTTON_LIGHT,
                     SDL_Color d = style::BUTTON_DARK)
 {
-  renderButton(frame, r, b, d, l);
+  renderButton(target, r, b, d, l);
 }
 
 inline bool
-button(Frame& frame, std::string_view text, bool inverted, const SDL_Point& p)
+button(Group& target,
+       std::string_view text,
+       bool inverted,
+       const SDL_Point& p = {0})
 {
-  auto adv = frame.measure(text);
+  auto adv = target.measure(text);
   SDL_Rect r{p.x, p.y, adv.x + 2, adv.y + 2};
-  auto action = frame.testMouse(text, r);
-  renderLabel(frame, text, {p.x + 1, p.y + 1}, style::TEXT);
+  auto action = target.testMouse(text, r);
+  renderLabel(target, text, {p.x + 1, p.y + 1}, style::TEXT);
   if ((action == MouseAction::GRAB) != inverted) {
-    renderButtonPressed(frame, r);
+    renderButtonPressed(target, r);
   } else {
-    renderButton(frame, r);
+    renderButton(target, r);
   }
   adv.x += p.x + 2;
   adv.y += p.y + 2;
-  frame.advance(adv);
+  target.advance(adv);
   return action == MouseAction::ACTION;
 }
 
 inline bool
-button(Frame& frame, std::string_view text, const SDL_Point& p)
+button(Group& target, std::string_view text, const SDL_Point& p = {0})
 {
-  return button(frame, text, false, p);
+  return button(target, text, false, p);
 }
 
 inline bool
-toggleButton(Frame& frame,
+toggleButton(Group& target,
              std::string_view text,
              bool* value,
-             const SDL_Point& p)
+             const SDL_Point& p = {0})
 {
-  if (button(frame, text, *value, p)) {
+  if (button(target, text, *value, p)) {
     *value = !*value;
     return true;
   }
@@ -100,14 +103,14 @@ toggleButton(Frame& frame,
 
 template<class T, class U>
 inline bool
-choiceButton(Frame& frame,
+choiceButton(Group& target,
              std::string_view text,
              T* value,
              U option,
-             const SDL_Point& p)
+             const SDL_Point& p = {0})
 {
   bool selected = *value == option;
-  if (button(frame, text, selected, p) && !selected) {
+  if (button(target, text, selected, p) && !selected) {
     *value = option;
     return true;
   }

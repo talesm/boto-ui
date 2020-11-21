@@ -7,6 +7,7 @@
 namespace dui {
 // Forward decl
 class Frame;
+class Group;
 
 class State
 {
@@ -45,6 +46,7 @@ public:
 
 private:
   friend class Frame;
+  friend class Group;
 
   void beginFrame()
   {
