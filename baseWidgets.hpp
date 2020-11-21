@@ -12,10 +12,10 @@ label(Frame& frame,
       const SDL_Point& p,
       SDL_Color color = {0, 0, 0, 255})
 {
-  frame.string(p, color, text);
+  frame.string({p.x + 1, p.y + 1}, color, text);
   auto adv = frame.measure(text);
-  adv.x += p.x;
-  adv.y += p.y;
+  adv.x += p.x + 1;
+  adv.y += p.y + 1;
   frame.advance(adv);
 }
 
