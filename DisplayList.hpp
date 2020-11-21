@@ -58,14 +58,14 @@ DisplayList::clip(const SDL_Rect& rect, size_t pos)
 inline void
 DisplayList::render(SDL_Renderer* renderer) const
 {
-  for (auto& item : items) {
-    auto c = item.color;
-    if (item.content == 0) {
+  for (auto it = items.rbegin(); it != items.rend(); it++) {
+    auto c = it->color;
+    if (it->content == 0) {
       SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-      SDL_RenderFillRect(renderer, &item.rect);
+      SDL_RenderFillRect(renderer, &it->rect);
     } else {
       characterRGBA(
-        renderer, item.rect.x, item.rect.y, item.content, c.r, c.g, c.b, c.a);
+        renderer, it->rect.x, it->rect.y, it->content, c.r, c.g, c.b, c.a);
     }
   }
 }

@@ -67,12 +67,12 @@ button(Frame& frame, std::string_view text, bool inverted, const SDL_Point& p)
   auto adv = frame.measure(text);
   SDL_Rect r{p.x, p.y, adv.x + 2, adv.y + 2};
   auto action = frame.testMouse(text, r);
+  renderLabel(frame, text, {p.x + 1, p.y + 1}, style::TEXT);
   if ((action == MouseAction::GRAB) != inverted) {
     renderButtonPressed(frame, r);
   } else {
     renderButton(frame, r);
   }
-  renderLabel(frame, text, {p.x + 1, p.y + 1});
   adv.x += p.x + 2;
   adv.y += p.y + 2;
   frame.advance(adv);
