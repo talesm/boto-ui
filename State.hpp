@@ -16,7 +16,7 @@ private:
   DisplayList dList;
 
   SDL_Point mPos;
-  bool mLeftPressed;
+  bool mLeftPressed = false;
   std::string mGrabbed;
 
 public:
