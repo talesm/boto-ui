@@ -5,6 +5,15 @@
 #include "State.hpp"
 
 namespace dui {
+
+enum class MouseAction
+{
+  NONE,   ///< Default status
+  GRAB,   ///< The mouse grabbed this element an is holding inside its bounds
+  ACTION, ///< The mouse was just released inside its bounds (do something!)
+  DRAG,   ///< The mouse had this grabbed, but was moved to outside its bounds
+};
+
 /**
  * @brief Represents a single frame on the app
  *
@@ -62,6 +71,8 @@ public:
 
   SDL_Point measure(std::string_view text) { return {int(8 * text.size()), 8}; }
 
+  MouseAction testMouse(std::string_view id, SDL_Rect r);
+
   void advance(const SDL_Point& p) { caret.y += p.y + 2; }
 };
 
@@ -117,6 +128,31 @@ Frame::reset(State* state)
   new (this) Frame(state);
   caret = {0};
 }
+
+inline MouseAction
+Frame::testMouse(std::string_view id, SDL_Rect r)
+{
+  r.x += caret.x;
+  r.y += caret.y;
+  if (state->mGrabbed.empty()) {
+    if (state->mLeftPressed && SDL_PointInRect(&state->mPos, &r)) {
+      state->mGrabbed = id;
+      return MouseAction::GRAB;
+    }
+    return MouseAction::NONE;
+  }
+  if (state->mGrabbed != id) {
+    return MouseAction::NONE;
+  }
+  if (state->mLeftPressed) {
+    return SDL_PointInRect(&state->mPos, &r) ? MouseAction::GRAB
+                                             : MouseAction::DRAG;
+  }
+  state->mGrabbed.clear();
+  return SDL_PointInRect(&state->mPos, &r) ? MouseAction::ACTION
+                                           : MouseAction::NONE;
+}
+
 } // namespace dui
 
 #endif // _DUI_FRAME_HPP

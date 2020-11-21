@@ -23,6 +23,7 @@ main(int argc, char** argv)
   for (;;) {
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
+      state.event(ev);
       if (ev.type == SDL_QUIT) {
         return 0;
       }
