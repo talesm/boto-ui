@@ -43,15 +43,7 @@ protected:
     , state(state)
   {}
 
-  Group(std::string_view id, const SDL_Rect& rect, Group* parent)
-    : Group(id, rect, parent->state, {rect.x, rect.y})
-  {
-    if (parent) {
-      this->parent = parent;
-      SDL_assert(!parent->composingSubgroup);
-      parent->composingSubgroup = true;
-    }
-  }
+  Group(std::string_view id, const SDL_Rect& rect, Group* parent);
 
   Group(std::string_view id, const SDL_Rect& rect, State* state)
     : Group(id, rect, state, {rect.x, rect.y})
@@ -125,6 +117,20 @@ group(Group& parent, std::string_view id, const SDL_Rect& rect)
   return {&parent, id, rect};
 }
 
+inline Group::Group(std::string_view id, const SDL_Rect& rect, Group* parent)
+  : Group(id, rect, parent->state, {rect.x, rect.y})
+{
+  if (parent) {
+    this->parent = parent;
+    SDL_assert(!parent->composingSubgroup);
+    parent->composingSubgroup = true;
+    this->rect.x += parent->caret.x;
+    this->rect.y += parent->caret.y;
+    caret.x += parent->caret.x;
+    caret.y += parent->caret.y;
+  }
+}
+
 inline Group::~Group()
 {
   if (parent) {
@@ -136,7 +142,7 @@ inline Group::~Group()
     if (rect.h == 0) {
       rect.h = caret.y - rect.y;
     }
-    parent->advance({rect.x + rect.w, rect.y + rect.h});
+    parent->advance({rect.w, rect.h});
   }
 }
 

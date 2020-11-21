@@ -40,10 +40,7 @@ main(int argc, char** argv)
       }
     }
     auto f = dui::frame(state);
-    {
-      auto g = dui::group(f, "group1", {10, 10});
-      dui::label(g, "Hello world");
-    }
+    dui::label(f, "Hello world", {10, 10}, {0xf0, 0x80, 0x80, 0xff});
     dui::label(f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
     if (dui::button(f, "Click me!", {10, 0})) {
       SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
@@ -61,6 +58,10 @@ main(int argc, char** argv)
     }
     dui::choiceButton(f, "Option 2", &multiOption, OPTION2, {10, 0});
     dui::choiceButton(f, "Option 3", &multiOption, OPTION3, {10, 0});
+    {
+      auto g = dui::group(f, "group1", {10, 10});
+      dui::label(g, "Grouped Label");
+    }
 
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
     SDL_RenderClear(renderer);

@@ -9,7 +9,7 @@ MVP (0.1)
 - [x] mouse events
 - [x] toggleButton
 - [x] choiceButton
-- [ ] group
+- [x] group
 - [ ] bufferInput
 - [ ] window
 - [ ] textInput
