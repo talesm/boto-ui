@@ -30,6 +30,12 @@ main(int argc, char** argv)
     auto f = dui::frame(state);
     dui::label(f, "Hello world", {10, 10});
     dui::label(f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
+    if (dui::button(f, "Click me!", {10, 0})) {
+      SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                               "Clicked",
+                               "You clicked the button",
+                               window);
+    }
 
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
     SDL_RenderClear(renderer);
