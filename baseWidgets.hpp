@@ -49,12 +49,12 @@ renderButtonPressed(Frame& frame, const SDL_Rect& r)
 }
 
 inline bool
-button(Frame& frame, std::string_view text, const SDL_Point& p)
+button(Frame& frame, std::string_view text, bool inverted, const SDL_Point& p)
 {
   auto adv = frame.measure(text);
   SDL_Rect r{p.x, p.y, adv.x + 2, adv.y + 2};
   auto action = frame.testMouse(text, r);
-  if (action == MouseAction::GRAB) {
+  if ((action == MouseAction::GRAB) != inverted) {
     renderButtonPressed(frame, r);
   } else {
     renderButton(frame, r);
@@ -64,6 +64,25 @@ button(Frame& frame, std::string_view text, const SDL_Point& p)
   adv.y += p.y + 2;
   frame.advance(adv);
   return action == MouseAction::ACTION;
+}
+
+inline bool
+button(Frame& frame, std::string_view text, const SDL_Point& p)
+{
+  return button(frame, text, false, p);
+}
+
+inline bool
+toggleButton(Frame& frame,
+             std::string_view text,
+             bool* value,
+             const SDL_Point& p)
+{
+  if (button(frame, text, *value, p)) {
+    *value = !*value;
+    return true;
+  }
+  return false;
 }
 
 } // namespace dui

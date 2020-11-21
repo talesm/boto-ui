@@ -19,6 +19,7 @@ main(int argc, char** argv)
   }
 
   dui::State state{renderer};
+  bool toggleOption = false;
 
   for (;;) {
     SDL_Event ev;
@@ -36,6 +37,11 @@ main(int argc, char** argv)
                                "Clicked",
                                "You clicked the button",
                                window);
+    }
+    dui::label(f, toggleOption ? "activated" : "not activated", {10, 0});
+    if (dui::toggleButton(f, "Toggle", &toggleOption, {10, 0})) {
+      SDL_Log("Toggled options, new value is, %s",
+              toggleOption ? "true" : "false");
     }
 
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
