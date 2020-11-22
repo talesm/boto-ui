@@ -9,6 +9,20 @@ namespace dui {
 class Frame;
 class Group;
 
+enum class MouseAction
+{
+  NONE,   ///< Default status
+  GRAB,   ///< The mouse grabbed this element an is holding inside its bounds
+  ACTION, ///< The mouse was just released inside its bounds (do something!)
+  DRAG,   ///< The mouse had this grabbed, but was moved to outside its bounds
+};
+
+enum class TextAction
+{
+  NONE,  ///< Default status
+  INPUT, ///< text input
+};
+
 class State
 {
 private:
@@ -58,6 +72,9 @@ public:
     }
   }
 
+  /// Check mouse for given element
+  MouseAction testMouse(std::string_view id, SDL_Rect r);
+
   bool hasText() const { return tChanged; }
   std::string_view getText() const { return {tBuffer}; }
 
@@ -77,6 +94,34 @@ private:
     tChanged = false;
   }
 };
+
+inline MouseAction
+State::testMouse(std::string_view id, SDL_Rect r)
+{
+  SDL_assert(inFrame);
+  if (eGrabbed.empty()) {
+    if (mLeftPressed && SDL_PointInRect(&mPos, &r)) {
+      eGrabbed = id;
+      eActive = id;
+      return MouseAction::GRAB;
+    }
+    if (mLeftPressed && eActive == id) {
+      eActive.clear();
+    }
+    return MouseAction::NONE;
+  }
+  if (eGrabbed != id) {
+    return MouseAction::NONE;
+  }
+  if (mLeftPressed) {
+    return SDL_PointInRect(&mPos, &r) ? MouseAction::GRAB : MouseAction::DRAG;
+  }
+  eGrabbed.clear();
+  if (!SDL_PointInRect(&mPos, &r)) {
+    return MouseAction::NONE;
+  }
+  return MouseAction::ACTION;
+}
 } // namespace dui
 
 #endif // DUI_STATE_HPP_

@@ -7,20 +7,6 @@
 
 namespace dui {
 
-enum class MouseAction
-{
-  NONE,   ///< Default status
-  GRAB,   ///< The mouse grabbed this element an is holding inside its bounds
-  ACTION, ///< The mouse was just released inside its bounds (do something!)
-  DRAG,   ///< The mouse had this grabbed, but was moved to outside its bounds
-};
-
-enum class TextAction
-{
-  NONE,  ///< Default status
-  INPUT, ///< text input
-};
-
 /**
  * @brief A grouping of widgets
  *
@@ -202,34 +188,11 @@ Group::operator=(Group&& rhs)
 inline MouseAction
 Group::testMouse(std::string_view id, SDL_Rect r)
 {
-  SDL_assert(state->inFrame);
   SDL_assert(!composingSubgroup);
 
   r.x += caret.x;
   r.y += caret.y;
-  if (state->eGrabbed.empty()) {
-    if (state->mLeftPressed && SDL_PointInRect(&state->mPos, &r)) {
-      state->eGrabbed = id;
-      state->eActive = id;
-      return MouseAction::GRAB;
-    }
-    if (state->mLeftPressed && state->eActive == id) {
-      state->eActive.clear();
-    }
-    return MouseAction::NONE;
-  }
-  if (state->eGrabbed != id) {
-    return MouseAction::NONE;
-  }
-  if (state->mLeftPressed) {
-    return SDL_PointInRect(&state->mPos, &r) ? MouseAction::GRAB
-                                             : MouseAction::DRAG;
-  }
-  state->eGrabbed.clear();
-  if (!SDL_PointInRect(&state->mPos, &r)) {
-    return MouseAction::NONE;
-  }
-  return MouseAction::ACTION;
+  return state->testMouse(id, r);
 }
 } // namespace dui
 
