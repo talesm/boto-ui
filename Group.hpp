@@ -60,37 +60,6 @@ public:
   Group& operator=(const Group&) = delete;
   Group& operator=(Group&& rhs);
 
-  void box(SDL_Rect rect, SDL_Color color)
-  {
-    SDL_assert(state->inFrame);
-    SDL_assert(!composingSubgroup);
-    rect.x += caret.x;
-    rect.y += caret.y;
-    state->dList.insert(rect, color, 0);
-  }
-
-  void character(const SDL_Point& p, SDL_Color color, char ch)
-  {
-    SDL_assert(state->inFrame);
-    SDL_assert(!composingSubgroup);
-    state->dList.insert({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
-  }
-
-  SDL_Point measure(char ch) { return {8, 8}; }
-
-  void string(SDL_Point p, SDL_Color color, std::string_view text)
-  {
-    SDL_assert(state->inFrame);
-    SDL_assert(!composingSubgroup);
-
-    for (auto ch : text) {
-      state->dList.insert({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
-      p.x += 8;
-    }
-  }
-
-  SDL_Point measure(std::string_view text) { return {int(8 * text.size()), 8}; }
-
   /**
    * @brief Check for mouse actions
    *
@@ -107,7 +76,7 @@ public:
    * @return true
    * @return false
    */
-  bool isActive(std::string_view id) const { return state->eActive == id; }
+  bool isActive(std::string_view id) const { return state->isActive(id); }
 
   /// Check if has text to retrieve
   bool hasText() const { return state->hasText(); }
@@ -117,11 +86,15 @@ public:
 
   void advance(const SDL_Point& p)
   {
-    SDL_assert(state->inFrame);
     SDL_assert(!composingSubgroup);
-
     caret.y += p.y + 2;
   }
+
+  State& getState() const { return *state; }
+
+  SDL_Point getCaret() const { return caret; }
+
+  bool isBlocked() const { return composingSubgroup; }
 };
 
 /**

@@ -7,7 +7,6 @@
 namespace dui {
 // Forward decl
 class Frame;
-class Group;
 
 enum class MouseAction
 {
@@ -72,15 +71,23 @@ public:
     }
   }
 
+  bool isInFrame() const { return inFrame; }
+
+  bool isActive(std::string_view id) const { return eActive == id; }
+
   /// Check mouse for given element
   MouseAction testMouse(std::string_view id, SDL_Rect r);
 
   bool hasText() const { return tChanged; }
   std::string_view getText() const { return {tBuffer}; }
 
+  void display(const SDL_Rect& rect, SDL_Color color, char ch = 0)
+  {
+    dList.insert(rect, color, ch);
+  }
+
 private:
   friend class Frame;
-  friend class Group;
 
   void beginFrame()
   {
