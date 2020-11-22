@@ -39,7 +39,7 @@ frame(State& state)
 }
 
 inline Frame::Frame(State* state)
-  : Group("", {0}, state)
+  : Group("", {0}, state, Layout::VERTICAL)
   , cookie(state->lockFrame())
 {}
 

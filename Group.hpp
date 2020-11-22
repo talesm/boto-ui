@@ -7,6 +7,13 @@
 
 namespace dui {
 
+enum class Layout : Uint8
+{
+  NONE,
+  VERTICAL,
+  HORIZONTAL,
+};
+
 /**
  * @brief A grouping of widgets
  *
@@ -19,8 +26,10 @@ class Group
   Group* parent = nullptr;
   std::string_view id;
   SDL_Rect rect;
-  SDL_Point caret;
+  SDL_Point topLeft;
+  SDL_Point bottomRight;
   bool composingSubgroup = false;
+  Layout layout;
 
 protected:
   State* state;
@@ -28,31 +37,28 @@ protected:
   Group(std::string_view id,
         const SDL_Rect& rect,
         State* state,
-        const SDL_Point& caret)
+        const SDL_Point& caret,
+        Layout layout)
     : id(id)
     , rect(rect)
-    , caret(caret)
+    , topLeft(caret)
+    , bottomRight(caret)
+    , layout(layout)
     , state(state)
   {}
 
-  Group(std::string_view id, const SDL_Rect& rect, Group* parent);
+  Group(std::string_view id,
+        const SDL_Rect& rect,
+        Group* parent,
+        Layout layout);
 
-  Group(std::string_view id, const SDL_Rect& rect, State* state)
-    : Group(id, rect, state, {rect.x, rect.y})
+  Group(std::string_view id, const SDL_Rect& rect, State* state, Layout layout)
+    : Group(id, rect, state, {rect.x, rect.y}, layout)
   {}
 
-  void reset()
-  {
-    caret = {rect.x, rect.y};
-    if (parent) {
-      caret.x += parent->caret.x;
-      caret.y += parent->caret.y;
-    }
-  }
-
 public:
-  Group(Group* parent, std::string_view id, const SDL_Rect& rect)
-    : Group(id, rect, parent)
+  Group(Group* parent, std::string_view id, const SDL_Rect& rect, Layout layout)
+    : Group(id, rect, parent, layout)
   {}
   ~Group();
   Group(const Group&) = delete;
@@ -87,12 +93,30 @@ public:
   void advance(const SDL_Point& p)
   {
     SDL_assert(!composingSubgroup);
-    caret.y += p.y + 2;
+    if (layout == Layout::VERTICAL) {
+      bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
+      bottomRight.y += p.y + 2;
+    } else if (layout == Layout::HORIZONTAL) {
+      bottomRight.x += p.x + 2;
+      bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
+    } else {
+      bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
+      bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
+    }
   }
 
   State& getState() const { return *state; }
 
-  SDL_Point getCaret() const { return caret; }
+  SDL_Point getCaret() const
+  {
+    auto caret = topLeft;
+    if (layout == Layout::VERTICAL) {
+      caret.y = bottomRight.y;
+    } else if (layout == Layout::HORIZONTAL) {
+      caret.x = bottomRight.x;
+    }
+    return caret;
+  }
 
   bool isBlocked() const { return composingSubgroup; }
 };
@@ -106,21 +130,27 @@ public:
  * @return Group
  */
 inline Group
-group(Group& parent, std::string_view id, const SDL_Rect& rect)
+group(Group& parent,
+      std::string_view id,
+      const SDL_Rect& rect,
+      Layout layout = Layout::VERTICAL)
 {
-  return {&parent, id, rect};
+  return {&parent, id, rect, layout};
 }
 
-inline Group::Group(std::string_view id, const SDL_Rect& rect, Group* parent)
-  : Group(id, rect, parent->state, {rect.x, rect.y})
+inline Group::Group(std::string_view id,
+                    const SDL_Rect& rect,
+                    Group* parent,
+                    Layout layout)
+  : Group(id, rect, parent->state, parent->getCaret(), layout)
 {
-  if (parent) {
-    this->parent = parent;
-    SDL_assert(!parent->composingSubgroup);
-    parent->composingSubgroup = true;
-    caret.x += parent->caret.x;
-    caret.y += parent->caret.y;
-  }
+  this->parent = parent;
+  SDL_assert(!parent->composingSubgroup);
+  parent->composingSubgroup = true;
+  topLeft.x += rect.x;
+  topLeft.y += rect.y;
+  bottomRight.x += rect.x;
+  bottomRight.y += rect.y;
 }
 
 inline Group::~Group()
@@ -128,13 +158,11 @@ inline Group::~Group()
   if (parent) {
     SDL_assert(parent->composingSubgroup);
     parent->composingSubgroup = false;
-    if (rect.w == 0) {
-      rect.w = caret.x - parent->caret.x;
-    }
-    if (rect.h == 0) {
-      rect.h = caret.y - parent->caret.y;
-    }
-    parent->advance({rect.w, rect.h});
+    auto c = parent->getCaret();
+    SDL_Point adv;
+    adv.x = rect.w ? rect.w + rect.x : bottomRight.x - c.x;
+    adv.y = rect.h ? rect.h + rect.y : bottomRight.y - c.y;
+    parent->advance(adv);
   }
 }
 
@@ -142,8 +170,10 @@ inline Group::Group(Group&& rhs)
   : parent(rhs.parent)
   , id(std::move(rhs.id))
   , rect(rhs.rect)
-  , caret(rhs.caret)
+  , topLeft(rhs.topLeft)
+  , bottomRight(rhs.bottomRight)
   , composingSubgroup(rhs.composingSubgroup)
+  , layout(rhs.layout)
   , state(rhs.state)
 {
   rhs.state = nullptr;
@@ -162,7 +192,7 @@ inline MouseAction
 Group::testMouse(std::string_view id, SDL_Rect r)
 {
   SDL_assert(!composingSubgroup);
-
+  SDL_Point caret = getCaret();
   r.x += caret.x;
   r.y += caret.y;
   return state->testMouse(id, r);

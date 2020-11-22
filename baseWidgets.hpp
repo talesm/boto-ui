@@ -36,6 +36,7 @@ box(Group& target, SDL_Rect rect, SDL_Color color)
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isBlocked());
+  target.advance({rect.x + rect.w, rect.y + rect.h});
   auto caret = target.getCaret();
   rect.x += caret.x;
   rect.y += caret.y;
@@ -48,6 +49,7 @@ character(Group& target, char ch, const SDL_Point& p, SDL_Color color)
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isBlocked());
+  target.advance({p.x + 8, p.y + 8});
   auto caret = target.getCaret();
   state.display({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
 }
@@ -58,6 +60,7 @@ text(Group& target, std::string_view text, SDL_Point p, SDL_Color color)
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isBlocked());
+  target.advance({p.x + 8 * int(text.size()), p.y + 8});
   auto caret = target.getCaret();
   for (auto ch : text) {
     state.display({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
@@ -72,10 +75,8 @@ label(Group& target,
       SDL_Color color = style::TEXT)
 {
   auto adv = measure(value);
-  adv.x += p.x + 2;
-  adv.y += p.y + 2;
-  text(target, value, {p.x + 1, p.y + 1}, color);
-  target.advance(adv);
+  auto g = group(target, value, {p.x, p.y, adv.x + 2, adv.y + 2}, Layout::NONE);
+  text(g, value, {1, 1}, color);
 }
 
 inline void
@@ -85,11 +86,12 @@ renderButton(Group& target,
              SDL_Color l = style::BUTTON_LIGHT,
              SDL_Color d = style::BUTTON_DARK)
 {
-  box(target, {r.x + 1, r.y, r.w - 2, 1}, {l.r, l.g, l.b, l.a});
-  box(target, {r.x, r.y + 1, 1, r.h - 2}, {l.r, l.g, l.b, l.a});
-  box(target, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
-  box(target, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
-  box(target, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
+  auto g = group(target, "background", {0}, Layout::NONE);
+  box(g, {r.x + 1, r.y, r.w - 2, 1}, {l.r, l.g, l.b, l.a});
+  box(g, {r.x, r.y + 1, 1, r.h - 2}, {l.r, l.g, l.b, l.a});
+  box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
+  box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
+  box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
 }
 
 inline void
@@ -108,18 +110,16 @@ button(Group& target,
        bool inverted,
        const SDL_Point& p = {0})
 {
+  auto g = group(target, id, {p.x, p.y}, Layout::NONE);
   auto adv = measure(id);
-  SDL_Rect r{p.x, p.y, adv.x + 2, adv.y + 2};
-  auto action = target.testMouse(id, r);
-  text(target, id, {p.x + 1, p.y + 1}, style::TEXT);
+  SDL_Rect r{0, 0, adv.x + 2, adv.y + 2};
+  auto action = g.testMouse(id, r);
+  text(g, id, {1, 1}, style::TEXT);
   if ((action == MouseAction::GRAB) != inverted) {
-    renderButtonPressed(target, r);
+    renderButtonPressed(g, r);
   } else {
-    renderButton(target, r);
+    renderButton(g, r);
   }
-  adv.x += p.x + 2;
-  adv.y += p.y + 2;
-  target.advance(adv);
   return action == MouseAction::ACTION;
 }
 
@@ -164,11 +164,13 @@ renderInput(Group& target,
             SDL_Color b = style::INPUT,
             SDL_Color d = style::INPUT_BORDER)
 {
-  box(target, {r.x + 1, r.y, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
-  box(target, {r.x, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
-  box(target, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
-  box(target, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
-  box(target, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
+  auto g = group(target, "background", {0}, Layout::NONE);
+  box(g, {r.x + 1, r.y, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
+  box(g, {r.x, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
+  box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
+  box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
+  box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
+  g.advance({r.x + r.w, r.y + r.h});
 }
 
 inline bool
@@ -187,10 +189,12 @@ textBox(Group& target,
       r.h = sz.y + 2;
     }
   }
-  target.testMouse(id, r);
-  bool active = target.isActive(id);
-  if (active && target.hasText()) {
-    auto input = target.getText();
+  auto g = group(target, id, r, Layout::NONE);
+  r.x = r.y = 0;
+  g.testMouse(id, r);
+  bool active = g.isActive(id);
+  if (active && g.hasText()) {
+    auto input = g.getText();
     if (!input.empty() || maxSize == 0) {
       auto len = strlen(value);
       if (len >= maxSize - 1) {
@@ -205,11 +209,9 @@ textBox(Group& target,
       }
     }
   }
-  text(target, value, {r.x + 1, r.y + 1}, style::TEXT);
-  renderInput(target,
-              r,
-              active ? style::INPUT_ACTIVE : style::INPUT,
-              style::INPUT_BORDER);
+  text(g, value, {1, 1}, style::TEXT);
+  renderInput(
+    g, r, active ? style::INPUT_ACTIVE : style::INPUT, style::INPUT_BORDER);
   return false;
 }
 
