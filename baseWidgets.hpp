@@ -10,6 +10,7 @@ namespace style {
 
 constexpr SDL_Color TEXT{0, 0, 0, 255};
 constexpr SDL_Color BUTTON{224, 224, 224, 255};
+constexpr SDL_Color BUTTON_ACTIVE{208, 208, 208, 255};
 constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
 constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
 constexpr SDL_Color INPUT{240, 240, 240, 255};
@@ -115,10 +116,12 @@ button(Group& target,
   SDL_Rect r{0, 0, adv.x + 2, adv.y + 2};
   auto action = g.testMouse(id, r);
   text(g, id, {1, 1}, style::TEXT);
-  if ((action == MouseAction::GRAB) != inverted) {
-    renderButtonPressed(g, r);
+  bool grabbing = action == MouseAction::GRAB;
+  SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
+  if (grabbing != inverted) {
+    renderButtonPressed(g, r, base);
   } else {
-    renderButton(g, r);
+    renderButton(g, r, base);
   }
   return action == MouseAction::ACTION;
 }
