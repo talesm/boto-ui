@@ -12,6 +12,8 @@ constexpr SDL_Color TEXT{0, 0, 0, 255};
 constexpr SDL_Color BUTTON{224, 224, 224, 255};
 constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
 constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
+constexpr SDL_Color INPUT{240, 240, 240, 255};
+constexpr SDL_Color INPUT_BORDER{0, 0, 0, 255};
 
 }
 
@@ -114,6 +116,40 @@ choiceButton(Group& target,
     *value = option;
     return true;
   }
+  return false;
+}
+
+inline void
+renderInput(Group& target,
+            const SDL_Rect& r,
+            SDL_Color b = style::INPUT,
+            SDL_Color d = style::INPUT_BORDER)
+{
+  target.box({r.x + 1, r.y, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
+  target.box({r.x, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
+  target.box({r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
+  target.box({r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
+  target.box({r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
+}
+
+inline bool
+textBox(Group& target,
+        std::string_view id,
+        char* value,
+        size_t maxSize,
+        SDL_Rect r)
+{
+  if (r.w == 0 || r.h == 0) {
+    auto sz = target.measure('m'); // TODO allow customization for this
+    if (r.w == 0) {
+      r.w = sz.x * 16 + 2;
+    }
+    if (r.h == 0) {
+      r.h = sz.y + 2;
+    }
+  }
+  renderLabel(target, value, {r.x + 1, r.y + 1}, style::TEXT);
+  renderInput(target, r, style::INPUT, style::INPUT_BORDER);
   return false;
 }
 

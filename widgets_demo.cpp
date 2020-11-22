@@ -31,6 +31,9 @@ main(int argc, char** argv)
   };
   MultiOption multiOption{};
 
+  constexpr size_t str1Size = 100;
+  char str1[str1Size] = "str1";
+
   for (;;) {
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
@@ -39,6 +42,8 @@ main(int argc, char** argv)
         return 0;
       }
     }
+
+    // UI
     auto f = dui::frame(state);
     dui::label(f, "Hello world", {10, 10}, {0xf0, 0x80, 0x80, 0xff});
     dui::label(f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
@@ -63,6 +68,9 @@ main(int argc, char** argv)
       dui::label(g, "Grouped Label");
     }
 
+    dui::textBox(f, "Str1", str1, str1Size, {10, 0});
+
+    // Render
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
     SDL_RenderClear(renderer);
 
