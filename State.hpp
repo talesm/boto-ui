@@ -5,8 +5,6 @@
 #include "DisplayList.hpp"
 
 namespace dui {
-// Forward decl
-class Frame;
 
 enum class MouseAction
 {
@@ -86,17 +84,49 @@ public:
     dList.insert(rect, color, ch);
   }
 
-private:
-  friend class Frame;
+  class Cookie
+  {
+  private:
+    State* state;
+    Cookie(State* state)
+      : state(state)
+    {
+      state->beginFrame();
+    }
+    friend class State;
 
+  public:
+    ~Cookie() { unlock(); }
+
+    void unlock()
+    {
+      if (state) {
+        state->endFrame();
+        state = nullptr;
+      }
+    }
+    Cookie(const Cookie&) = delete;
+    Cookie(Cookie&& rhs) { std::swap(state, rhs.state); }
+    Cookie& operator=(Cookie rhs)
+    {
+      std::swap(state, rhs.state);
+      return *this;
+    }
+  };
+
+  Cookie lockFrame() { return Cookie{this}; }
+
+private:
   void beginFrame()
   {
+    SDL_assert(inFrame == false);
     inFrame = true;
     dList.clear();
   }
 
   void endFrame()
   {
+    SDL_assert(inFrame == true);
     inFrame = false;
     tChanged = false;
   }

@@ -11,10 +11,12 @@ namespace dui {
  * @brief Represents a single frame on the app
  *
  */
-struct Frame : Group
+class Frame : public Group
 {
+  State::Cookie cookie;
+
+public:
   Frame(State* state = nullptr);
-  ~Frame();
   Frame(const Frame&) = delete;
   Frame(Frame&& rhs) = default;
   Frame& operator=(const Frame&) = delete;
@@ -23,12 +25,10 @@ struct Frame : Group
   void render()
   {
     SDL_assert(state);
-    auto st = state;
     end();
-    st->render();
+    state->render();
   }
 
-  void reset(State* state);
   void end();
 };
 
@@ -40,34 +40,13 @@ frame(State& state)
 
 inline Frame::Frame(State* state)
   : Group("", {0}, state)
-{
-  if (state != nullptr) {
-    SDL_assert(state->inFrame == false);
-    state->beginFrame();
-  }
-}
-
-inline Frame::~Frame()
-{
-  if (state != nullptr) {
-    SDL_assert(state->inFrame == true);
-    state->endFrame();
-  }
-}
+  , cookie(state->lockFrame())
+{}
 
 inline void
 Frame::end()
 {
-  this->~Frame();
-  state = nullptr;
-}
-
-inline void
-Frame::reset(State* state)
-{
-  this->~Frame();
-  new (this) Frame(state);
-  Group::reset();
+  cookie.unlock();
 }
 
 } // namespace dui
