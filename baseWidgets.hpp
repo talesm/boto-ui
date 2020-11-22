@@ -196,10 +196,10 @@ textBox(Group& target,
   r.x = r.y = 0;
   g.testMouse(id, r);
   bool active = g.isActive(id);
+  auto len = strlen(value);
   if (active && g.hasText()) {
     auto input = g.getText();
     if (!input.empty() || maxSize == 0) {
-      auto len = strlen(value);
       if (len >= maxSize - 1) {
         value[maxSize - 2] = input[0];
         value[maxSize - 1] = 0;
@@ -213,6 +213,10 @@ textBox(Group& target,
     }
   }
   text(g, value, {2, 2}, style::TEXT);
+  if (active) {
+    // Show cursor
+    box(g, {int(len) * 8 + 2, 2, 1, r.h - 4}, {0, 0, 0, 255});
+  }
   renderInput(
     g, r, active ? style::INPUT_ACTIVE : style::INPUT, style::INPUT_BORDER);
   return false;
