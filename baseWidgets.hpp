@@ -76,8 +76,8 @@ label(Group& target,
       SDL_Color color = style::TEXT)
 {
   auto adv = measure(value);
-  auto g = group(target, value, {p.x, p.y, adv.x + 2, adv.y + 2}, Layout::NONE);
-  text(g, value, {1, 1}, color);
+  auto g = group(target, value, {p.x, p.y, adv.x + 4, adv.y + 4}, Layout::NONE);
+  text(g, value, {2, 2}, color);
 }
 
 inline void
@@ -113,9 +113,9 @@ button(Group& target,
 {
   auto g = group(target, id, {p.x, p.y}, Layout::NONE);
   auto adv = measure(id);
-  SDL_Rect r{0, 0, adv.x + 2, adv.y + 2};
+  SDL_Rect r{0, 0, adv.x + 4, adv.y + 4};
   auto action = g.testMouse(id, r);
-  text(g, id, {1, 1}, style::TEXT);
+  text(g, id, {2, 2}, style::TEXT);
   bool grabbing = action == MouseAction::GRAB;
   SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
   if (grabbing != inverted) {
@@ -186,10 +186,10 @@ textBox(Group& target,
   if (r.w == 0 || r.h == 0) {
     auto sz = measure('m'); // TODO allow customization for this
     if (r.w == 0) {
-      r.w = sz.x * 16 + 2;
+      r.w = sz.x * 16 + 4;
     }
     if (r.h == 0) {
-      r.h = sz.y + 2;
+      r.h = sz.y + 4;
     }
   }
   auto g = group(target, id, r, Layout::NONE);
@@ -212,7 +212,7 @@ textBox(Group& target,
       }
     }
   }
-  text(g, value, {1, 1}, style::TEXT);
+  text(g, value, {2, 2}, style::TEXT);
   renderInput(
     g, r, active ? style::INPUT_ACTIVE : style::INPUT, style::INPUT_BORDER);
   return false;
