@@ -15,6 +15,12 @@ enum class MouseAction
   DRAG,   ///< The mouse had this grabbed, but was moved to outside its bounds
 };
 
+enum class TextAction
+{
+  NONE,  ///< Default status
+  INPUT, ///< text input
+};
+
 /**
  * @brief A grouping of widgets
  *
@@ -99,7 +105,29 @@ public:
 
   SDL_Point measure(std::string_view text) { return {int(8 * text.size()), 8}; }
 
+  /**
+   * @brief Check for mouse actions
+   *
+   * @param id
+   * @param r
+   * @return MouseAction
+   */
   MouseAction testMouse(std::string_view id, SDL_Rect r);
+
+  /**
+   * @brief Check if given element is active
+   *
+   * @param id the id to check
+   * @return true
+   * @return false
+   */
+  bool isActive(std::string_view id) const { return state->eActive == id; }
+
+  /// Check if has text to retrieve
+  bool hasText() const { return state->hasText(); }
+
+  /// Get last retrieved text
+  std::string_view getText() const { return state->getText(); }
 
   void advance(const SDL_Point& p)
   {
@@ -179,23 +207,29 @@ Group::testMouse(std::string_view id, SDL_Rect r)
 
   r.x += caret.x;
   r.y += caret.y;
-  if (state->mGrabbed.empty()) {
+  if (state->eGrabbed.empty()) {
     if (state->mLeftPressed && SDL_PointInRect(&state->mPos, &r)) {
-      state->mGrabbed = id;
+      state->eGrabbed = id;
+      state->eActive = id;
       return MouseAction::GRAB;
+    }
+    if (state->mLeftPressed && state->eActive == id) {
+      state->eActive.clear();
     }
     return MouseAction::NONE;
   }
-  if (state->mGrabbed != id) {
+  if (state->eGrabbed != id) {
     return MouseAction::NONE;
   }
   if (state->mLeftPressed) {
     return SDL_PointInRect(&state->mPos, &r) ? MouseAction::GRAB
                                              : MouseAction::DRAG;
   }
-  state->mGrabbed.clear();
-  return SDL_PointInRect(&state->mPos, &r) ? MouseAction::ACTION
-                                           : MouseAction::NONE;
+  state->eGrabbed.clear();
+  if (!SDL_PointInRect(&state->mPos, &r)) {
+    return MouseAction::NONE;
+  }
+  return MouseAction::ACTION;
 }
 } // namespace dui
 

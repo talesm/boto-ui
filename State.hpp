@@ -18,7 +18,10 @@ private:
 
   SDL_Point mPos;
   bool mLeftPressed = false;
-  std::string mGrabbed;
+  std::string eGrabbed;
+  std::string eActive;
+  char tBuffer[SDL_TEXTINPUTEVENT_TEXT_SIZE];
+  bool tChanged = false;
 
 public:
   State(SDL_Renderer* renderer)
@@ -41,8 +44,22 @@ public:
     } else if (ev.type == SDL_MOUSEBUTTONUP) {
       mPos = {ev.button.x, ev.button.y};
       mLeftPressed = false;
+    } else if (ev.type == SDL_TEXTINPUT) {
+      if (eActive.empty()) {
+        return;
+      }
+      for (int i = 0; i < SDL_TEXTINPUTEVENT_TEXT_SIZE; ++i) {
+        tBuffer[i] = ev.text.text[i];
+        if (tBuffer[i] == 0) {
+          break;
+        }
+      }
+      tChanged = true;
     }
   }
+
+  bool hasText() const { return tChanged; }
+  std::string_view getText() const { return {tBuffer}; }
 
 private:
   friend class Frame;
@@ -54,7 +71,11 @@ private:
     dList.clear();
   }
 
-  void endFrame() { inFrame = false; }
+  void endFrame()
+  {
+    inFrame = false;
+    tChanged = false;
+  }
 };
 } // namespace dui
 

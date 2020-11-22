@@ -13,6 +13,7 @@ constexpr SDL_Color BUTTON{224, 224, 224, 255};
 constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
 constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
 constexpr SDL_Color INPUT{240, 240, 240, 255};
+constexpr SDL_Color INPUT_ACTIVE{255, 255, 255, 255};
 constexpr SDL_Color INPUT_BORDER{0, 0, 0, 255};
 
 }
@@ -148,8 +149,29 @@ textBox(Group& target,
       r.h = sz.y + 2;
     }
   }
+  target.testMouse(id, r);
+  bool active = target.isActive(id);
+  if (active && target.hasText()) {
+    auto input = target.getText();
+    if (!input.empty() || maxSize == 0) {
+      auto len = strlen(value);
+      if (len >= maxSize - 1) {
+        value[maxSize - 2] = input[0];
+        value[maxSize - 1] = 0;
+      } else {
+        auto count = std::min(maxSize - len - 1, input.size());
+        for (size_t i = 0; i < count; ++i) {
+          value[len + i] = input[i];
+        }
+        value[len + count] = 0;
+      }
+    }
+  }
   renderLabel(target, value, {r.x + 1, r.y + 1}, style::TEXT);
-  renderInput(target, r, style::INPUT, style::INPUT_BORDER);
+  renderInput(target,
+              r,
+              active ? style::INPUT_ACTIVE : style::INPUT,
+              style::INPUT_BORDER);
   return false;
 }
 
