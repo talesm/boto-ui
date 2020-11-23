@@ -195,22 +195,38 @@ textBox(Group& target,
   auto g = group(target, id, r, Layout::NONE);
   r.x = r.y = 0;
   g.testMouse(id, r);
-  bool active = g.isActive(id);
+
   auto len = strlen(value);
-  if (active && g.hasText()) {
-    auto input = g.getText();
-    if (!input.empty() || maxSize == 0) {
-      if (len >= maxSize - 1) {
-        value[maxSize - 2] = input[0];
-        value[maxSize - 1] = 0;
-      } else {
-        auto count = std::min(maxSize - len - 1, input.size());
-        for (size_t i = 0; i < count; ++i) {
-          value[len + i] = input[i];
+  auto action = g.checkText(id);
+  bool active = false;
+  bool changed = false;
+  switch (action) {
+    case TextAction::NONE:
+      active = g.isActive(id);
+      break;
+    case TextAction::INPUT:
+      active = true;
+      if (auto input = g.getText(); !input.empty() && maxSize > 0) {
+        changed = true;
+        if (len >= maxSize - 1) {
+          value[maxSize - 2] = input[0];
+          value[maxSize - 1] = 0;
+        } else {
+          auto count = std::min(maxSize - len - 1, input.size());
+          for (size_t i = 0; i < count; ++i) {
+            value[len + i] = input[i];
+          }
+          value[len + count] = 0;
         }
-        value[len + count] = 0;
       }
-    }
+      break;
+    case TextAction::BACKSPACE:
+      active = true;
+      if (len > 0) {
+        value[len - 1] = 0;
+        changed = true;
+      }
+      break;
   }
   text(g, value, {2, 2}, style::TEXT);
   if (active) {
@@ -219,7 +235,7 @@ textBox(Group& target,
   }
   renderInput(
     g, r, active ? style::INPUT_ACTIVE : style::INPUT, style::INPUT_BORDER);
-  return false;
+  return changed;
 }
 
 } // namespace dui

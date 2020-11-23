@@ -85,7 +85,10 @@ public:
   bool isActive(std::string_view id) const { return state->isActive(id); }
 
   /// Check if has text to retrieve
-  bool hasText() const { return state->hasText(); }
+  TextAction checkText(std::string_view id) const
+  {
+    return state->checkText(id);
+  }
 
   /// Get last retrieved text
   std::string_view getText() const { return state->getText(); }

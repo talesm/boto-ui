@@ -16,8 +16,9 @@ enum class MouseAction
 
 enum class TextAction
 {
-  NONE,  ///< Default status
-  INPUT, ///< text input
+  NONE,      ///< Default status
+  INPUT,     ///< text input
+  BACKSPACE, ///< erased last character
 };
 
 class State
@@ -33,6 +34,7 @@ private:
   std::string eActive;
   char tBuffer[SDL_TEXTINPUTEVENT_TEXT_SIZE];
   bool tChanged = false;
+  TextAction tAction = TextAction::NONE;
 
 public:
   State(SDL_Renderer* renderer)
@@ -66,6 +68,12 @@ public:
         }
       }
       tChanged = true;
+      tAction = TextAction::INPUT;
+    } else if (ev.type == SDL_KEYDOWN) {
+      if (ev.key.keysym.sym == SDLK_BACKSPACE) {
+        tChanged = true;
+        tAction = TextAction::BACKSPACE;
+      }
     }
   }
 
@@ -76,7 +84,14 @@ public:
   /// Check mouse for given element
   MouseAction testMouse(std::string_view id, SDL_Rect r);
 
-  bool hasText() const { return tChanged; }
+  TextAction checkText(std::string_view id) const
+  {
+    if (!tChanged || eActive != id) {
+      return TextAction::NONE;
+    }
+    return tAction;
+  }
+
   std::string_view getText() const { return {tBuffer}; }
 
   void display(const SDL_Rect& rect, SDL_Color color, char ch = 0)
