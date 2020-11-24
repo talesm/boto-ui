@@ -190,30 +190,55 @@ fixInputSize(SDL_Rect* r)
   }
 }
 
-inline bool
-textBox(Group& target,
-        std::string_view id,
-        char* value,
-        size_t maxSize,
-        SDL_Rect r)
+inline TextAction
+textBoxBase(Group& target,
+            std::string_view id,
+            std::string_view value,
+            SDL_Rect r)
 {
   fixInputSize(&r);
   auto g = group(target, id, r, Layout::NONE);
-  r.x = r.y = 0;
+  r.x = r.y = 0; // Inside the group we use local coords
   g.testMouse(id, r);
 
-  auto len = strlen(value);
   auto action = g.checkText(id);
   bool active = false;
-  bool changed = false;
   switch (action) {
     case TextAction::NONE:
       active = g.isActive(id);
       break;
     case TextAction::INPUT:
+    case TextAction::BACKSPACE:
       active = true;
-      if (auto input = g.getText(); !input.empty() && maxSize > 0) {
-        changed = true;
+      break;
+  }
+  text(g, value, {2, 2}, style::TEXT);
+
+  SDL_Color bgColor = style::INPUT;
+  if (active) {
+    // Show cursor
+    box(g, {int(value.size()) * 8 + 2, 2, 1, r.h - 4}, {0, 0, 0, 255});
+
+    // Set bg color
+    bgColor = style::INPUT_ACTIVE;
+  }
+  renderInput(g, r, bgColor, style::INPUT_BORDER);
+  return action;
+}
+
+inline bool
+textBox(Group& target,
+        std::string_view id,
+        char* value,
+        size_t maxSize,
+        const SDL_Rect& r)
+{
+  auto len = strlen(value);
+  switch (textBoxBase(target, id, {value, len}, r)) {
+    case TextAction::NONE:
+      break;
+    case TextAction::INPUT:
+      if (auto input = target.getText(); !input.empty() && maxSize > 0) {
         if (len >= maxSize - 1) {
           value[maxSize - 2] = input[0];
           value[maxSize - 1] = 0;
@@ -224,65 +249,42 @@ textBox(Group& target,
           }
           value[len + count] = 0;
         }
+        return true;
       }
       break;
     case TextAction::BACKSPACE:
-      active = true;
       if (len > 0) {
         value[len - 1] = 0;
-        changed = true;
+        return true;
       }
       break;
   }
-  text(g, value, {2, 2}, style::TEXT);
-  if (active) {
-    // Show cursor
-    box(g, {int(len) * 8 + 2, 2, 1, r.h - 4}, {0, 0, 0, 255});
-  }
-  renderInput(
-    g, r, active ? style::INPUT_ACTIVE : style::INPUT, style::INPUT_BORDER);
-  return changed;
+  return false;
 }
 
 inline bool
-textBox(Group& target, std::string_view id, std::string* value, SDL_Rect r)
+textBox(Group& target,
+        std::string_view id,
+        std::string* value,
+        const SDL_Rect& r)
 {
-  fixInputSize(&r);
-  auto g = group(target, id, r, Layout::NONE);
-  r.x = r.y = 0;
-  g.testMouse(id, r);
-
-  auto len = value->size();
-  auto action = g.checkText(id);
-  bool active = false;
-  bool changed = false;
-  switch (action) {
+  switch (textBoxBase(target, id, *value, r)) {
     case TextAction::NONE:
-      active = g.isActive(id);
       break;
     case TextAction::INPUT:
-      active = true;
-      if (auto input = g.getText(); !input.empty()) {
-        changed = true;
+      if (auto input = target.getText(); !input.empty()) {
         *value += input;
+        return true;
       }
       break;
     case TextAction::BACKSPACE:
-      active = true;
-      if (len > 0) {
+      if (value->size() > 0) {
         value->pop_back();
-        changed = true;
+        return true;
       }
       break;
   }
-  text(g, *value, {2, 2}, style::TEXT);
-  if (active) {
-    // Show cursor
-    box(g, {int(len) * 8 + 2, 2, 1, r.h - 4}, {0, 0, 0, 255});
-  }
-  renderInput(
-    g, r, active ? style::INPUT_ACTIVE : style::INPUT, style::INPUT_BORDER);
-  return changed;
+  return false;
 }
 } // namespace dui
 
