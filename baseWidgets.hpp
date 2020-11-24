@@ -32,7 +32,7 @@ measure(std::string_view text)
 }
 
 inline void
-box(Group& target, SDL_Rect rect, SDL_Color color)
+box(Group& target, SDL_Rect rect, SDL_Color c)
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
@@ -41,22 +41,22 @@ box(Group& target, SDL_Rect rect, SDL_Color color)
   auto caret = target.getCaret();
   rect.x += caret.x;
   rect.y += caret.y;
-  state.display(rect, color);
+  state.display(Shape::Box(rect, c));
 }
 
 inline void
-character(Group& target, char ch, const SDL_Point& p, SDL_Color color)
+character(Group& target, char ch, const SDL_Point& p, SDL_Color c)
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isBlocked());
   target.advance({p.x + 8, p.y + 8});
   auto caret = target.getCaret();
-  state.display({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
+  state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
 }
 
 inline void
-text(Group& target, std::string_view text, SDL_Point p, SDL_Color color)
+text(Group& target, std::string_view text, SDL_Point p, SDL_Color c)
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
@@ -64,7 +64,7 @@ text(Group& target, std::string_view text, SDL_Point p, SDL_Color color)
   target.advance({p.x + 8 * int(text.size()), p.y + 8});
   auto caret = target.getCaret();
   for (auto ch : text) {
-    state.display({caret.x + p.x, caret.y + p.y, 8, 8}, color, ch);
+    state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
     p.x += 8;
   }
 }
@@ -73,11 +73,11 @@ inline void
 label(Group& target,
       std::string_view value,
       const SDL_Point& p = {0},
-      SDL_Color color = style::TEXT)
+      SDL_Color c = style::TEXT)
 {
   auto adv = measure(value);
   auto g = group(target, value, {p.x, p.y, adv.x + 4, adv.y + 4}, Layout::NONE);
-  text(g, value, {2, 2}, color);
+  text(g, value, {2, 2}, c);
 }
 
 inline void

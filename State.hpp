@@ -94,10 +94,7 @@ public:
 
   std::string_view getText() const { return {tBuffer}; }
 
-  void display(const SDL_Rect& rect, SDL_Color color, char ch = 0)
-  {
-    dList.insert(rect, color, ch);
-  }
+  void display(const Shape& item) { dList.insert(item); }
 
   class Cookie
   {

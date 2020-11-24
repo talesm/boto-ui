@@ -12,6 +12,19 @@
 
 namespace dui {
 
+struct Shape
+{
+  SDL_Rect rect;
+  SDL_Color color;
+  char content;
+  static Shape Character(const SDL_Point& p, SDL_Color c, char ch)
+  {
+    return {{p.x, p.y, 8, 8}, c, ch};
+  }
+
+  static Shape Box(const SDL_Rect& r, SDL_Color c) { return {r, c, 0}; }
+};
+
 /**
  * @brief Contains the list of elements to render
  *
@@ -19,24 +32,17 @@ namespace dui {
 class DisplayList
 {
 private:
-  struct Item
-  {
-    SDL_Rect rect;
-    SDL_Color color;
-    char content;
-  };
-
-  std::vector<Item> items;
+  std::vector<Shape> items;
 
 public:
   void clear() { items.clear(); }
 
   size_t size() { return items.size(); }
 
-  void insert(const SDL_Rect& rect, SDL_Color color, char ch)
+  void insert(const Shape& item)
   {
-    if (color.a > 0) {
-      items.push_back({rect, color, ch});
+    if (item.color.a > 0) {
+      items.push_back(item);
     }
   }
 
