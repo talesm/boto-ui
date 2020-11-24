@@ -46,29 +46,40 @@ public:
     }
   }
 
-  void clip(const SDL_Rect& rect, size_t pos);
+  void pushClip(const SDL_Rect& rect)
+  {
+    // TODO coalesce multiple clips
+    if (rect.w > 0 && rect.h > 0) {
+      items.push_back(Shape{rect, {0}, 0});
+    } else {
+      items.push_back(Shape{{rect.x, rect.y, 1, 1}, {0}, 0});
+    }
+  }
+
+  void popClip() { items.push_back(Shape{{0}, {0}, 0}); }
 
   void render(SDL_Renderer* renderer) const;
 };
 
 inline void
-DisplayList::clip(const SDL_Rect& rect, size_t pos)
-{
-  if (pos >= items.size()) {
-    return;
-  }
-  auto it = std::remove_if(items.begin() + pos, items.end(), [&](auto& item) {
-    return !SDL_IntersectRect(&rect, &item.rect, nullptr);
-  });
-  items.erase(it, items.end());
-}
-
-inline void
 DisplayList::render(SDL_Renderer* renderer) const
 {
+  constexpr int STACK_MAX_SIZE = 32;
+  SDL_Rect stack[STACK_MAX_SIZE]; // TODO make this configurable
+  int stackSz = 0;
   for (auto it = items.rbegin(); it != items.rend(); it++) {
     auto c = it->color;
-    if (it->content == 0) {
+    if (c.a == 0) {
+      if (it->rect.w == 0) {
+        SDL_assert(stackSz > 0);
+        --stackSz;
+      } else {
+        SDL_assert(stackSz < STACK_MAX_SIZE);
+        stack[stackSz++] = it->rect;
+      }
+      SDL_RenderSetClipRect(renderer,
+                            stackSz > 0 ? &stack[stackSz - 1] : nullptr);
+    } else if (it->content == 0) {
       SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
       SDL_RenderFillRect(renderer, &it->rect);
     } else {
@@ -76,6 +87,7 @@ DisplayList::render(SDL_Renderer* renderer) const
         renderer, it->rect.x, it->rect.y, it->content, c.r, c.g, c.b, c.a);
     }
   }
+  SDL_assert(stackSz == 0);
 }
 
 } // namespace dui

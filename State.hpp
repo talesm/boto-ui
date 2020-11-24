@@ -124,6 +124,9 @@ public:
       std::swap(state, rhs.state);
       return *this;
     }
+
+    void pushGroup() { state->dList.popClip(); }
+    void popGroup(const SDL_Rect& r) { state->dList.pushClip(r); }
   };
 
   Context lockFrame() { return Context{this}; }

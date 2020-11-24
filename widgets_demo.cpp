@@ -80,7 +80,7 @@ main(int argc, char** argv)
 
     // Render
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
-    SDL_RenderClear(renderer);
+    SDL_RenderFillRect(renderer, nullptr);
 
     f.render();
 

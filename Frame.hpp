@@ -13,10 +13,11 @@ namespace dui {
  */
 class Frame : public Group
 {
-  State::Context cookie;
+  State::Context context;
 
 public:
   Frame(State* state = nullptr);
+  ~Frame() { end(); }
   Frame(const Frame&) = delete;
   Frame(Frame&& rhs) = default;
   Frame& operator=(const Frame&) = delete;
@@ -30,6 +31,13 @@ public:
   }
 
   void end();
+
+protected:
+  void afterLock(int deepness, const SDL_Rect& r) final { context.pushGroup(); }
+  void beforeUnlock(int deepness, const SDL_Rect& r) final
+  {
+    context.popGroup(r);
+  }
 };
 
 inline Frame
@@ -40,13 +48,16 @@ frame(State& state)
 
 inline Frame::Frame(State* state)
   : Group("", {0}, state, Layout::VERTICAL)
-  , cookie(state->lockFrame())
+  , context(state->lockFrame())
 {}
 
 inline void
 Frame::end()
 {
-  cookie.unlockFrame();
+  if (state) {
+    context.unlockFrame();
+    Group::end();
+  }
 }
 
 } // namespace dui
