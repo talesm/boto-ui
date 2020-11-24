@@ -66,9 +66,15 @@ main(int argc, char** argv)
     {
       auto g = dui::group(f, "group1", {10, 10});
       dui::label(g, "Grouped Label");
+      dui::button(g, "Grouped button");
+    }
+    {
+      auto g = dui::group(f, "group2", {10, 10}, dui::Layout::HORIZONTAL);
+      dui::label(g, "Grouped Label");
+      dui::button(g, "Grouped button");
     }
 
-    dui::textBox(f, "Str1", str1, str1Size, {10, 0});
+    dui::textBox(f, "Str1", str1, str1Size, {10, 10});
 
     // Render
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
