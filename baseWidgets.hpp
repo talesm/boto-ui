@@ -176,6 +176,20 @@ renderInput(Group& target,
   g.advance({r.x + r.w, r.y + r.h});
 }
 
+inline void
+fixInputSize(SDL_Rect* r)
+{
+  if (r->w == 0 || r->h == 0) {
+    auto sz = measure('m'); // TODO allow customization for this
+    if (r->w == 0) {
+      r->w = sz.x * 16 + 4;
+    }
+    if (r->h == 0) {
+      r->h = sz.y + 4;
+    }
+  }
+}
+
 inline bool
 textBox(Group& target,
         std::string_view id,
@@ -183,15 +197,7 @@ textBox(Group& target,
         size_t maxSize,
         SDL_Rect r)
 {
-  if (r.w == 0 || r.h == 0) {
-    auto sz = measure('m'); // TODO allow customization for this
-    if (r.w == 0) {
-      r.w = sz.x * 16 + 4;
-    }
-    if (r.h == 0) {
-      r.h = sz.y + 4;
-    }
-  }
+  fixInputSize(&r);
   auto g = group(target, id, r, Layout::NONE);
   r.x = r.y = 0;
   g.testMouse(id, r);
@@ -241,15 +247,7 @@ textBox(Group& target,
 inline bool
 textBox(Group& target, std::string_view id, std::string* value, SDL_Rect r)
 {
-  if (r.w == 0 || r.h == 0) {
-    auto sz = measure('m'); // TODO allow customization for this
-    if (r.w == 0) {
-      r.w = sz.x * 16 + 4;
-    }
-    if (r.h == 0) {
-      r.h = sz.y + 4;
-    }
-  }
+  fixInputSize(&r);
   auto g = group(target, id, r, Layout::NONE);
   r.x = r.y = 0;
   g.testMouse(id, r);
