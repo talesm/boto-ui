@@ -10,10 +10,10 @@ MVP (0.1)
 - [x] toggleButton
 - [x] choiceButton
 - [x] group
-- [ ] bufferInput
+- [x] textBox
+- [ ] panel
+- [ ] Clip correctly
 - [ ] window
-- [ ] textInput
-- [ ] sameLine()
 - [ ] numeric input
 - [ ] vector numeric input
 - [ ] section
