@@ -13,7 +13,7 @@ MVP (0.1)
 - [x] textBox
 - [ ] Compose ids with parent groups to have less chance of colision
 - [ ] panel
-- [ ] Clip correctly
+- [x] Clip correctly
 - [ ] window
 - [ ] numeric input
 - [ ] vector numeric input
