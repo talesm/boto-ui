@@ -35,7 +35,9 @@ public:
 
   void insert(const SDL_Rect& rect, SDL_Color color, char ch)
   {
-    items.push_back({rect, color, ch});
+    if (color.a > 0) {
+      items.push_back({rect, color, ch});
+    }
   }
 
   void clip(const SDL_Rect& rect, size_t pos);
