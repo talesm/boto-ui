@@ -33,6 +33,7 @@ main(int argc, char** argv)
 
   constexpr size_t str1Size = 100;
   char str1[str1Size] = "str1";
+  std::string str2 = "str2";
 
   for (;;) {
     SDL_Event ev;
@@ -75,6 +76,7 @@ main(int argc, char** argv)
     }
 
     dui::textBox(f, "Str1", str1, str1Size, {10, 10});
+    dui::textBox(f, "Str2", &str2, {10, 0});
 
     // Render
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);

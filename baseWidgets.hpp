@@ -238,6 +238,54 @@ textBox(Group& target,
   return changed;
 }
 
+inline bool
+textBox(Group& target, std::string_view id, std::string* value, SDL_Rect r)
+{
+  if (r.w == 0 || r.h == 0) {
+    auto sz = measure('m'); // TODO allow customization for this
+    if (r.w == 0) {
+      r.w = sz.x * 16 + 4;
+    }
+    if (r.h == 0) {
+      r.h = sz.y + 4;
+    }
+  }
+  auto g = group(target, id, r, Layout::NONE);
+  r.x = r.y = 0;
+  g.testMouse(id, r);
+
+  auto len = value->size();
+  auto action = g.checkText(id);
+  bool active = false;
+  bool changed = false;
+  switch (action) {
+    case TextAction::NONE:
+      active = g.isActive(id);
+      break;
+    case TextAction::INPUT:
+      active = true;
+      if (auto input = g.getText(); !input.empty()) {
+        changed = true;
+        *value += input;
+      }
+      break;
+    case TextAction::BACKSPACE:
+      active = true;
+      if (len > 0) {
+        value->pop_back();
+        changed = true;
+      }
+      break;
+  }
+  text(g, *value, {2, 2}, style::TEXT);
+  if (active) {
+    // Show cursor
+    box(g, {int(len) * 8 + 2, 2, 1, r.h - 4}, {0, 0, 0, 255});
+  }
+  renderInput(
+    g, r, active ? style::INPUT_ACTIVE : style::INPUT, style::INPUT_BORDER);
+  return changed;
+}
 } // namespace dui
 
 #endif // DUI_BASE_WIDGETS_HPP_
