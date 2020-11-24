@@ -1,5 +1,5 @@
-#ifndef DUI_BASE_WIDGETS_HPP_
-#define DUI_BASE_WIDGETS_HPP_
+#ifndef DUI_BASIC_WIDGETS_HPP_
+#define DUI_BASIC_WIDGETS_HPP_
 
 #include <string_view>
 #include "Group.hpp"
@@ -288,4 +288,4 @@ textBox(Group& target,
 }
 } // namespace dui
 
-#endif // DUI_BASE_WIDGETS_HPP_
+#endif // DUI_BASIC_WIDGETS_HPP_
