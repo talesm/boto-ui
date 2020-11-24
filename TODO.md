@@ -19,6 +19,7 @@ MVP (0.1)
 - [ ] vector numeric input
 - [ ] section
 - [ ] image
+- [ ] auto scroll text so the end is always visible
 - [ ] want to capture mouse/keyboard
 
 Wishlist
