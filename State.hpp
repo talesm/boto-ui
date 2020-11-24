@@ -96,11 +96,11 @@ public:
 
   void display(const Shape& item) { dList.insert(item); }
 
-  class Cookie
+  class Context
   {
   private:
     State* state;
-    Cookie(State* state)
+    Context(State* state)
       : state(state)
     {
       state->beginFrame();
@@ -108,25 +108,25 @@ public:
     friend class State;
 
   public:
-    ~Cookie() { unlock(); }
+    ~Context() { unlockFrame(); }
 
-    void unlock()
+    void unlockFrame()
     {
       if (state) {
         state->endFrame();
         state = nullptr;
       }
     }
-    Cookie(const Cookie&) = delete;
-    Cookie(Cookie&& rhs) { std::swap(state, rhs.state); }
-    Cookie& operator=(Cookie rhs)
+    Context(const Context&) = delete;
+    Context(Context&& rhs) { std::swap(state, rhs.state); }
+    Context& operator=(Context rhs)
     {
       std::swap(state, rhs.state);
       return *this;
     }
   };
 
-  Cookie lockFrame() { return Cookie{this}; }
+  Context lockFrame() { return Context{this}; }
 
 private:
   void beginFrame()

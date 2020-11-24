@@ -13,7 +13,7 @@ namespace dui {
  */
 class Frame : public Group
 {
-  State::Cookie cookie;
+  State::Context cookie;
 
 public:
   Frame(State* state = nullptr);
@@ -46,7 +46,7 @@ inline Frame::Frame(State* state)
 inline void
 Frame::end()
 {
-  cookie.unlock();
+  cookie.unlockFrame();
 }
 
 } // namespace dui
