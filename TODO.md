@@ -11,6 +11,7 @@ MVP (0.1)
 - [x] choiceButton
 - [x] group
 - [x] textBox
+- [ ] Compose ids with parent groups to have less chance of colision
 - [ ] panel
 - [ ] Clip correctly
 - [ ] window
