@@ -125,8 +125,14 @@ public:
       return *this;
     }
 
-    void pushGroup() { state->dList.popClip(); }
-    void popGroup(const SDL_Rect& r) { state->dList.pushClip(r); }
+    void pushGroup(std::string_view id, const SDL_Rect&)
+    {
+      state->dList.popClip();
+    }
+    void popGroup(std::string_view id, const SDL_Rect& r)
+    {
+      state->dList.pushClip(r);
+    }
   };
 
   Context lockFrame() { return Context{this}; }

@@ -33,10 +33,13 @@ public:
   void end();
 
 protected:
-  void afterLock(int deepness, const SDL_Rect& r) final { context.pushGroup(); }
-  void beforeUnlock(int deepness, const SDL_Rect& r) final
+  void afterLock(int deepness, std::string_view id, const SDL_Rect& r) final
   {
-    context.popGroup(r);
+    context.pushGroup(id, r);
+  }
+  void beforeUnlock(int deepness, std::string_view id, const SDL_Rect& r) final
+  {
+    context.popGroup(id, r);
   }
 };
 

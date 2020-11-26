@@ -31,39 +31,39 @@ class Group
   bool locked = false;
   Layout layout;
 
-  void lock(SDL_Rect r)
+  void lock(std::string_view id, SDL_Rect r)
   {
     SDL_assert(!locked);
     locked = true;
     auto caret = getCaret();
     r.x += caret.x;
     r.y += caret.y;
-    notifyLock(0, r);
+    notifyLock(0, id, r);
   }
 
-  void unlock(SDL_Rect r)
+  void unlock(std::string_view id, SDL_Rect r)
   {
     SDL_assert(locked);
     auto caret = getCaret();
     r.x += caret.x;
     r.y += caret.y;
-    notifyUnlock(0, r);
+    notifyUnlock(0, id, r);
     locked = false;
   }
 
-  void notifyLock(int deepness, const SDL_Rect& r)
+  void notifyLock(int depth, std::string_view id, const SDL_Rect& r)
   {
     if (parent) {
-      parent->notifyLock(deepness + 1, r);
+      parent->notifyLock(depth + 1, id, r);
     }
-    afterLock(deepness, r);
+    afterLock(depth, id, r);
   }
 
-  void notifyUnlock(int deepness, const SDL_Rect& r)
+  void notifyUnlock(int depth, std::string_view id, const SDL_Rect& r)
   {
-    beforeUnlock(deepness, r);
+    beforeUnlock(depth, id, r);
     if (parent) {
-      parent->notifyUnlock(deepness + 1, r);
+      parent->notifyUnlock(depth + 1, id, r);
     }
   }
 
@@ -92,9 +92,15 @@ protected:
     : Group(id, rect, state, {rect.x, rect.y}, layout)
   {}
 
-  virtual void afterLock(int deepness, const SDL_Rect& initialRect) {}
+  virtual void afterLock(int depth,
+                         std::string_view id,
+                         const SDL_Rect& initialRect)
+  {}
 
-  virtual void beforeUnlock(int deepness, const SDL_Rect& finalRect) {}
+  virtual void beforeUnlock(int depth,
+                            std::string_view id,
+                            const SDL_Rect& finalRect)
+  {}
 
   void end();
 
@@ -190,7 +196,7 @@ inline Group::Group(std::string_view id,
   : Group(id, rect, parent->state, parent->getCaret(), layout)
 {
   this->parent = parent;
-  parent->lock(rect);
+  parent->lock(id, rect);
   topLeft.x += rect.x;
   topLeft.y += rect.y;
   bottomRight.x += rect.x;
@@ -205,8 +211,9 @@ Group::end()
       rect.w = bottomRight.x - topLeft.x;
       rect.h = bottomRight.y - topLeft.y;
     }
-    parent->unlock(rect);
+    parent->unlock(id, rect);
     parent->advance({rect.x + rect.w, rect.y + rect.h});
+    parent = nullptr;
   }
 }
 
