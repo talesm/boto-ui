@@ -25,11 +25,7 @@ class Group
 {
   Group* parent = nullptr;
   std::string_view id;
-  SDL_Rect rect;
-  SDL_Point topLeft;
-  SDL_Point bottomRight;
   bool locked = false;
-  Layout layout;
   State* state;
 
   void lock(std::string_view id, SDL_Rect r)
@@ -77,6 +73,11 @@ class Group
         Layout layout);
 
 protected:
+  SDL_Rect rect;
+  SDL_Point topLeft;
+  SDL_Point bottomRight;
+  Layout layout;
+
   /**
    * @brief Construct a new root Group
    *
@@ -98,8 +99,6 @@ protected:
                             std::string_view id,
                             const SDL_Rect& finalRect)
   {}
-
-  void end();
 
 public:
   /**
@@ -199,6 +198,11 @@ public:
   bool valid() const { return state != nullptr; }
 
   operator bool() const { return valid(); }
+
+  int width() const { return rect.w ? rect.w : bottomRight.x - topLeft.x; }
+  int height() const { return rect.h ? rect.h : bottomRight.y - topLeft.y; }
+
+  void end();
 };
 
 /**
@@ -226,11 +230,11 @@ inline Group::Group(Group* parent,
                     Layout layout)
   : parent(parent)
   , id(id)
+  , state(state)
   , rect(rect)
   , topLeft(caret)
   , bottomRight(caret)
   , layout(layout)
-  , state(state)
 {}
 
 inline Group::Group(Group* parent,
@@ -264,12 +268,12 @@ Group::end()
 inline Group::Group(Group&& rhs)
   : parent(rhs.parent)
   , id(std::move(rhs.id))
+  , locked(rhs.locked)
+  , state(rhs.state)
   , rect(rhs.rect)
   , topLeft(rhs.topLeft)
   , bottomRight(rhs.bottomRight)
-  , locked(rhs.locked)
   , layout(rhs.layout)
-  , state(rhs.state)
 {
   rhs.state = nullptr;
   rhs.parent = nullptr;
@@ -299,9 +303,9 @@ Group::advance(const SDL_Point& p)
   SDL_assert(!locked);
   if (layout == Layout::VERTICAL) {
     bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
-    bottomRight.y += p.y + 2;
+    bottomRight.y += p.y;
   } else if (layout == Layout::HORIZONTAL) {
-    bottomRight.x += p.x + 2;
+    bottomRight.x += p.x;
     bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
   } else {
     bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);

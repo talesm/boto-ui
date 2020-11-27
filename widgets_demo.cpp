@@ -67,13 +67,11 @@ main(int argc, char** argv)
     }
     dui::choiceButton(f, "Option 2", &multiOption, OPTION2, {10, 0});
     dui::choiceButton(f, "Option 3", &multiOption, OPTION3, {10, 0});
-    {
-      auto g = dui::group(f, "group1", {10, 10});
+    if (auto g = dui::panel(f, "group1", {10, 10})) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
     }
-    {
-      auto g = dui::group(f, "group2", {10, 10}, dui::Layout::HORIZONTAL);
+    if (auto g = dui::panel(f, "group2", {10, 10}, dui::Layout::HORIZONTAL)) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
     }

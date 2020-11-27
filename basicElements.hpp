@@ -157,6 +157,64 @@ borderedBox(Group& target,
   box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {c.r, c.g, c.b, c.a});
 }
 
+struct PanelStyle
+{
+  BorderedBoxStyle border;
+  EdgeSize padding;
+};
+
+namespace style {
+constexpr PanelStyle PANEL{{{0}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)};
+}
+/// A panel
+class Panel : public Group
+{
+  PanelStyle style;
+
+public:
+  Panel(Group&& base, const PanelStyle& style)
+    : Group(std::move(base))
+    , style(style)
+  {
+    topLeft.x += 1 + style.padding.left;
+    topLeft.y += 1 + style.padding.top;
+    bottomRight.x += 1 + style.padding.left;
+    bottomRight.y += 1 + style.padding.top;
+  }
+
+  void end()
+  {
+    if (valid()) {
+      topLeft.x -= 1 + style.padding.left;
+      topLeft.y -= 1 + style.padding.top;
+      layout = Layout::NONE;
+      borderedBox(*this,
+                  "bg",
+                  {0,
+                   0,
+                   width() + 1 + style.padding.right,
+                   height() + 1 + style.padding.bottom},
+                  style.border);
+      Group::end();
+    }
+  }
+
+  Panel(Panel&&) = default;
+  Panel& operator=(Panel&&) = default;
+
+  ~Panel() { end(); }
+};
+
+inline Panel
+panel(Group& parent,
+      std::string_view id,
+      const SDL_Rect& r,
+      Layout layout = Layout::VERTICAL,
+      const PanelStyle& style = style::PANEL)
+{
+  return {group(parent, id, r, layout), style};
+}
+
 struct ButtonBoxStyle
 {
   SDL_Color center;
