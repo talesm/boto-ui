@@ -68,27 +68,25 @@ class Group
     }
   }
 
-protected:
-  Group(std::string_view id,
-        const SDL_Rect& rect,
+  // Parent ctor
+  Group(Group* parent,
         State* state,
-        const SDL_Point& caret,
-        Layout layout)
-    : id(id)
-    , rect(rect)
-    , topLeft(caret)
-    , bottomRight(caret)
-    , layout(layout)
-    , state(state)
-  {}
-
-  Group(std::string_view id,
+        std::string_view id,
         const SDL_Rect& rect,
-        Group* parent,
+        const SDL_Point& caret,
         Layout layout);
 
+protected:
+  /**
+   * @brief Construct a new root Group
+   *
+   * @param state the state the group belongs
+   * @param id the group id
+   * @param rect its size
+   * @param layout its layout
+   */
   Group(std::string_view id, const SDL_Rect& rect, State* state, Layout layout)
-    : Group(id, rect, state, {rect.x, rect.y}, layout)
+    : Group(nullptr, state, id, rect, {rect.x, rect.y}, layout)
   {}
 
   virtual void afterLock(int depth,
@@ -104,9 +102,21 @@ protected:
   void end();
 
 public:
-  Group(Group* parent, std::string_view id, const SDL_Rect& rect, Layout layout)
-    : Group(id, rect, parent, layout)
-  {}
+  /**
+   * @brief Construct a new branch Group object
+   *
+   * You probably want to use group() instead of this.
+   *
+   * @param parent the parent group. MUST NOT BE NULL
+   * @param id the group id
+   * @param rect the rect. Either w or h being 0 means it will auto size
+   * @param layout the layout
+   */
+  Group(Group* parent,
+        std::string_view id,
+        const SDL_Rect& rect,
+        Layout layout);
+
   virtual ~Group() { end(); }
   Group(const Group&) = delete;
   Group(Group&& rhs);
@@ -114,16 +124,16 @@ public:
   Group& operator=(Group&& rhs);
 
   /**
-   * @brief Check for mouse actions
+   * @brief Check the mouse action/status for element in this group
    *
-   * @param id
-   * @param r
+   * @param id element id
+   * @param r the element local rect (Use State.checkMouse() for global rect)
    * @return MouseAction
    */
   MouseAction checkMouse(std::string_view id, SDL_Rect r);
 
   /**
-   * @brief Check if given element is active
+   * @brief Check if given contained element is active
    *
    * @param id the id to check
    * @return true
@@ -131,29 +141,45 @@ public:
    */
   bool isActive(std::string_view id) const { return state->isActive(id); }
 
-  /// Check if has text to retrieve
+  /**
+   * @brief Check the text action/status for element in this group
+   *
+   * @param id the element id
+   * @return TextAction
+   */
   TextAction checkText(std::string_view id) const
   {
     return state->checkText(id);
   }
 
-  /// Get last retrieved text
+  /**
+   * @brief Get the last input text
+   *
+   * To check if the text was for the current element and frame, use checkText()
+   * or Frame.checkText().
+   *
+   * @return std::string_view
+   */
   std::string_view getText() const { return state->getText(); }
 
-  void advance(const SDL_Point& p)
-  {
-    SDL_assert(!locked);
-    if (layout == Layout::VERTICAL) {
-      bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
-      bottomRight.y += p.y + 2;
-    } else if (layout == Layout::HORIZONTAL) {
-      bottomRight.x += p.x + 2;
-      bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
-    } else {
-      bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
-      bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
-    }
-  }
+  /**
+   * @brief Advances the caret with the given offset
+   *
+   * @param p a point where x and y are the horizontal and vertical offsets,
+   * respectively.
+   *
+   * The new caret will also depend on the layout:
+   * - VERTICAL layout means only the y is updated so elements are positioned
+   * vertically;
+   * - HORIZONTAL layout means only the x is updated so elements are positioned
+   * horizontally;
+   * - NONE layout means none are updated and elements all begin in the same
+   * position;
+   *
+   * Keep in mind that elements have their own offset (their rect.x and rect.y),
+   * that is added to the caret ones.
+   */
+  void advance(const SDL_Point& p);
 
   State& getState() const { return *state; }
 
@@ -170,7 +196,9 @@ public:
 
   bool isLocked() const { return locked; }
 
-  operator bool() const { return state != nullptr; }
+  bool valid() const { return state != nullptr; }
+
+  operator bool() const { return valid(); }
 };
 
 /**
@@ -190,11 +218,26 @@ group(Group& parent,
   return {&parent, id, rect, layout};
 }
 
-inline Group::Group(std::string_view id,
+inline Group::Group(Group* parent,
+                    State* state,
+                    std::string_view id,
                     const SDL_Rect& rect,
-                    Group* parent,
+                    const SDL_Point& caret,
                     Layout layout)
-  : Group(id, rect, parent->state, parent->getCaret(), layout)
+  : parent(parent)
+  , id(id)
+  , rect(rect)
+  , topLeft(caret)
+  , bottomRight(caret)
+  , layout(layout)
+  , state(state)
+{}
+
+inline Group::Group(Group* parent,
+                    std::string_view id,
+                    const SDL_Rect& rect,
+                    Layout layout)
+  : Group(parent, parent->state, id, rect, parent->getCaret(), layout)
 {
   this->parent = parent;
   parent->lock(id, rect);
@@ -248,6 +291,22 @@ Group::checkMouse(std::string_view id, SDL_Rect r)
   r.x += caret.x;
   r.y += caret.y;
   return state->checkMouse(id, r);
+}
+
+inline void
+Group::advance(const SDL_Point& p)
+{
+  SDL_assert(!locked);
+  if (layout == Layout::VERTICAL) {
+    bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
+    bottomRight.y += p.y + 2;
+  } else if (layout == Layout::HORIZONTAL) {
+    bottomRight.x += p.x + 2;
+    bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
+  } else {
+    bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
+    bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
+  }
 }
 } // namespace dui
 
