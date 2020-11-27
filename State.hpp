@@ -8,6 +8,10 @@ namespace dui {
 
 constexpr char groupNameSeparator = '/';
 
+/**
+ * @brief The mouse action and status for a element in a frame
+ *
+ */
 enum class MouseAction
 {
   NONE,   ///< Default status
@@ -16,6 +20,10 @@ enum class MouseAction
   DRAG,   ///< The mouse had this grabbed, but was moved to outside its bounds
 };
 
+/**
+ * @brief The text action and status for a element in a frame
+ *
+ */
 enum class TextAction
 {
   NONE,      ///< Default status
@@ -47,52 +55,68 @@ public:
     : renderer(renderer)
   {}
 
+  /**
+   * @brief Render the ui
+   *
+   * This must not be in frame. You might want to call Frame.render() that
+   * ensures the frame ended correctly.
+   *
+   */
   void render()
   {
     SDL_assert(!inFrame);
     dList.render(renderer);
   }
 
-  void event(SDL_Event& ev)
-  {
-    if (ev.type == SDL_MOUSEBUTTONDOWN) {
-      mPos = {ev.button.x, ev.button.y};
-      if (ev.button.button == SDL_BUTTON_LEFT) {
-        mLeftPressed = true;
-      }
-    } else if (ev.type == SDL_MOUSEBUTTONUP) {
-      mPos = {ev.button.x, ev.button.y};
-      mLeftPressed = false;
-    } else if (ev.type == SDL_TEXTINPUT) {
-      if (eActive.empty()) {
-        return;
-      }
-      for (int i = 0; i < SDL_TEXTINPUTEVENT_TEXT_SIZE; ++i) {
-        tBuffer[i] = ev.text.text[i];
-        if (tBuffer[i] == 0) {
-          break;
-        }
-      }
-      tChanged = true;
-      tAction = TextAction::INPUT;
-    } else if (ev.type == SDL_KEYDOWN) {
-      if (ev.key.keysym.sym == SDLK_BACKSPACE) {
-        tChanged = true;
-        tAction = TextAction::BACKSPACE;
-      }
-    }
-  }
+  /**
+   * @brief Handle a SDL_Event
+   *
+   * @param ev event
+   */
+  void event(SDL_Event& ev);
 
+  /**
+   * @brief If a frame is in progress
+   *
+   * You shouldn't send events nor render during this
+   *
+   * @return true
+   * @return false
+   */
   bool isInFrame() const { return inFrame; }
 
+  /**
+   * @brief Check if the element was activated
+   *
+   * The activation is done when you click (mouse button down) with the mouse on
+   * the element and last until you click outside of it.
+   *
+   * Other ways of activate might exist.
+   *
+   * @param id the element id
+   * @return true
+   * @return false
+   */
   bool isActive(std::string_view id) const
   {
     return isSameGroupId(eActive, id);
   }
 
-  /// Check mouse for given element
-  MouseAction testMouse(std::string_view id, SDL_Rect r);
+  /**
+   * @brief Check the mouse action/status for element in this frame
+   *
+   * @param id element id
+   * @param r the element global rect (Use Group.checkMouse() for local rect)
+   * @return MouseAction
+   */
+  MouseAction checkMouse(std::string_view id, SDL_Rect r);
 
+  /**
+   * @brief Check the text action/status for element in this frame
+   *
+   * @param id the element id
+   * @return TextAction
+   */
   TextAction checkText(std::string_view id) const
   {
     if (!tChanged || !isSameGroupId(eActive, id)) {
@@ -101,10 +125,28 @@ public:
     return tAction;
   }
 
+  /**
+   * @brief Get the last input text
+   *
+   * To check if the text was for the current element and frame, use checkText()
+   * or Group.checkText().
+   *
+   * @return std::string_view
+   */
   std::string_view getText() const { return {tBuffer}; }
 
+  /**
+   * @brief Add the given item Shape to display list
+   *
+   * @param item
+   */
   void display(const Shape& item) { dList.insert(item); }
 
+  /**
+   * @brief Context for frames
+   *
+   * Ignore this unless you are developing this library
+   */
   class Context
   {
   private:
@@ -119,6 +161,10 @@ public:
   public:
     ~Context() { unlockFrame(); }
 
+    /**
+     * @brief Ends the lifetime of this object and unlock the state
+     *
+     */
     void unlockFrame()
     {
       if (state) {
@@ -134,11 +180,13 @@ public:
       return *this;
     }
 
+    /// Pushes a group. Must be paired with a proper popGroup
     void pushGroup(std::string_view id, const SDL_Rect&)
     {
       state->dList.popClip();
       state->beginGroup(id);
     }
+    /// Pops a group, Must be have been a pushGroup with same id before
     void popGroup(std::string_view id, const SDL_Rect& r)
     {
       state->endGroup(id);
@@ -146,6 +194,15 @@ public:
     }
   };
 
+  /**
+   * @brief Lock the state, starts a frame
+   *
+   * The frame is going to be active until the Context lifetime ends
+   *
+   * You probably want to use a Frame instead of calling this directly.
+   *
+   * @return Context
+   */
   Context lockFrame() { return Context{this}; }
 
 private:
@@ -184,7 +241,7 @@ State::isSameGroupId(std::string_view qualifiedId, std::string_view id) const
 }
 
 inline MouseAction
-State::testMouse(std::string_view id, SDL_Rect r)
+State::checkMouse(std::string_view id, SDL_Rect r)
 {
   SDL_assert(inFrame);
   if (eGrabbed.empty()) {
@@ -287,6 +344,37 @@ State::endGroup(std::string_view id)
         std::string_view{eActive}.substr(0, nextSize) == group &&
         eActive[nextSize] == groupNameSeparator) {
       gActive = true;
+    }
+  }
+}
+
+inline void
+State::event(SDL_Event& ev)
+{
+  if (ev.type == SDL_MOUSEBUTTONDOWN) {
+    mPos = {ev.button.x, ev.button.y};
+    if (ev.button.button == SDL_BUTTON_LEFT) {
+      mLeftPressed = true;
+    }
+  } else if (ev.type == SDL_MOUSEBUTTONUP) {
+    mPos = {ev.button.x, ev.button.y};
+    mLeftPressed = false;
+  } else if (ev.type == SDL_TEXTINPUT) {
+    if (eActive.empty()) {
+      return;
+    }
+    for (int i = 0; i < SDL_TEXTINPUTEVENT_TEXT_SIZE; ++i) {
+      tBuffer[i] = ev.text.text[i];
+      if (tBuffer[i] == 0) {
+        break;
+      }
+    }
+    tChanged = true;
+    tAction = TextAction::INPUT;
+  } else if (ev.type == SDL_KEYDOWN) {
+    if (ev.key.keysym.sym == SDLK_BACKSPACE) {
+      tChanged = true;
+      tAction = TextAction::BACKSPACE;
     }
   }
 }

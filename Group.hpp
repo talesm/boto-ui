@@ -121,7 +121,7 @@ public:
    * @param r
    * @return MouseAction
    */
-  MouseAction testMouse(std::string_view id, SDL_Rect r);
+  MouseAction checkMouse(std::string_view id, SDL_Rect r);
 
   /**
    * @brief Check if given element is active
@@ -240,13 +240,13 @@ Group::operator=(Group&& rhs)
 }
 
 inline MouseAction
-Group::testMouse(std::string_view id, SDL_Rect r)
+Group::checkMouse(std::string_view id, SDL_Rect r)
 {
   SDL_assert(!locked);
   SDL_Point caret = getCaret();
   r.x += caret.x;
   r.y += caret.y;
-  return state->testMouse(id, r);
+  return state->checkMouse(id, r);
 }
 } // namespace dui
 

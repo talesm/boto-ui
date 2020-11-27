@@ -114,7 +114,7 @@ button(Group& target,
   auto g = group(target, id, {p.x, p.y}, Layout::NONE);
   auto adv = measure(id);
   SDL_Rect r{0, 0, adv.x + 4, adv.y + 4};
-  auto action = g.testMouse(id, r);
+  auto action = g.checkMouse(id, r);
   text(g, id, {2, 2}, style::TEXT);
   bool grabbing = action == MouseAction::GRAB;
   SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
@@ -199,7 +199,7 @@ textBoxBase(Group& target,
   fixInputSize(&r);
   auto g = group(target, id, r, Layout::NONE);
   r.x = r.y = 0; // Inside the group we use local coords
-  g.testMouse(id, r);
+  g.checkMouse(id, r);
 
   auto action = g.checkText(id);
   bool active = false;
