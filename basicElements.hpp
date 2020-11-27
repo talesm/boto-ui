@@ -71,33 +71,46 @@ text(Group& target, std::string_view text, SDL_Point p, SDL_Color c)
 
 struct EdgeSize
 {
-  Uint8 east;
-  Uint8 north;
-  Uint8 west;
-  Uint8 south;
-};
+  Uint8 left;
+  Uint8 top;
+  Uint8 right;
+  Uint8 bottom;
 
-constexpr EdgeSize
-makeEdge(Uint8 all)
-{
-  return {all, all, all, all};
-}
+  constexpr static EdgeSize all(Uint8 sz) { return {sz, sz, sz, sz}; }
+  constexpr EdgeSize withLeft(Uint8 sz) const
+  {
+    return {sz, top, right, bottom};
+  }
+  constexpr EdgeSize withTop(Uint8 sz) const
+  {
+    return {left, sz, right, bottom};
+  }
+  constexpr EdgeSize withRight(Uint8 sz) const { return {sz, top, sz, bottom}; }
+  constexpr EdgeSize withBottom(Uint8 sz) const { return {sz, top, right, sz}; }
+};
 
 struct LabelStyle
 {
   SDL_Color text;
   EdgeSize margin;
 
-  LabelStyle withText(SDL_Color c) const
+  constexpr LabelStyle withText(SDL_Color c) const
   {
     auto next = *this;
     next.text = c;
     return next;
   }
+
+  constexpr LabelStyle withMargin(EdgeSize sz) const
+  {
+    auto next = *this;
+    next.margin = sz;
+    return next;
+  }
 };
 
 namespace style {
-constexpr LabelStyle LABEL{TEXT, makeEdge(2)};
+constexpr LabelStyle LABEL{TEXT, EdgeSize::all(2)};
 } // namespace style
 
 inline void
@@ -110,19 +123,19 @@ label(Group& target,
   auto margin = style.margin;
   SDL_Rect r{p.x,
              p.y,
-             adv.x + margin.west + margin.east,
-             adv.y + margin.north + margin.south};
+             adv.x + margin.left + margin.right,
+             adv.y + margin.top + margin.bottom};
   auto g = group(target, value, r, Layout::NONE);
-  text(g, value, {margin.west, margin.north}, style.text);
+  text(g, value, {margin.left, margin.top}, style.text);
 }
 
 struct BorderedBoxStyle
 {
   SDL_Color center;
-  SDL_Color east;
-  SDL_Color north;
-  SDL_Color west;
-  SDL_Color south;
+  SDL_Color left;
+  SDL_Color top;
+  SDL_Color right;
+  SDL_Color bottom;
 };
 
 inline void
@@ -132,10 +145,10 @@ borderedBox(Group& target,
             const BorderedBoxStyle& style)
 {
   auto c = style.center;
-  auto e = style.east;
-  auto n = style.north;
-  auto w = style.west;
-  auto s = style.south;
+  auto e = style.right;
+  auto n = style.top;
+  auto w = style.left;
+  auto s = style.bottom;
   auto g = group(target, id, {0}, Layout::NONE);
   box(g, {r.x + 1, r.y, r.w - 2, 1}, {n.r, n.g, n.b, n.a});
   box(g, {r.x, r.y + 1, 1, r.h - 2}, {w.r, w.g, w.b, w.a});
@@ -158,9 +171,9 @@ buttonBox(Group& target, const SDL_Rect& r, const ButtonBoxStyle& style)
               "background",
               r,
               {style.center,
+               style.topLeft,
+               style.topLeft,
                style.bottomRight,
-               style.topLeft,
-               style.topLeft,
                style.bottomRight});
 }
 
