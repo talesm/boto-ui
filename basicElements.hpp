@@ -69,15 +69,44 @@ text(Group& target, std::string_view text, SDL_Point p, SDL_Color c)
   }
 }
 
+struct EdgeSize
+{
+  Uint8 east;
+  Uint8 north;
+  Uint8 west;
+  Uint8 south;
+};
+
+constexpr EdgeSize
+makeEdge(Uint8 all)
+{
+  return {all, all, all, all};
+}
+
+struct LabelStyle
+{
+  SDL_Color text;
+  EdgeSize margin;
+};
+
+namespace style {
+constexpr LabelStyle LABEL{TEXT, makeEdge(2)};
+} // namespace style
+
 inline void
 label(Group& target,
       std::string_view value,
       const SDL_Point& p = {0},
-      SDL_Color c = style::TEXT)
+      const LabelStyle& style = style::LABEL)
 {
   auto adv = measure(value);
-  auto g = group(target, value, {p.x, p.y, adv.x + 4, adv.y + 4}, Layout::NONE);
-  text(g, value, {2, 2}, c);
+  auto margin = style.margin;
+  SDL_Rect r{p.x,
+             p.y,
+             adv.x + margin.west + margin.east,
+             adv.y + margin.north + margin.south};
+  auto g = group(target, value, r, Layout::NONE);
+  text(g, value, {margin.west, margin.north}, style.text);
 }
 
 struct BorderedBoxStyle
