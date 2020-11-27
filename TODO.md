@@ -12,7 +12,7 @@ MVP (0.1)
 - [x] group
 - [x] textBox
 - [x] Compose ids with parent groups to have less chance of colision
-- [ ] panel
+- [x] panel
 - [x] Clip correctly
 - [ ] window
 - [ ] numeric input
