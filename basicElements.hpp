@@ -3,6 +3,7 @@
 
 #include <string_view>
 #include "Group.hpp"
+#include "WrapperGroup.hpp"
 
 namespace dui {
 
@@ -69,26 +70,6 @@ text(Group& target, std::string_view text, SDL_Point p, SDL_Color c)
   }
 }
 
-struct EdgeSize
-{
-  Uint8 left;
-  Uint8 top;
-  Uint8 right;
-  Uint8 bottom;
-
-  constexpr static EdgeSize all(Uint8 sz) { return {sz, sz, sz, sz}; }
-  constexpr EdgeSize withLeft(Uint8 sz) const
-  {
-    return {sz, top, right, bottom};
-  }
-  constexpr EdgeSize withTop(Uint8 sz) const
-  {
-    return {left, sz, right, bottom};
-  }
-  constexpr EdgeSize withRight(Uint8 sz) const { return {sz, top, sz, bottom}; }
-  constexpr EdgeSize withBottom(Uint8 sz) const { return {sz, top, right, sz}; }
-};
-
 struct LabelStyle
 {
   SDL_Color text;
@@ -127,6 +108,7 @@ label(Group& target,
              adv.y + margin.top + margin.bottom};
   auto g = group(target, value, r, Layout::NONE);
   text(g, value, {margin.left, margin.top}, style.text);
+  g.end();
 }
 
 struct BorderedBoxStyle
@@ -155,6 +137,7 @@ borderedBox(Group& target,
   box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {s.r, s.g, s.b, s.a});
   box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {e.r, e.g, e.b, e.a});
   box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {c.r, c.g, c.b, c.a});
+  g.end();
 }
 
 struct PanelStyle
@@ -167,42 +150,26 @@ namespace style {
 constexpr PanelStyle PANEL{{{0}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)};
 }
 /// A panel
-class Panel : public Group
+class Panel final : public WrapperGroup
 {
   PanelStyle style;
 
 public:
-  Panel(Group&& base, const PanelStyle& style)
-    : Group(std::move(base))
+  Panel(Group* parent,
+        std::string_view id,
+        const SDL_Rect& r,
+        Layout layout,
+        const PanelStyle& style)
+    : WrapperGroup(parent, id, r, layout, style.padding + EdgeSize::all(1))
     , style(style)
+  {}
+
+protected:
+  void afterUnwrap() final
   {
-    topLeft.x += 1 + style.padding.left;
-    topLeft.y += 1 + style.padding.top;
-    bottomRight.x += 1 + style.padding.left;
-    bottomRight.y += 1 + style.padding.top;
+    layout = Layout::NONE;
+    borderedBox(*this, "bg", {0, 0, width(), height()}, style.border);
   }
-
-  void end()
-  {
-    if (valid()) {
-      topLeft.x -= 1 + style.padding.left;
-      topLeft.y -= 1 + style.padding.top;
-      layout = Layout::NONE;
-      borderedBox(*this,
-                  "bg",
-                  {0,
-                   0,
-                   width() + 1 + style.padding.right,
-                   height() + 1 + style.padding.bottom},
-                  style.border);
-      Group::end();
-    }
-  }
-
-  Panel(Panel&&) = default;
-  Panel& operator=(Panel&&) = default;
-
-  ~Panel() { end(); }
 };
 
 inline Panel
@@ -212,7 +179,7 @@ panel(Group& parent,
       Layout layout = Layout::VERTICAL,
       const PanelStyle& style = style::PANEL)
 {
-  return {group(parent, id, r, layout), style};
+  return {&parent, id, r, layout, style};
 }
 
 struct ButtonBoxStyle
@@ -253,6 +220,7 @@ button(Group& target,
   } else {
     buttonBox(g, r, {base, style::BUTTON_LIGHT, style::BUTTON_DARK});
   }
+  g.end();
   return action == MouseAction::ACTION;
 }
 
@@ -357,6 +325,7 @@ textBoxBase(Group& target,
     bgColor = style::INPUTBOX_ACTIVE;
   }
   inputBox(g, "background", r, {bgColor, style::INPUTBOX_BORDER});
+  g.end();
   return action;
 }
 

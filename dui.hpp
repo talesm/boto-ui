@@ -5,6 +5,7 @@
 #include "Frame.hpp"
 #include "Group.hpp"
 #include "State.hpp"
+#include "WrapperGroup.hpp"
 #include "basicElements.hpp"
 
 #endif // DUI_HPP_H

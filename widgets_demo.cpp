@@ -70,10 +70,12 @@ main(int argc, char** argv)
     if (auto g = dui::panel(f, "group1", {10, 10})) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
+      g.end();
     }
     if (auto g = dui::panel(f, "group2", {10, 10}, dui::Layout::HORIZONTAL)) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
+      g.end();
     }
 
     dui::textBox(f, "Str1", str1, str1Size, {10, 10});

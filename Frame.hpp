@@ -25,11 +25,13 @@ public:
 
   void render()
   {
-    SDL_assert(bool(*this));
+    SDL_assert(valid());
+    auto& state = getState();
     end();
-    getState().render();
+    state.render();
   }
 
+  // It is called by render normally
   void end();
 
 protected:

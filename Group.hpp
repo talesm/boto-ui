@@ -116,11 +116,10 @@ public:
         const SDL_Rect& rect,
         Layout layout);
 
-  virtual ~Group() { end(); }
+  virtual ~Group() { SDL_assert(!valid()); }
   Group(const Group&) = delete;
   Group(Group&& rhs);
-  Group& operator=(const Group&) = delete;
-  Group& operator=(Group&& rhs);
+  Group& operator=(Group rhs);
 
   /**
    * @brief Check the mouse action/status for element in this group
@@ -257,12 +256,15 @@ Group::end()
   if (parent) {
     if (rect.w == 0) {
       rect.w = bottomRight.x - topLeft.x;
+    }
+    if (rect.h == 0) {
       rect.h = bottomRight.y - topLeft.y;
     }
     parent->unlock(id, rect);
     parent->advance({rect.x + rect.w, rect.y + rect.h});
     parent = nullptr;
   }
+  state = nullptr;
 }
 
 inline Group::Group(Group&& rhs)
@@ -280,9 +282,9 @@ inline Group::Group(Group&& rhs)
 }
 
 inline Group&
-Group::operator=(Group&& rhs)
+Group::operator=(Group rhs)
 {
-  this->~Group();
+  SDL_assert(!valid());
   new (this) Group(std::move(rhs));
   return *this;
 }
