@@ -87,6 +87,13 @@ struct LabelStyle
 {
   SDL_Color text;
   EdgeSize margin;
+
+  LabelStyle withText(SDL_Color c) const
+  {
+    auto next = *this;
+    next.text = c;
+    return next;
+  }
 };
 
 namespace style {

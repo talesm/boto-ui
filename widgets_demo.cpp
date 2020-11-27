@@ -46,8 +46,11 @@ main(int argc, char** argv)
 
     // UI
     auto f = dui::frame(state);
-    dui::label(f, "Hello world", {10, 10}, {0xf0, 0x80, 0x80, 0xff});
-    dui::label(f, "Hello world", {10, 0}, {0xf0, 0x80, 0x80, 0xff});
+    dui::label(f, "Hello world", {10, 10});
+    dui::label(f,
+               "Hello world",
+               {10, 0},
+               dui::style::LABEL.withText({0xf0, 0x80, 0x80, 0xff}));
     if (dui::button(f, "Click me!", {10, 0})) {
       SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
                                "Clicked",
