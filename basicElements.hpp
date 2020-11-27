@@ -13,9 +13,9 @@ constexpr SDL_Color BUTTON{224, 224, 224, 255};
 constexpr SDL_Color BUTTON_ACTIVE{208, 208, 208, 255};
 constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
 constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
-constexpr SDL_Color INPUT{240, 240, 240, 255};
-constexpr SDL_Color INPUT_ACTIVE{255, 255, 255, 255};
-constexpr SDL_Color INPUT_BORDER{0, 0, 0, 255};
+constexpr SDL_Color INPUTBOX{240, 240, 240, 255};
+constexpr SDL_Color INPUTBOX_ACTIVE{255, 255, 255, 255};
+constexpr SDL_Color INPUTBOX_BORDER{0, 0, 0, 255};
 
 }
 
@@ -80,7 +80,7 @@ label(Group& target,
   text(g, value, {2, 2}, c);
 }
 
-struct BoxStyle
+struct BorderedBoxStyle
 {
   SDL_Color center;
   SDL_Color east;
@@ -93,7 +93,7 @@ inline void
 borderedBox(Group& target,
             std::string_view id,
             const SDL_Rect& r,
-            const BoxStyle& style)
+            const BorderedBoxStyle& style)
 {
   auto c = style.center;
   auto e = style.east;
@@ -108,14 +108,24 @@ borderedBox(Group& target,
   box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {c.r, c.g, c.b, c.a});
 }
 
-inline void
-buttonBox(Group& target,
-          const SDL_Rect& r,
-          SDL_Color b = style::BUTTON,
-          SDL_Color l = style::BUTTON_LIGHT,
-          SDL_Color d = style::BUTTON_DARK)
+struct ButtonBoxStyle
 {
-  borderedBox(target, "background", r, {b, d, l, l, d});
+  SDL_Color center;
+  SDL_Color topLeft;
+  SDL_Color bottomRight;
+};
+
+inline void
+buttonBox(Group& target, const SDL_Rect& r, const ButtonBoxStyle& style)
+{
+  borderedBox(target,
+              "background",
+              r,
+              {style.center,
+               style.bottomRight,
+               style.topLeft,
+               style.topLeft,
+               style.bottomRight});
 }
 
 inline bool
@@ -132,9 +142,9 @@ button(Group& target,
   bool grabbing = action == MouseAction::GRAB;
   SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
   if (grabbing != inverted) {
-    buttonBox(g, r, base, style::BUTTON_DARK, style::BUTTON_LIGHT);
+    buttonBox(g, r, {base, style::BUTTON_DARK, style::BUTTON_LIGHT});
   } else {
-    buttonBox(g, r, base, style::BUTTON_LIGHT, style::BUTTON_DARK);
+    buttonBox(g, r, {base, style::BUTTON_LIGHT, style::BUTTON_DARK});
   }
   return action == MouseAction::ACTION;
 }
@@ -174,13 +184,23 @@ choiceButton(Group& target,
   return false;
 }
 
-inline void
-renderInput(Group& target,
-            const SDL_Rect& r,
-            SDL_Color b = style::INPUT,
-            SDL_Color d = style::INPUT_BORDER)
+struct InputBoxStyle
 {
-  borderedBox(target, "background", r, {b, d, d, d, d});
+  SDL_Color center;
+  SDL_Color border;
+};
+
+inline void
+inputBox(Group& target,
+         std::string_view id,
+         const SDL_Rect& r,
+         const InputBoxStyle& style)
+{
+  borderedBox(
+    target,
+    id,
+    r,
+    {style.center, style.border, style.border, style.border, style.border});
 }
 
 inline void
@@ -221,15 +241,15 @@ textBoxBase(Group& target,
   }
   text(g, value, {2, 2}, style::TEXT);
 
-  SDL_Color bgColor = style::INPUT;
+  SDL_Color bgColor = style::INPUTBOX;
   if (active) {
     // Show cursor
     box(g, {int(value.size()) * 8 + 2, 2, 1, r.h - 4}, {0, 0, 0, 255});
 
     // Set bg color
-    bgColor = style::INPUT_ACTIVE;
+    bgColor = style::INPUTBOX_ACTIVE;
   }
-  renderInput(g, r, bgColor, style::INPUT_BORDER);
+  inputBox(g, "background", r, {bgColor, style::INPUTBOX_BORDER});
   return action;
 }
 
