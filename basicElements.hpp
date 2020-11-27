@@ -80,29 +80,42 @@ label(Group& target,
   text(g, value, {2, 2}, c);
 }
 
-inline void
-renderButton(Group& target,
-             const SDL_Rect& r,
-             SDL_Color b = style::BUTTON,
-             SDL_Color l = style::BUTTON_LIGHT,
-             SDL_Color d = style::BUTTON_DARK)
+struct BoxStyle
 {
-  auto g = group(target, "background", {0}, Layout::NONE);
-  box(g, {r.x + 1, r.y, r.w - 2, 1}, {l.r, l.g, l.b, l.a});
-  box(g, {r.x, r.y + 1, 1, r.h - 2}, {l.r, l.g, l.b, l.a});
-  box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
-  box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
-  box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
+  SDL_Color center;
+  SDL_Color east;
+  SDL_Color north;
+  SDL_Color west;
+  SDL_Color south;
+};
+
+inline void
+borderedBox(Group& target,
+            std::string_view id,
+            const SDL_Rect& r,
+            const BoxStyle& style)
+{
+  auto c = style.center;
+  auto e = style.east;
+  auto n = style.north;
+  auto w = style.west;
+  auto s = style.south;
+  auto g = group(target, id, {0}, Layout::NONE);
+  box(g, {r.x + 1, r.y, r.w - 2, 1}, {n.r, n.g, n.b, n.a});
+  box(g, {r.x, r.y + 1, 1, r.h - 2}, {w.r, w.g, w.b, w.a});
+  box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {s.r, s.g, s.b, s.a});
+  box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {e.r, e.g, e.b, e.a});
+  box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {c.r, c.g, c.b, c.a});
 }
 
 inline void
-renderButtonPressed(Group& target,
-                    const SDL_Rect& r,
-                    SDL_Color b = style::BUTTON,
-                    SDL_Color l = style::BUTTON_LIGHT,
-                    SDL_Color d = style::BUTTON_DARK)
+buttonBox(Group& target,
+          const SDL_Rect& r,
+          SDL_Color b = style::BUTTON,
+          SDL_Color l = style::BUTTON_LIGHT,
+          SDL_Color d = style::BUTTON_DARK)
 {
-  renderButton(target, r, b, d, l);
+  borderedBox(target, "background", r, {b, d, l, l, d});
 }
 
 inline bool
@@ -119,9 +132,9 @@ button(Group& target,
   bool grabbing = action == MouseAction::GRAB;
   SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
   if (grabbing != inverted) {
-    renderButtonPressed(g, r, base);
+    buttonBox(g, r, base, style::BUTTON_DARK, style::BUTTON_LIGHT);
   } else {
-    renderButton(g, r, base);
+    buttonBox(g, r, base, style::BUTTON_LIGHT, style::BUTTON_DARK);
   }
   return action == MouseAction::ACTION;
 }
@@ -167,13 +180,7 @@ renderInput(Group& target,
             SDL_Color b = style::INPUT,
             SDL_Color d = style::INPUT_BORDER)
 {
-  auto g = group(target, "background", {0}, Layout::NONE);
-  box(g, {r.x + 1, r.y, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
-  box(g, {r.x, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
-  box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {d.r, d.g, d.b, d.a});
-  box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {d.r, d.g, d.b, d.a});
-  box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {b.r, b.g, b.b, b.a});
-  g.advance({r.x + r.w, r.y + r.h});
+  borderedBox(target, "background", r, {b, d, d, d, d});
 }
 
 inline void
