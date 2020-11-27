@@ -25,9 +25,9 @@ public:
 
   void render()
   {
-    SDL_assert(state);
+    SDL_assert(bool(*this));
     end();
-    state->render();
+    getState().render();
   }
 
   void end();
@@ -57,7 +57,7 @@ inline Frame::Frame(State* state)
 inline void
 Frame::end()
 {
-  if (state) {
+  if (bool(*this)) {
     context.unlockFrame();
     Group::end();
   }

@@ -18,7 +18,7 @@ enum class Layout : Uint8
  * @brief A grouping of widgets
  *
  * This externally viewed as a single widget, so it can be used to create
- * composed widgets
+ * composed elements
  *
  */
 class Group
@@ -30,6 +30,7 @@ class Group
   SDL_Point bottomRight;
   bool locked = false;
   Layout layout;
+  State* state;
 
   void lock(std::string_view id, SDL_Rect r)
   {
@@ -68,8 +69,6 @@ class Group
   }
 
 protected:
-  State* state;
-
   Group(std::string_view id,
         const SDL_Rect& rect,
         State* state,
@@ -170,6 +169,8 @@ public:
   }
 
   bool isLocked() const { return locked; }
+
+  operator bool() const { return state != nullptr; }
 };
 
 /**
