@@ -300,7 +300,7 @@ textBoxBase(Group& target,
             SDL_Rect r)
 {
   r = fixInputSize(r);
-  auto g = group(target, id, r, Layout::NONE);
+  auto g = group(target, {}, r, Layout::NONE);
   r.x = r.y = 0; // Inside the group we use local coords
   g.checkMouse(id, r);
 
@@ -491,6 +491,61 @@ intField(Group& target,
          const SDL_Point& p = {0})
 {
   return intField(target, id, id, value, p);
+}
+
+// A doubleBox
+inline bool
+doubleBox(Group& target, std::string_view id, double* value, SDL_Rect r = {0})
+{
+  SDL_assert(value != nullptr);
+  r = fixInputSize(r);
+
+  constexpr int BUF_SZ = 256;
+  char textValue[BUF_SZ];
+  static char activeTextValue[BUF_SZ];
+
+  bool active = target.isActive(id);
+  char* text = active ? activeTextValue : textValue;
+  bool clicked = target.checkMouse(id, r) == MouseAction::ACTION;
+  if (!active || clicked || text[0] == 0) {
+    int n = SDL_snprintf(text, BUF_SZ, "%f", *value);
+    for (int i = n - 1; i > 0; --i) {
+      if (text[i] != '0' && text[i] != '.') {
+        text[i + 1] = 0;
+        break;
+      }
+    }
+  }
+  if (textBox(target, id, text, BUF_SZ, r)) {
+    auto newValue = SDL_strtod(text, nullptr);
+    if (newValue != *value) {
+      *value = newValue;
+      return true;
+    }
+  }
+  return false;
+}
+inline bool
+doubleField(Group& target,
+            std::string_view id,
+            std::string_view labelText,
+            double* value,
+            const SDL_Point& p = {0})
+{
+  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
+  auto g = labeledGroup(target, labelText, box);
+  auto changed = doubleBox(g, id, value, box);
+  g.end();
+  return changed;
+}
+
+inline bool
+doubleField(Group& target,
+            std::string_view id,
+            double* value,
+            const SDL_Point& p = {0})
+{
+  return doubleField(target, id, id, value, p);
 }
 } // namespace dui
 

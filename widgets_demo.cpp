@@ -35,7 +35,7 @@ main(int argc, char** argv)
   char str1[str1Size] = "str1";
   std::string str2 = "str2";
   int value1 = 42;
-  // int value2 = 32; //=> 20h
+  double value2 = 11.25;
 
   for (;;) {
     SDL_Event ev;
@@ -91,6 +91,7 @@ main(int argc, char** argv)
 
     dui::label(p, "Number input", {0, 10});
     dui::intField(p, "value1", &value1);
+    dui::doubleField(p, "value2", &value2);
 
     p.end();
 
