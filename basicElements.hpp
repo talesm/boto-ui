@@ -278,18 +278,19 @@ inputBox(Group& target,
     {style.center, style.border, style.border, style.border, style.border});
 }
 
-inline void
-fixInputSize(SDL_Rect* r)
+inline SDL_Rect
+fixInputSize(SDL_Rect r)
 {
-  if (r->w == 0 || r->h == 0) {
+  if (r.w == 0 || r.h == 0) {
     auto sz = measure('m'); // TODO allow customization for this
-    if (r->w == 0) {
-      r->w = sz.x * 16 + 4;
+    if (r.w == 0) {
+      r.w = sz.x * 16 + 4;
     }
-    if (r->h == 0) {
-      r->h = sz.y + 4;
+    if (r.h == 0) {
+      r.h = sz.y + 4;
     }
   }
+  return r;
 }
 
 inline TextAction
@@ -298,7 +299,7 @@ textBoxBase(Group& target,
             std::string_view value,
             SDL_Rect r)
 {
-  fixInputSize(&r);
+  r = fixInputSize(r);
   auto g = group(target, id, r, Layout::NONE);
   r.x = r.y = 0; // Inside the group we use local coords
   g.checkMouse(id, r);
@@ -412,9 +413,7 @@ textField(Group& target,
           size_t maxSize,
           const SDL_Point& p = {0})
 {
-  SDL_Rect box{p.x, p.y, 0, 0};
-  fixInputSize(&box);
-
+  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
   auto g = labeledGroup(target, labelText, box);
   auto changed = textBox(g, id, value, maxSize, box);
   g.end();
@@ -438,10 +437,8 @@ textField(Group& target,
           std::string* value,
           const SDL_Point& p = {0})
 {
-  SDL_Rect box{p.x, p.y, 0, 0};
-  fixInputSize(&box);
+  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
   auto g = labeledGroup(target, labelText, box);
-
   auto changed = textBox(g, id, value, box);
   g.end();
   return changed;
@@ -480,10 +477,8 @@ intField(Group& target,
          int* value,
          const SDL_Point& p = {0})
 {
-  SDL_Rect box{p.x, p.y, 0, 0};
-  fixInputSize(&box);
+  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
   auto g = labeledGroup(target, labelText, box);
-
   auto changed = intBox(g, id, value, box);
   g.end();
   return changed;
