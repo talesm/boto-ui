@@ -86,8 +86,8 @@ main(int argc, char** argv)
     }
 
     dui::label(p, "Text input", {0, 10});
-    dui::textBox(p, "Str1", str1, str1Size);
-    dui::textBox(p, "Str2", &str2);
+    dui::textField(p, "Str1", str1, str1Size);
+    dui::textField(p, "Str2", &str2);
 
     dui::label(p, "Number input", {0, 10});
     dui::intBox(p, "value1", &value1);

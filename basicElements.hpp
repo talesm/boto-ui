@@ -390,6 +390,70 @@ textBox(Group& target,
   return false;
 }
 
+inline bool
+textField(Group& target,
+          std::string_view id,
+          std::string_view labelText,
+          char* value,
+          size_t maxSize,
+          const SDL_Point& p = {0})
+{
+  SDL_Rect box{p.x, p.y, 0, 0};
+  fixInputSize(&box);
+  SDL_Rect r{box};
+  SDL_Point labelPos = {r.w + 1, 0};
+  r.w += measure(labelText).x + 1;
+
+  auto g = group(target, {}, r, Layout::NONE);
+
+  auto changed = textBox(g, id, value, maxSize, box);
+  label(g, labelText, labelPos);
+  g.end();
+
+  return changed;
+}
+
+inline bool
+textField(Group& target,
+          std::string_view id,
+          char* value,
+          size_t maxSize,
+          const SDL_Point& p = {0})
+{
+  return textField(target, id, id, value, maxSize, p);
+}
+
+inline bool
+textField(Group& target,
+          std::string_view id,
+          std::string_view labelText,
+          std::string* value,
+          const SDL_Point& p = {0})
+{
+  SDL_Rect box{p.x, p.y, 0, 0};
+  fixInputSize(&box);
+  SDL_Rect r{box};
+  SDL_Point labelPos = {r.w + 1, 0};
+  r.w += measure(labelText).x + 1;
+
+  auto g = group(target, {}, r, Layout::NONE);
+
+  auto changed = textBox(g, id, value, box);
+  label(g, labelText, labelPos);
+  g.end();
+
+  return changed;
+}
+
+inline bool
+textField(Group& target,
+          std::string_view id,
+          std::string* value,
+          const SDL_Point& p = {0})
+{
+  return textField(target, id, id, value, p);
+}
+
 // A intBox
 inline bool
 intBox(Group& target, std::string_view id, int* value, const SDL_Rect& r = {0})
