@@ -74,7 +74,10 @@ main(int argc, char** argv)
       dui::button(g, "Grouped button");
       g.end();
     }
-    if (auto g = dui::panel(p, "group2", {0, 10}, dui::Layout::HORIZONTAL)) {
+    auto panelStyle = dui::style::PANEL;
+    panelStyle.border.center = {224, 255, 224, 255};
+    if (auto g = dui::panel(
+          p, "group2", {0, 10}, dui::Layout::HORIZONTAL, panelStyle)) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
       g.end();
