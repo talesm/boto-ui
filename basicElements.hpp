@@ -390,6 +390,20 @@ textBox(Group& target,
   return false;
 }
 
+inline Group
+labeledGroup(Group& target,
+             std::string_view labelText,
+             const SDL_Rect& clientRect)
+{
+  SDL_Rect r{clientRect};
+  SDL_Point labelPos = {r.w + 1, 0};
+  r.w += measure(labelText).x + 1;
+
+  auto g = group(target, {}, r, Layout::NONE);
+  label(g, labelText, labelPos);
+  return g;
+}
+
 inline bool
 textField(Group& target,
           std::string_view id,
@@ -400,16 +414,10 @@ textField(Group& target,
 {
   SDL_Rect box{p.x, p.y, 0, 0};
   fixInputSize(&box);
-  SDL_Rect r{box};
-  SDL_Point labelPos = {r.w + 1, 0};
-  r.w += measure(labelText).x + 1;
 
-  auto g = group(target, {}, r, Layout::NONE);
-
+  auto g = labeledGroup(target, labelText, box);
   auto changed = textBox(g, id, value, maxSize, box);
-  label(g, labelText, labelPos);
   g.end();
-
   return changed;
 }
 
@@ -432,16 +440,10 @@ textField(Group& target,
 {
   SDL_Rect box{p.x, p.y, 0, 0};
   fixInputSize(&box);
-  SDL_Rect r{box};
-  SDL_Point labelPos = {r.w + 1, 0};
-  r.w += measure(labelText).x + 1;
-
-  auto g = group(target, {}, r, Layout::NONE);
+  auto g = labeledGroup(target, labelText, box);
 
   auto changed = textBox(g, id, value, box);
-  label(g, labelText, labelPos);
   g.end();
-
   return changed;
 }
 
@@ -480,16 +482,10 @@ intField(Group& target,
 {
   SDL_Rect box{p.x, p.y, 0, 0};
   fixInputSize(&box);
-  SDL_Rect r{box};
-  SDL_Point labelPos = {r.w + 1, 0};
-  r.w += measure(labelText).x + 1;
-
-  auto g = group(target, {}, r, Layout::NONE);
+  auto g = labeledGroup(target, labelText, box);
 
   auto changed = intBox(g, id, value, box);
-  label(g, labelText, labelPos);
   g.end();
-
   return changed;
 }
 
