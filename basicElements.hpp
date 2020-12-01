@@ -334,7 +334,7 @@ textBox(Group& target,
         std::string_view id,
         char* value,
         size_t maxSize,
-        const SDL_Rect& r)
+        const SDL_Rect& r = {0})
 {
   auto len = strlen(value);
   switch (textBoxBase(target, id, {value, len}, r)) {
@@ -369,7 +369,7 @@ inline bool
 textBox(Group& target,
         std::string_view id,
         std::string* value,
-        const SDL_Rect& r)
+        const SDL_Rect& r = {0})
 {
   switch (textBoxBase(target, id, *value, r)) {
     case TextAction::NONE:

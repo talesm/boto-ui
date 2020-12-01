@@ -46,40 +46,43 @@ main(int argc, char** argv)
 
     // UI
     auto f = dui::frame(state);
-    dui::label(f, "Hello world", {10, 10});
-    dui::label(f,
+    auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500});
+    dui::label(p, "Hello world");
+    dui::label(p, "Hello world", {5});
+    dui::label(p,
                "Hello world",
-               {10, 0},
+               {},
                dui::style::LABEL.withText({0xf0, 0x80, 0x80, 0xff}));
-    if (dui::button(f, "Click me!", {10, 0})) {
+    if (dui::button(p, "Click me!")) {
       SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
                                "Clicked",
                                "You clicked the button",
                                window);
     }
-    dui::label(f, toggleOption ? "activated" : "not activated", {10, 0});
-    if (dui::toggleButton(f, "Toggle", &toggleOption, {10, 0})) {
+    dui::label(p, toggleOption ? "activated" : "not activated");
+    if (dui::toggleButton(p, "Toggle", &toggleOption)) {
       SDL_Log("Toggled options, new value is, %s",
               toggleOption ? "true" : "false");
     }
-    if (dui::choiceButton(f, "Option 1", &multiOption, OPTION1, {10, 5})) {
+    if (dui::choiceButton(p, "Option 1", &multiOption, OPTION1, {0, 5})) {
       SDL_Log("Selected Option %d", 1 + multiOption);
     }
-    dui::choiceButton(f, "Option 2", &multiOption, OPTION2, {10, 0});
-    dui::choiceButton(f, "Option 3", &multiOption, OPTION3, {10, 0});
-    if (auto g = dui::panel(f, "group1", {10, 10})) {
+    dui::choiceButton(p, "Option 2", &multiOption, OPTION2);
+    dui::choiceButton(p, "Option 3", &multiOption, OPTION3);
+    if (auto g = dui::panel(p, "group1", {0, 10})) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
       g.end();
     }
-    if (auto g = dui::panel(f, "group2", {10, 10}, dui::Layout::HORIZONTAL)) {
+    if (auto g = dui::panel(p, "group2", {0, 10}, dui::Layout::HORIZONTAL)) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
       g.end();
     }
 
-    dui::textBox(f, "Str1", str1, str1Size, {10, 10});
-    dui::textBox(f, "Str2", &str2, {10, 0});
+    dui::textBox(p, "Str1", str1, str1Size, {0, 10});
+    dui::textBox(p, "Str2", &str2);
+    p.end();
 
     // Render
     SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
