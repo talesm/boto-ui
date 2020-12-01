@@ -470,6 +470,37 @@ intBox(Group& target, std::string_view id, int* value, const SDL_Rect& r = {0})
   }
   return false;
 }
+
+inline bool
+intField(Group& target,
+         std::string_view id,
+         std::string_view labelText,
+         int* value,
+         const SDL_Point& p = {0})
+{
+  SDL_Rect box{p.x, p.y, 0, 0};
+  fixInputSize(&box);
+  SDL_Rect r{box};
+  SDL_Point labelPos = {r.w + 1, 0};
+  r.w += measure(labelText).x + 1;
+
+  auto g = group(target, {}, r, Layout::NONE);
+
+  auto changed = intBox(g, id, value, box);
+  label(g, labelText, labelPos);
+  g.end();
+
+  return changed;
+}
+
+inline bool
+intField(Group& target,
+         std::string_view id,
+         int* value,
+         const SDL_Point& p = {0})
+{
+  return intField(target, id, id, value, p);
+}
 } // namespace dui
 
 #endif // DUI_BASIC_WIDGETS_HPP_

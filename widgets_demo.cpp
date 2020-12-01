@@ -90,7 +90,7 @@ main(int argc, char** argv)
     dui::textField(p, "Str2", &str2);
 
     dui::label(p, "Number input", {0, 10});
-    dui::intBox(p, "value1", &value1);
+    dui::intField(p, "value1", &value1);
 
     p.end();
 
