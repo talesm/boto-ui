@@ -14,7 +14,7 @@ MVP (0.1)
 - [x] Compose ids with parent groups to have less chance of colision
 - [x] panel
 - [x] Clip correctly
-- [ ] numeric input
+- [x] numeric input
 - [ ] vector numeric input
 - [ ] section
 - [ ] image
