@@ -14,7 +14,6 @@ MVP (0.1)
 - [x] Compose ids with parent groups to have less chance of colision
 - [x] panel
 - [x] Clip correctly
-- [ ] window
 - [ ] numeric input
 - [ ] vector numeric input
 - [ ] section
@@ -36,6 +35,7 @@ Wishlist
 - [ ] slider
 - [ ] scrollbar
 - [ ] scrollarea
+- [ ] window
 - [ ] listBox
 - [ ] dropdown
 - [ ] modal
