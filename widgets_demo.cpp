@@ -34,6 +34,8 @@ main(int argc, char** argv)
   constexpr size_t str1Size = 100;
   char str1[str1Size] = "str1";
   std::string str2 = "str2";
+  int value1 = 42;
+  // int value2 = 32; //=> 20h
 
   for (;;) {
     SDL_Event ev;
@@ -83,8 +85,13 @@ main(int argc, char** argv)
       g.end();
     }
 
-    dui::textBox(p, "Str1", str1, str1Size, {0, 10});
+    dui::label(p, "Text input", {0, 10});
+    dui::textBox(p, "Str1", str1, str1Size);
     dui::textBox(p, "Str2", &str2);
+
+    dui::label(p, "Number input", {0, 10});
+    dui::intBox(p, "value1", &value1);
+
     p.end();
 
     // Render

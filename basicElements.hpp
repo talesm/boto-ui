@@ -389,6 +389,23 @@ textBox(Group& target,
   }
   return false;
 }
+
+// A intBox
+inline bool
+intBox(Group& target, std::string_view id, int* value, const SDL_Rect& r = {0})
+{
+  SDL_assert(value != nullptr);
+  char textValue[256];
+  SDL_itoa(*value, textValue, 10);
+  if (textBox(target, id, textValue, 256, r)) {
+    auto newValue = SDL_atoi(textValue);
+    if (newValue != *value) {
+      *value = newValue;
+      return true;
+    }
+  }
+  return false;
+}
 } // namespace dui
 
 #endif // DUI_BASIC_WIDGETS_HPP_
