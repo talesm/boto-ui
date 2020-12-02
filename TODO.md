@@ -20,6 +20,7 @@ MVP (0.1)
 - [ ] auto scroll text so the end is always visible
 - [ ] want to capture mouse/keyboard
 - [x] Move elements to their own files
+- [ ] Generate doxygen
 
 Wishlist
 --------
