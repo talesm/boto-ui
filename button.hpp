@@ -3,7 +3,7 @@
 
 #include <string_view>
 #include "Group.hpp"
-#include "element.hpp"
+#include "Panel.hpp"
 
 namespace dui {
 
@@ -11,6 +11,7 @@ namespace dui {
 struct ButtonStyle
 {
   SDL_Color text;
+  EdgeSize padding;
   BorderedBoxStyle normal;
   BorderedBoxStyle grabbed;
   BorderedBoxStyle pressed;
@@ -21,9 +22,9 @@ namespace style {
 
 constexpr BorderedBoxStyle BUTTONBOX{
   {176, 195, 222, 255},
-  {176, 195, 222, 255},
   {255, 255, 255, 255},
   {255, 255, 255, 255},
+  {0, 0, 0, 255},
   {0, 0, 0, 255},
 };
 
@@ -35,6 +36,7 @@ constexpr BorderedBoxStyle BUTTONBOX_PRESSED_GRABBED{
 
 constexpr ButtonStyle BUTTON{
   TEXT,
+  EdgeSize::all(3),
   BUTTONBOX,
   BUTTONBOX_GRABBED,
   BUTTONBOX_PRESSED,
@@ -63,20 +65,22 @@ buttonBase(Group& target,
            const SDL_Point& p = {0},
            const ButtonStyle& style = style::BUTTON)
 {
-  auto g = group(target, {}, {p.x, p.y}, Layout::NONE);
   if (str.empty()) {
     str = id;
   }
-  auto adv = measure(str);
-  SDL_Rect r{0, 0, adv.x + 4, adv.y + 4};
-  auto action = g.checkMouse(id, r);
-  text(g, str, {2, 2}, style.text);
+  auto adv = size(style.padding, measure(str));
+  SDL_Rect r{p.x, p.y, adv.x, adv.y};
+  auto action = target.checkMouse(id, r);
   bool grabbing = action == MouseAction::GRAB;
+
+  PanelStyle curStyle = style::PANEL;
   if (grabbing == pushed) {
-    borderedBox(g, r, grabbing ? style.grabbed : style.normal);
+    curStyle.border = grabbing ? style.grabbed : style.normal;
   } else {
-    borderedBox(g, r, grabbing ? style.pressedGrabbed : style.pressed);
+    curStyle.border = grabbing ? style.pressedGrabbed : style.pressed;
   }
+  auto g = panel(target, id, r, Layout::NONE, curStyle);
+  text(g, str, {0}, style.text);
   g.end();
   return action == MouseAction::ACTION;
 }
