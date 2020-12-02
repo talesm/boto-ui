@@ -203,16 +203,17 @@ buttonBox(Group& target, const SDL_Rect& r, const ButtonBoxStyle& style)
 }
 
 inline bool
-button(Group& target,
-       std::string_view id,
-       bool inverted,
-       const SDL_Point& p = {0})
+buttonBase(Group& target,
+           std::string_view id,
+           std::string_view label,
+           bool inverted,
+           const SDL_Point& p = {0})
 {
-  auto g = group(target, id, {p.x, p.y}, Layout::NONE);
-  auto adv = measure(id);
+  auto g = group(target, {}, {p.x, p.y}, Layout::NONE);
+  auto adv = measure(label);
   SDL_Rect r{0, 0, adv.x + 4, adv.y + 4};
   auto action = g.checkMouse(id, r);
-  text(g, id, {2, 2}, style::TEXT);
+  text(g, label, {2, 2}, style::TEXT);
   bool grabbing = action == MouseAction::GRAB;
   SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
   if (grabbing != inverted) {
@@ -225,9 +226,32 @@ button(Group& target,
 }
 
 inline bool
+button(Group& target,
+       std::string_view id,
+       std::string_view label,
+       const SDL_Point& p = {0})
+{
+  return buttonBase(target, id, label, false, p);
+}
+
+inline bool
 button(Group& target, std::string_view id, const SDL_Point& p = {0})
 {
-  return button(target, id, false, p);
+  return button(target, id, id, p);
+}
+
+inline bool
+toggleButton(Group& target,
+             std::string_view id,
+             std::string_view label,
+             bool* value,
+             const SDL_Point& p = {0})
+{
+  if (buttonBase(target, id, label, *value, p)) {
+    *value = !*value;
+    return true;
+  }
+  return false;
 }
 
 inline bool
@@ -236,8 +260,21 @@ toggleButton(Group& target,
              bool* value,
              const SDL_Point& p = {0})
 {
-  if (button(target, id, *value, p)) {
-    *value = !*value;
+  return toggleButton(target, id, id, value, p);
+}
+
+template<class T, class U>
+inline bool
+choiceButton(Group& target,
+             std::string_view id,
+             std::string_view label,
+             T* value,
+             U option,
+             const SDL_Point& p = {0})
+{
+  bool selected = *value == option;
+  if (buttonBase(target, id, label, selected, p) && !selected) {
+    *value = option;
     return true;
   }
   return false;
@@ -251,12 +288,7 @@ choiceButton(Group& target,
              U option,
              const SDL_Point& p = {0})
 {
-  bool selected = *value == option;
-  if (button(target, id, selected, p) && !selected) {
-    *value = option;
-    return true;
-  }
-  return false;
+  return choiceButton(target, id, id, value, option, p);
 }
 
 struct InputBoxStyle
