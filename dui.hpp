@@ -7,9 +7,9 @@
 #include "Panel.hpp"
 #include "State.hpp"
 #include "WrapperGroup.hpp"
-#include "element.hpp"
 #include "button.hpp"
+#include "element.hpp"
+#include "inputBox.hpp"
 #include "label.hpp"
-#include "textBox.hpp"
 
 #endif // DUI_HPP_H

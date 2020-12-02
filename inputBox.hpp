@@ -1,9 +1,10 @@
-#ifndef DUI_TEXTBOX_HPP
-#define DUI_TEXTBOX_HPP
+#ifndef DUI_INPUTBOX_HPP
+#define DUI_INPUTBOX_HPP
 
 #include <string_view>
 #include "Group.hpp"
 #include "element.hpp"
+#include "label.hpp"
 
 namespace dui {
 
@@ -311,4 +312,4 @@ doubleField(Group& target,
 }
 } // namespace dui
 
-#endif // DUI_TEXTBOX_HPP
+#endif // DUI_INPUTBOX_HPP
