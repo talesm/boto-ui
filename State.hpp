@@ -15,8 +15,10 @@ constexpr char groupNameSeparator = '/';
 enum class MouseAction
 {
   NONE,   ///< Default status
-  GRAB,   ///< The mouse grabbed this element an is holding inside its bounds
+  GRAB,   ///< The mouse was just grabbed at this element
+  HOLD,   ///< The mouse grabbed this element an is holding inside its bounds
   ACTION, ///< The mouse was just released inside its bounds (do something!)
+  CANCEL, ///< The mouse was just released outside its bounds
   DRAG,   ///< The mouse had this grabbed, but was moved to outside its bounds
 };
 
@@ -41,6 +43,8 @@ private:
   SDL_Point mPos;
   bool mLeftPressed = false;
   std::string eGrabbed;
+  bool mGrabbing = false;
+  bool mReleasing = false;
   std::string eActive;
   char tBuffer[SDL_TEXTINPUTEVENT_TEXT_SIZE];
   bool tChanged = false;
@@ -218,6 +222,11 @@ private:
     SDL_assert(inFrame == true);
     inFrame = false;
     tChanged = false;
+    mGrabbing = false;
+    if (mReleasing) {
+      eGrabbed.clear();
+      mReleasing = false;
+    }
   }
 
   void beginGroup(std::string_view id);
@@ -248,7 +257,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
     if (!mLeftPressed) {
       return MouseAction::NONE;
     }
-    if (SDL_PointInRect(&mPos, &r)) {
+    if (SDL_PointInRect(&mPos, &r) && !mGrabbing) {
       eGrabbed = group;
       eGrabbed += groupNameSeparator;
       eGrabbed += id;
@@ -257,6 +266,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
       eActive += id;
       gGrabbed = true;
       gActive = true;
+      mGrabbing = true;
       return MouseAction::GRAB;
     }
     if (isSameGroupId(eActive, id)) {
@@ -269,12 +279,18 @@ State::checkMouse(std::string_view id, SDL_Rect r)
     return MouseAction::NONE;
   }
   if (mLeftPressed) {
-    return SDL_PointInRect(&mPos, &r) ? MouseAction::GRAB : MouseAction::DRAG;
+    if (mGrabbing) {
+      return MouseAction::GRAB;
+    }
+    if (!SDL_PointInRect(&mPos, &r)) {
+      return MouseAction::DRAG;
+    }
+    return MouseAction::HOLD;
   }
-  eGrabbed.clear();
   gGrabbed = true;
+  mReleasing = true;
   if (!SDL_PointInRect(&mPos, &r)) {
-    return MouseAction::NONE;
+    return MouseAction::CANCEL;
   }
   return MouseAction::ACTION;
 }

@@ -71,7 +71,7 @@ buttonBase(Group& target,
   auto adv = size(style.padding, measure(str));
   SDL_Rect r{p.x, p.y, adv.x, adv.y};
   auto action = target.checkMouse(id, r);
-  bool grabbing = action == MouseAction::GRAB;
+  bool grabbing = action == MouseAction::HOLD;
 
   PanelStyle curStyle = style::PANEL;
   if (grabbing == pushed) {

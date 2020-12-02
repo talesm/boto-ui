@@ -147,9 +147,9 @@ intBox(Group& target, std::string_view id, int* value, const SDL_Rect& r = {0})
   char textValue[BUF_SZ];
   static char activeTextValue[BUF_SZ];
 
+  bool clicked = target.checkMouse(id, r) == MouseAction::GRAB;
   bool active = target.isActive(id);
   char* text = active ? activeTextValue : textValue;
-  bool clicked = target.checkMouse(id, r) == MouseAction::ACTION;
 
   if (!active || clicked) {
     SDL_itoa(*value, text, 10);
@@ -175,9 +175,9 @@ doubleBox(Group& target, std::string_view id, double* value, SDL_Rect r = {0})
   char textValue[BUF_SZ];
   static char activeTextValue[BUF_SZ];
 
+  bool clicked = target.checkMouse(id, r) == MouseAction::GRAB;
   bool active = target.isActive(id);
   char* text = active ? activeTextValue : textValue;
-  bool clicked = target.checkMouse(id, r) == MouseAction::ACTION;
   if (!active || clicked) {
     int n = SDL_snprintf(text, BUF_SZ, "%f", *value);
     for (int i = n - 1; i > 0; --i) {
