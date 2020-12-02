@@ -3,6 +3,7 @@
 
 #include <string_view>
 #include "Group.hpp"
+#include "Panel.hpp"
 #include "WrapperGroup.hpp"
 #include "label.hpp"
 

@@ -16,7 +16,8 @@ struct PanelStyle
 
 namespace style {
 /// Default panel style
-constexpr PanelStyle PANEL{{{0}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)};
+constexpr PanelStyle PANEL{{{219, 228, 240, 240}, TEXT, TEXT, TEXT, TEXT},
+                           EdgeSize::all(2)};
 }
 
 /// A panel class @see panel()
