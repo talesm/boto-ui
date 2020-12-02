@@ -19,6 +19,7 @@ MVP (0.1)
 - [ ] image
 - [ ] auto scroll text so the end is always visible
 - [ ] want to capture mouse/keyboard
+- [ ] Move elements to their own page
 
 Wishlist
 --------
