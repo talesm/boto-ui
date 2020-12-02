@@ -1,0 +1,199 @@
+#ifndef DUI_BUTTON_HPP
+#define DUI_BUTTON_HPP
+
+#include <string_view>
+#include "Group.hpp"
+
+namespace dui {
+
+/// Style for button box
+struct ButtonBoxStyle
+{
+  SDL_Color center;
+  SDL_Color topLeft;
+  SDL_Color bottomRight;
+};
+
+/**
+ * @brief adds a button box
+ *
+ * @param target the parent group or frame
+ * @param r the box relative position and size
+ * @param style
+ */
+inline void
+buttonBox(Group& target, const SDL_Rect& r, const ButtonBoxStyle& style)
+{
+  borderedBox(target,
+              "background",
+              r,
+              {style.center,
+               style.topLeft,
+               style.topLeft,
+               style.bottomRight,
+               style.bottomRight});
+}
+
+namespace style {
+
+constexpr SDL_Color BUTTON{176, 195, 222, 255};
+constexpr SDL_Color BUTTON_ACTIVE{147, 173, 210, 255};
+constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
+constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
+}
+
+/**
+ * @brief Common button behavior
+ *
+ * @param target the parent group or frame
+ * @param id the button id
+ * @param str the text to appear on screen (if not present the id is used)
+ * @param pushed if the button is pushed or not
+ * @param p the button relative position
+ *
+ * @return true when the button is action state (just released)
+ * @return false otherwise
+ */
+inline bool
+buttonBase(Group& target,
+           std::string_view id,
+           std::string_view str,
+           bool pushed,
+           const SDL_Point& p = {0})
+{
+  auto g = group(target, {}, {p.x, p.y}, Layout::NONE);
+  if (str.empty()) {
+    str = id;
+  }
+  auto adv = measure(str);
+  SDL_Rect r{0, 0, adv.x + 4, adv.y + 4};
+  auto action = g.checkMouse(id, r);
+  text(g, str, {2, 2}, style::TEXT);
+  bool grabbing = action == MouseAction::GRAB;
+  SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
+  if (grabbing != pushed) {
+    buttonBox(g, r, {base, style::BUTTON_DARK, style::BUTTON_LIGHT});
+  } else {
+    buttonBox(g, r, {base, style::BUTTON_LIGHT, style::BUTTON_DARK});
+  }
+  g.end();
+  return action == MouseAction::ACTION;
+}
+
+/**
+ * @{
+ * @brief A push button
+ *
+ * It can be used to make an action every time it is pushed
+ *
+ * @param target the parent group or frame
+ * @param id the button id
+ * @param str the text to appear on screen (if not present the id is used)
+ * @param p the button relative position
+ *
+ * @return true when the button is action state (just released)
+ * @return false otherwise
+ */
+inline bool
+button(Group& target,
+       std::string_view id,
+       std::string_view str,
+       const SDL_Point& p = {0})
+{
+  return buttonBase(target, id, str, false, p);
+}
+inline bool
+button(Group& target, std::string_view id, const SDL_Point& p = {0})
+{
+  return button(target, id, id, p);
+}
+/// @}
+
+/**
+ * @{
+ * @brief A button that toggle a boolean variable
+ *
+ * Every time it is pushed the value is negated. The button reflects this state
+ * by being pushed or pulled if the variable is true of false, respectively.
+ *
+ * @param target the parent group or frame
+ * @param id the button id
+ * @param str the text to appear on screen (if not present the id is used)
+ * @param value a pointer to a boolean with the state
+ * @param p the button relative position
+ *
+ * @return true when the button is action state
+ * @return false otherwise
+ */
+inline bool
+toggleButton(Group& target,
+             std::string_view id,
+             std::string_view str,
+             bool* value,
+             const SDL_Point& p = {0})
+{
+  if (buttonBase(target, id, str, *value, p)) {
+    *value = !*value;
+    return true;
+  }
+  return false;
+}
+inline bool
+toggleButton(Group& target,
+             std::string_view id,
+             bool* value,
+             const SDL_Point& p = {0})
+{
+  return toggleButton(target, id, id, value, p);
+}
+/// @}
+
+/**
+ * @{
+ * @brief A button part of multiple choice question
+ *
+ * If this button is actionned the value is changed to the given option
+ *
+ * @param target the parent group or frame
+ * @param id the button id
+ * @param str the text to appear on screen (if not present the id is used)
+ * @param value a pointer to the control variable
+ * @param option the option this button represents if value is equivalent to
+ * this, then the button will appear pressed. If the user pushed, then the value
+ * is set to this option.
+ * @param p the button relative position
+ *
+ * @return true when the button is action state
+ * @return false otherwise
+ */
+template<class T, class U>
+inline bool
+choiceButton(Group& target,
+             std::string_view id,
+             std::string_view str,
+             T* value,
+             U option,
+             const SDL_Point& p = {0})
+{
+  bool selected = *value == option;
+  if (buttonBase(target, id, str, selected, p) && !selected) {
+    *value = option;
+    return true;
+  }
+  return false;
+}
+template<class T, class U>
+inline bool
+choiceButton(Group& target,
+             std::string_view id,
+             T* value,
+             U option,
+             const SDL_Point& p = {0})
+{
+  return choiceButton(target, id, id, value, option, p);
+}
+/// @}
+
+} // namespace dui
+
+#endif // DUI_BUTTON_HPP

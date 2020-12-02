@@ -5,129 +5,17 @@
 #include "Group.hpp"
 #include "Panel.hpp"
 #include "WrapperGroup.hpp"
+#include "button.hpp"
 #include "label.hpp"
 
 namespace dui {
 
 namespace style {
 
-constexpr SDL_Color BUTTON{176, 195, 222, 255};
-constexpr SDL_Color BUTTON_ACTIVE{147, 173, 210, 255};
-constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
-constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
 constexpr SDL_Color INPUTBOX{240, 240, 240, 255};
 constexpr SDL_Color INPUTBOX_ACTIVE{255, 255, 255, 255};
 constexpr SDL_Color INPUTBOX_BORDER{0, 0, 0, 255};
 
-}
-
-struct ButtonBoxStyle
-{
-  SDL_Color center;
-  SDL_Color topLeft;
-  SDL_Color bottomRight;
-};
-
-inline void
-buttonBox(Group& target, const SDL_Rect& r, const ButtonBoxStyle& style)
-{
-  borderedBox(target,
-              "background",
-              r,
-              {style.center,
-               style.topLeft,
-               style.topLeft,
-               style.bottomRight,
-               style.bottomRight});
-}
-
-inline bool
-buttonBase(Group& target,
-           std::string_view id,
-           std::string_view label,
-           bool inverted,
-           const SDL_Point& p = {0})
-{
-  auto g = group(target, {}, {p.x, p.y}, Layout::NONE);
-  auto adv = measure(label);
-  SDL_Rect r{0, 0, adv.x + 4, adv.y + 4};
-  auto action = g.checkMouse(id, r);
-  text(g, label, {2, 2}, style::TEXT);
-  bool grabbing = action == MouseAction::GRAB;
-  SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
-  if (grabbing != inverted) {
-    buttonBox(g, r, {base, style::BUTTON_DARK, style::BUTTON_LIGHT});
-  } else {
-    buttonBox(g, r, {base, style::BUTTON_LIGHT, style::BUTTON_DARK});
-  }
-  g.end();
-  return action == MouseAction::ACTION;
-}
-
-inline bool
-button(Group& target,
-       std::string_view id,
-       std::string_view label,
-       const SDL_Point& p = {0})
-{
-  return buttonBase(target, id, label, false, p);
-}
-
-inline bool
-button(Group& target, std::string_view id, const SDL_Point& p = {0})
-{
-  return button(target, id, id, p);
-}
-
-inline bool
-toggleButton(Group& target,
-             std::string_view id,
-             std::string_view label,
-             bool* value,
-             const SDL_Point& p = {0})
-{
-  if (buttonBase(target, id, label, *value, p)) {
-    *value = !*value;
-    return true;
-  }
-  return false;
-}
-
-inline bool
-toggleButton(Group& target,
-             std::string_view id,
-             bool* value,
-             const SDL_Point& p = {0})
-{
-  return toggleButton(target, id, id, value, p);
-}
-
-template<class T, class U>
-inline bool
-choiceButton(Group& target,
-             std::string_view id,
-             std::string_view label,
-             T* value,
-             U option,
-             const SDL_Point& p = {0})
-{
-  bool selected = *value == option;
-  if (buttonBase(target, id, label, selected, p) && !selected) {
-    *value = option;
-    return true;
-  }
-  return false;
-}
-
-template<class T, class U>
-inline bool
-choiceButton(Group& target,
-             std::string_view id,
-             T* value,
-             U option,
-             const SDL_Point& p = {0})
-{
-  return choiceButton(target, id, id, value, option, p);
 }
 
 struct InputBoxStyle
