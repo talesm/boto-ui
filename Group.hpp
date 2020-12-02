@@ -223,7 +223,7 @@ group(Group& target,
 
 namespace style {
 /// Default text style
-constexpr SDL_Color TEXT{0, 0, 0, 255};
+constexpr SDL_Color TEXT{45, 72, 106, 255};
 }
 
 /**

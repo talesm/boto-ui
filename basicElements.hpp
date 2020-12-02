@@ -11,8 +11,8 @@ namespace dui {
 
 namespace style {
 
-constexpr SDL_Color BUTTON{224, 224, 224, 255};
-constexpr SDL_Color BUTTON_ACTIVE{208, 208, 208, 255};
+constexpr SDL_Color BUTTON{176, 195, 222, 255};
+constexpr SDL_Color BUTTON_ACTIVE{147, 173, 210, 255};
 constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
 constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
 constexpr SDL_Color INPUTBOX{240, 240, 240, 255};
