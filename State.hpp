@@ -278,6 +278,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
   if (!isSameGroupId(eGrabbed, id)) {
     return MouseAction::NONE;
   }
+  gGrabbed = true;
   if (mLeftPressed) {
     if (mGrabbing) {
       return MouseAction::GRAB;
@@ -287,7 +288,6 @@ State::checkMouse(std::string_view id, SDL_Rect r)
     }
     return MouseAction::HOLD;
   }
-  gGrabbed = true;
   mReleasing = true;
   if (!SDL_PointInRect(&mPos, &r)) {
     return MouseAction::CANCEL;
