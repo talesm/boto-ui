@@ -20,48 +20,6 @@ constexpr SDL_Color INPUTBOX_BORDER{0, 0, 0, 255};
 
 }
 
-struct PanelStyle
-{
-  BorderedBoxStyle border;
-  EdgeSize padding;
-};
-
-namespace style {
-constexpr PanelStyle PANEL{{{0}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)};
-}
-/// A panel
-class Panel final : public WrapperGroup
-{
-  PanelStyle style;
-
-public:
-  Panel(Group* parent,
-        std::string_view id,
-        const SDL_Rect& r,
-        Layout layout,
-        const PanelStyle& style)
-    : WrapperGroup(parent, id, r, layout, style.padding + EdgeSize::all(1))
-    , style(style)
-  {}
-
-protected:
-  void afterUnwrap() final
-  {
-    layout = Layout::NONE;
-    borderedBox(*this, "bg", {0, 0, width(), height()}, style.border);
-  }
-};
-
-inline Panel
-panel(Group& parent,
-      std::string_view id,
-      const SDL_Rect& r,
-      Layout layout = Layout::VERTICAL,
-      const PanelStyle& style = style::PANEL)
-{
-  return {&parent, id, r, layout, style};
-}
-
 struct ButtonBoxStyle
 {
   SDL_Color center;
