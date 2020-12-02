@@ -1,6 +1,7 @@
 #ifndef DUI_LABEL_HPP_
 #define DUI_LABEL_HPP_
 
+#include <string_view>
 #include "EdgeSize.hpp"
 #include "Group.hpp"
 
