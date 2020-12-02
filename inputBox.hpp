@@ -3,31 +3,28 @@
 
 #include <string_view>
 #include "Group.hpp"
+#include "Panel.hpp"
 #include "element.hpp"
 
 namespace dui {
 
-namespace style {
-
-constexpr SDL_Color INPUTBOX{240, 240, 240, 255};
-constexpr SDL_Color INPUTBOX_ACTIVE{255, 255, 255, 255};
-constexpr SDL_Color INPUTBOX_BORDER{0, 0, 0, 255};
-
-}
-
+/// Input box style
 struct InputBoxStyle
 {
-  SDL_Color center;
-  SDL_Color border;
+  SDL_Color text;
+  PanelStyle box;
+  PanelStyle boxActive;
 };
 
-inline void
-inputBox(Group& target, const SDL_Rect& r, const InputBoxStyle& style)
-{
-  borderedBox(
-    target,
-    r,
-    {style.center, style.border, style.border, style.border, style.border});
+namespace style {
+
+/// Default input box style
+constexpr InputBoxStyle INPUTBOX{
+  TEXT,
+  {{{240, 240, 240, 255}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)},
+  {{{255, 255, 255, 255}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)},
+};
+
 }
 
 inline SDL_Rect
@@ -49,35 +46,33 @@ inline TextAction
 textBoxBase(Group& target,
             std::string_view id,
             std::string_view value,
-            SDL_Rect r)
+            SDL_Rect r,
+            const InputBoxStyle& style = style::INPUTBOX)
 {
   r = makeInputSize(r);
-  auto g = group(target, {}, r, Layout::NONE);
-  r.x = r.y = 0; // Inside the group we use local coords
-  g.checkMouse(id, r);
+  target.checkMouse(id, r);
 
-  auto action = g.checkText(id);
+  auto action = target.checkText(id);
   bool active = false;
   switch (action) {
     case TextAction::NONE:
-      active = g.isActive(id);
+      active = target.isActive(id);
       break;
     case TextAction::INPUT:
     case TextAction::BACKSPACE:
       active = true;
       break;
   }
-  text(g, value, {2, 2}, style::TEXT);
+  auto& currentStyle = active ? style.boxActive : style.box;
+  auto g = panel(target, id, r, Layout::NONE, currentStyle);
+  text(g, value, {0}, style.text);
 
-  SDL_Color bgColor = style::INPUTBOX;
   if (active) {
     // Show cursor
-    box(g, {int(value.size()) * 8 + 2, 2, 1, r.h - 4}, {0, 0, 0, 255});
-
-    // Set bg color
-    bgColor = style::INPUTBOX_ACTIVE;
+    auto cursorHeight =
+      r.h - currentStyle.padding.top - currentStyle.padding.bottom;
+    box(g, {int(value.size()) * 8, 0, 1, cursorHeight}, style.text);
   }
-  inputBox(g, r, {bgColor, style::INPUTBOX_BORDER});
   g.end();
   return action;
 }
