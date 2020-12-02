@@ -4,6 +4,7 @@
 #include <string_view>
 #include "Group.hpp"
 #include "WrapperGroup.hpp"
+#include "label.hpp"
 
 namespace dui {
 
@@ -17,47 +18,6 @@ constexpr SDL_Color INPUTBOX{240, 240, 240, 255};
 constexpr SDL_Color INPUTBOX_ACTIVE{255, 255, 255, 255};
 constexpr SDL_Color INPUTBOX_BORDER{0, 0, 0, 255};
 
-}
-
-struct LabelStyle
-{
-  SDL_Color text;
-  EdgeSize margin;
-
-  constexpr LabelStyle withText(SDL_Color c) const
-  {
-    auto next = *this;
-    next.text = c;
-    return next;
-  }
-
-  constexpr LabelStyle withMargin(EdgeSize sz) const
-  {
-    auto next = *this;
-    next.margin = sz;
-    return next;
-  }
-};
-
-namespace style {
-constexpr LabelStyle LABEL{TEXT, EdgeSize::all(2)};
-} // namespace style
-
-inline void
-label(Group& target,
-      std::string_view value,
-      const SDL_Point& p = {0},
-      const LabelStyle& style = style::LABEL)
-{
-  auto adv = measure(value);
-  auto margin = style.margin;
-  SDL_Rect r{p.x,
-             p.y,
-             adv.x + margin.left + margin.right,
-             adv.y + margin.top + margin.bottom};
-  auto g = group(target, value, r, Layout::NONE);
-  text(g, value, {margin.left, margin.top}, style.text);
-  g.end();
 }
 
 struct BorderedBoxStyle
