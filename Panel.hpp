@@ -40,7 +40,7 @@ protected:
   void afterUnwrap() final
   {
     layout = Layout::NONE;
-    borderedBox(*this, "bg", {0, 0, width(), height()}, style.border);
+    borderedBox(*this, {0, 0, width(), height()}, style.border);
   }
 };
 

@@ -22,14 +22,10 @@ struct InputBoxStyle
 };
 
 inline void
-inputBox(Group& target,
-         std::string_view id,
-         const SDL_Rect& r,
-         const InputBoxStyle& style)
+inputBox(Group& target, const SDL_Rect& r, const InputBoxStyle& style)
 {
   borderedBox(
     target,
-    id,
     r,
     {style.center, style.border, style.border, style.border, style.border});
 }
@@ -81,7 +77,7 @@ textBoxBase(Group& target,
     // Set bg color
     bgColor = style::INPUTBOX_ACTIVE;
   }
-  inputBox(g, "background", r, {bgColor, style::INPUTBOX_BORDER});
+  inputBox(g, r, {bgColor, style::INPUTBOX_BORDER});
   g.end();
   return action;
 }

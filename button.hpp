@@ -3,81 +3,35 @@
 
 #include <string_view>
 #include "Group.hpp"
+#include "Panel.hpp"
 #include "element.hpp"
 
 namespace dui {
 
-/// Style for button box
-struct ButtonBoxStyle
-{
-  SDL_Color center;
-  SDL_Color topLeft;
-  SDL_Color bottomRight;
-
-  constexpr ButtonBoxStyle withCenter(SDL_Color c) const
-  {
-    auto next = *this;
-    next.center = c;
-    return next;
-  }
-  constexpr ButtonBoxStyle withTopLeft(SDL_Color c) const
-  {
-    auto next = *this;
-    next.topLeft = c;
-    return next;
-  }
-  constexpr ButtonBoxStyle withBottonRight(SDL_Color c) const
-  {
-    auto next = *this;
-    next.bottomRight = c;
-    return next;
-  }
-  constexpr ButtonBoxStyle withInvertedBorders() const
-  {
-    return {center, bottomRight, topLeft};
-  }
-};
-
-/**
- * @brief adds a button box
- *
- * @param target the parent group or frame
- * @param r the box relative position and size
- * @param style
- */
-inline void
-buttonBox(Group& target, const SDL_Rect& r, const ButtonBoxStyle& style)
-{
-  borderedBox(target,
-              "background",
-              r,
-              {style.center,
-               style.topLeft,
-               style.topLeft,
-               style.bottomRight,
-               style.bottomRight});
-}
-
+// Style for button
 struct ButtonStyle
 {
   SDL_Color text;
-  ButtonBoxStyle normal;
-  ButtonBoxStyle grabbed;
-  ButtonBoxStyle pressed;
-  ButtonBoxStyle pressedGrabbed;
+  BorderedBoxStyle normal;
+  BorderedBoxStyle grabbed;
+  BorderedBoxStyle pressed;
+  BorderedBoxStyle pressedGrabbed;
 };
 
 namespace style {
 
-constexpr ButtonBoxStyle BUTTONBOX{
+constexpr BorderedBoxStyle BUTTONBOX{
   {176, 195, 222, 255},
+  {176, 195, 222, 255},
+  {255, 255, 255, 255},
   {255, 255, 255, 255},
   {0, 0, 0, 255},
 };
-constexpr ButtonBoxStyle BUTTONBOX_GRABBED{
+
+constexpr BorderedBoxStyle BUTTONBOX_GRABBED{
   BUTTONBOX.withCenter({147, 173, 210, 255})};
-constexpr ButtonBoxStyle BUTTONBOX_PRESSED{BUTTONBOX.withInvertedBorders()};
-constexpr ButtonBoxStyle BUTTONBOX_PRESSED_GRABBED{
+constexpr BorderedBoxStyle BUTTONBOX_PRESSED{BUTTONBOX.withInvertedBorders()};
+constexpr BorderedBoxStyle BUTTONBOX_PRESSED_GRABBED{
   BUTTONBOX_PRESSED.withCenter(BUTTONBOX_GRABBED.center)};
 
 constexpr ButtonStyle BUTTON{
@@ -120,9 +74,9 @@ buttonBase(Group& target,
   text(g, str, {2, 2}, style.text);
   bool grabbing = action == MouseAction::GRAB;
   if (grabbing == pushed) {
-    buttonBox(g, r, grabbing ? style.grabbed : style.normal);
+    borderedBox(g, r, grabbing ? style.grabbed : style.normal);
   } else {
-    buttonBox(g, r, grabbing ? style.pressedGrabbed : style.pressed);
+    borderedBox(g, r, grabbing ? style.pressedGrabbed : style.pressed);
   }
   g.end();
   return action == MouseAction::ACTION;
