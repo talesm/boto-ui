@@ -140,13 +140,14 @@ textBox(Group& target,
 
 // A intBox
 inline bool
-intBox(Group& target, std::string_view id, int* value, const SDL_Rect& r = {0})
+intBox(Group& target, std::string_view id, int* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
   constexpr int BUF_SZ = 256;
   char textValue[BUF_SZ];
   static char activeTextValue[BUF_SZ];
 
+  r = makeInputSize(r);
   bool clicked = target.checkMouse(id, r) == MouseAction::GRAB;
   bool active = target.isActive(id);
   char* text = active ? activeTextValue : textValue;
@@ -169,12 +170,12 @@ inline bool
 doubleBox(Group& target, std::string_view id, double* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
-  r = makeInputSize(r);
 
   constexpr int BUF_SZ = 256;
   char textValue[BUF_SZ];
   static char activeTextValue[BUF_SZ];
 
+  r = makeInputSize(r);
   bool clicked = target.checkMouse(id, r) == MouseAction::GRAB;
   bool active = target.isActive(id);
   char* text = active ? activeTextValue : textValue;
