@@ -10,6 +10,7 @@
 #include "button.hpp"
 #include "element.hpp"
 #include "inputBox.hpp"
+#include "inputField.hpp"
 #include "label.hpp"
 
 #endif // DUI_HPP_H
