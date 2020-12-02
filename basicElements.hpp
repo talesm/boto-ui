@@ -9,7 +9,6 @@ namespace dui {
 
 namespace style {
 
-constexpr SDL_Color TEXT{0, 0, 0, 255};
 constexpr SDL_Color BUTTON{224, 224, 224, 255};
 constexpr SDL_Color BUTTON_ACTIVE{208, 208, 208, 255};
 constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
@@ -18,56 +17,6 @@ constexpr SDL_Color INPUTBOX{240, 240, 240, 255};
 constexpr SDL_Color INPUTBOX_ACTIVE{255, 255, 255, 255};
 constexpr SDL_Color INPUTBOX_BORDER{0, 0, 0, 255};
 
-}
-
-SDL_Point
-measure(char ch)
-{
-  return {8, 8};
-}
-
-SDL_Point
-measure(std::string_view text)
-{
-  return {int(8 * text.size()), 8};
-}
-
-inline void
-box(Group& target, SDL_Rect rect, SDL_Color c)
-{
-  auto& state = target.getState();
-  SDL_assert(state.isInFrame());
-  SDL_assert(!target.isLocked());
-  target.advance({rect.x + rect.w, rect.y + rect.h});
-  auto caret = target.getCaret();
-  rect.x += caret.x;
-  rect.y += caret.y;
-  state.display(Shape::Box(rect, c));
-}
-
-inline void
-character(Group& target, char ch, const SDL_Point& p, SDL_Color c)
-{
-  auto& state = target.getState();
-  SDL_assert(state.isInFrame());
-  SDL_assert(!target.isLocked());
-  target.advance({p.x + 8, p.y + 8});
-  auto caret = target.getCaret();
-  state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
-}
-
-inline void
-text(Group& target, std::string_view text, SDL_Point p, SDL_Color c)
-{
-  auto& state = target.getState();
-  SDL_assert(state.isInFrame());
-  SDL_assert(!target.isLocked());
-  target.advance({p.x + 8 * int(text.size()), p.y + 8});
-  auto caret = target.getCaret();
-  for (auto ch : text) {
-    state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
-    p.x += 8;
-  }
 }
 
 struct LabelStyle
