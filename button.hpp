@@ -12,6 +12,29 @@ struct ButtonBoxStyle
   SDL_Color center;
   SDL_Color topLeft;
   SDL_Color bottomRight;
+
+  constexpr ButtonBoxStyle withCenter(SDL_Color c) const
+  {
+    auto next = *this;
+    next.center = c;
+    return next;
+  }
+  constexpr ButtonBoxStyle withTopLeft(SDL_Color c) const
+  {
+    auto next = *this;
+    next.topLeft = c;
+    return next;
+  }
+  constexpr ButtonBoxStyle withBottonRight(SDL_Color c) const
+  {
+    auto next = *this;
+    next.bottomRight = c;
+    return next;
+  }
+  constexpr ButtonBoxStyle withInvertedBorders() const
+  {
+    return {center, bottomRight, topLeft};
+  }
 };
 
 /**
@@ -34,12 +57,35 @@ buttonBox(Group& target, const SDL_Rect& r, const ButtonBoxStyle& style)
                style.bottomRight});
 }
 
+struct ButtonStyle
+{
+  SDL_Color text;
+  ButtonBoxStyle normal;
+  ButtonBoxStyle grabbed;
+  ButtonBoxStyle pressed;
+  ButtonBoxStyle pressedGrabbed;
+};
+
 namespace style {
 
-constexpr SDL_Color BUTTON{176, 195, 222, 255};
-constexpr SDL_Color BUTTON_ACTIVE{147, 173, 210, 255};
-constexpr SDL_Color BUTTON_LIGHT{255, 255, 255, 255};
-constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
+constexpr ButtonBoxStyle BUTTONBOX{
+  {176, 195, 222, 255},
+  {255, 255, 255, 255},
+  {0, 0, 0, 255},
+};
+constexpr ButtonBoxStyle BUTTONBOX_GRABBED{
+  BUTTONBOX.withCenter({147, 173, 210, 255})};
+constexpr ButtonBoxStyle BUTTONBOX_PRESSED{BUTTONBOX.withInvertedBorders()};
+constexpr ButtonBoxStyle BUTTONBOX_PRESSED_GRABBED{
+  BUTTONBOX_PRESSED.withCenter(BUTTONBOX_GRABBED.center)};
+
+constexpr ButtonStyle BUTTON{
+  TEXT,
+  BUTTONBOX,
+  BUTTONBOX_GRABBED,
+  BUTTONBOX_PRESSED,
+  BUTTONBOX_PRESSED_GRABBED,
+};
 }
 
 /**
@@ -50,6 +96,7 @@ constexpr SDL_Color BUTTON_DARK{0, 0, 0, 255};
  * @param str the text to appear on screen (if not present the id is used)
  * @param pushed if the button is pushed or not
  * @param p the button relative position
+ * @param style
  *
  * @return true when the button is action state (just released)
  * @return false otherwise
@@ -59,7 +106,8 @@ buttonBase(Group& target,
            std::string_view id,
            std::string_view str,
            bool pushed,
-           const SDL_Point& p = {0})
+           const SDL_Point& p = {0},
+           const ButtonStyle& style = style::BUTTON)
 {
   auto g = group(target, {}, {p.x, p.y}, Layout::NONE);
   if (str.empty()) {
@@ -68,13 +116,12 @@ buttonBase(Group& target,
   auto adv = measure(str);
   SDL_Rect r{0, 0, adv.x + 4, adv.y + 4};
   auto action = g.checkMouse(id, r);
-  text(g, str, {2, 2}, style::TEXT);
+  text(g, str, {2, 2}, style.text);
   bool grabbing = action == MouseAction::GRAB;
-  SDL_Color base = grabbing ? style::BUTTON_ACTIVE : style::BUTTON;
-  if (grabbing != pushed) {
-    buttonBox(g, r, {base, style::BUTTON_DARK, style::BUTTON_LIGHT});
+  if (grabbing == pushed) {
+    buttonBox(g, r, grabbing ? style.grabbed : style.normal);
   } else {
-    buttonBox(g, r, {base, style::BUTTON_LIGHT, style::BUTTON_DARK});
+    buttonBox(g, r, grabbing ? style.pressedGrabbed : style.pressed);
   }
   g.end();
   return action == MouseAction::ACTION;
@@ -90,6 +137,7 @@ buttonBase(Group& target,
  * @param id the button id
  * @param str the text to appear on screen (if not present the id is used)
  * @param p the button relative position
+ * @param style
  *
  * @return true when the button is action state (just released)
  * @return false otherwise
@@ -98,14 +146,18 @@ inline bool
 button(Group& target,
        std::string_view id,
        std::string_view str,
-       const SDL_Point& p = {0})
+       const SDL_Point& p = {0},
+       const ButtonStyle& style = style::BUTTON)
 {
-  return buttonBase(target, id, str, false, p);
+  return buttonBase(target, id, str, false, p, style);
 }
 inline bool
-button(Group& target, std::string_view id, const SDL_Point& p = {0})
+button(Group& target,
+       std::string_view id,
+       const SDL_Point& p = {0},
+       const ButtonStyle& style = style::BUTTON)
 {
-  return button(target, id, id, p);
+  return button(target, id, id, p, style);
 }
 /// @}
 
@@ -121,6 +173,7 @@ button(Group& target, std::string_view id, const SDL_Point& p = {0})
  * @param str the text to appear on screen (if not present the id is used)
  * @param value a pointer to a boolean with the state
  * @param p the button relative position
+ * @param style
  *
  * @return true when the button is action state
  * @return false otherwise
@@ -130,9 +183,10 @@ toggleButton(Group& target,
              std::string_view id,
              std::string_view str,
              bool* value,
-             const SDL_Point& p = {0})
+             const SDL_Point& p = {0},
+             const ButtonStyle& style = style::BUTTON)
 {
-  if (buttonBase(target, id, str, *value, p)) {
+  if (buttonBase(target, id, str, *value, p, style)) {
     *value = !*value;
     return true;
   }
@@ -142,9 +196,10 @@ inline bool
 toggleButton(Group& target,
              std::string_view id,
              bool* value,
-             const SDL_Point& p = {0})
+             const SDL_Point& p = {0},
+             const ButtonStyle& style = style::BUTTON)
 {
-  return toggleButton(target, id, id, value, p);
+  return toggleButton(target, id, id, value, p, style);
 }
 /// @}
 
@@ -162,6 +217,7 @@ toggleButton(Group& target,
  * this, then the button will appear pressed. If the user pushed, then the value
  * is set to this option.
  * @param p the button relative position
+ * @param style
  *
  * @return true when the button is action state
  * @return false otherwise
@@ -173,10 +229,11 @@ choiceButton(Group& target,
              std::string_view str,
              T* value,
              U option,
-             const SDL_Point& p = {0})
+             const SDL_Point& p = {0},
+             const ButtonStyle& style = style::BUTTON)
 {
   bool selected = *value == option;
-  if (buttonBase(target, id, str, selected, p) && !selected) {
+  if (buttonBase(target, id, str, selected, p, style) && !selected) {
     *value = option;
     return true;
   }
@@ -188,9 +245,10 @@ choiceButton(Group& target,
              std::string_view id,
              T* value,
              U option,
-             const SDL_Point& p = {0})
+             const SDL_Point& p = {0},
+             const ButtonStyle& style = style::BUTTON)
 {
-  return choiceButton(target, id, id, value, option, p);
+  return choiceButton(target, id, id, value, option, p, style);
 }
 /// @}
 
