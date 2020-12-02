@@ -246,6 +246,37 @@ box(Group& target, SDL_Rect rect, SDL_Color c)
   state.display(Shape::Box(rect, c));
 }
 
+// Border style
+struct BorderedBoxStyle
+{
+  SDL_Color center;
+  SDL_Color left;
+  SDL_Color top;
+  SDL_Color right;
+  SDL_Color bottom;
+};
+
+// A box with colored border
+inline void
+borderedBox(Group& target,
+            std::string_view id,
+            const SDL_Rect& r,
+            const BorderedBoxStyle& style)
+{
+  auto c = style.center;
+  auto e = style.right;
+  auto n = style.top;
+  auto w = style.left;
+  auto s = style.bottom;
+  auto g = group(target, id, {0}, Layout::NONE);
+  box(g, {r.x + 1, r.y, r.w - 2, 1}, {n.r, n.g, n.b, n.a});
+  box(g, {r.x, r.y + 1, 1, r.h - 2}, {w.r, w.g, w.b, w.a});
+  box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {s.r, s.g, s.b, s.a});
+  box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {e.r, e.g, e.b, e.a});
+  box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {c.r, c.g, c.b, c.a});
+  g.end();
+}
+
 /// Measure the given character
 SDL_Point
 measure(char ch)
