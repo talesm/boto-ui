@@ -15,7 +15,6 @@ MVP (0.1)
 - [x] panel
 - [x] Clip correctly
 - [x] numeric input
-- [ ] section
 - [ ] image
 - [ ] auto scroll text so the end is always visible
 - [ ] want to capture mouse/keyboard
@@ -28,6 +27,8 @@ Wishlist
 - [ ] Styling
 - [ ] Bitmap Fonts
 - [ ] TTF Fonts
+- [ ] Allow some sort of cache on State
+- [ ] section
 - [ ] checkBox
 - [ ] radioBox
 - [ ] selectable
