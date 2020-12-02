@@ -3,6 +3,7 @@
 
 #include <string_view>
 #include "Group.hpp"
+#include "element.hpp"
 
 namespace dui {
 

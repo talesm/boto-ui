@@ -4,6 +4,7 @@
 #include <string_view>
 #include "EdgeSize.hpp"
 #include "Group.hpp"
+#include "element.hpp"
 
 namespace dui {
 

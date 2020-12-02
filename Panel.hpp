@@ -4,6 +4,7 @@
 #include <string_view>
 #include "Group.hpp"
 #include "WrapperGroup.hpp"
+#include "element.hpp"
 
 namespace dui {
 
