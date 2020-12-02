@@ -31,7 +31,7 @@ inputBox(Group& target, const SDL_Rect& r, const InputBoxStyle& style)
 }
 
 inline SDL_Rect
-fixInputSize(SDL_Rect r)
+makeInputSize(SDL_Rect r)
 {
   if (r.w == 0 || r.h == 0) {
     auto sz = measure('m'); // TODO allow customization for this
@@ -51,7 +51,7 @@ textBoxBase(Group& target,
             std::string_view value,
             SDL_Rect r)
 {
-  r = fixInputSize(r);
+  r = makeInputSize(r);
   auto g = group(target, {}, r, Layout::NONE);
   r.x = r.y = 0; // Inside the group we use local coords
   g.checkMouse(id, r);
@@ -165,7 +165,7 @@ textField(Group& target,
           size_t maxSize,
           const SDL_Point& p = {0})
 {
-  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
   auto g = labeledGroup(target, labelText, box);
   auto changed = textBox(g, id, value, maxSize, box);
   g.end();
@@ -189,7 +189,7 @@ textField(Group& target,
           std::string* value,
           const SDL_Point& p = {0})
 {
-  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
   auto g = labeledGroup(target, labelText, box);
   auto changed = textBox(g, id, value, box);
   g.end();
@@ -238,7 +238,7 @@ intField(Group& target,
          int* value,
          const SDL_Point& p = {0})
 {
-  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
   auto g = labeledGroup(target, labelText, box);
   auto changed = intBox(g, id, value, box);
   g.end();
@@ -259,7 +259,7 @@ inline bool
 doubleBox(Group& target, std::string_view id, double* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
-  r = fixInputSize(r);
+  r = makeInputSize(r);
 
   constexpr int BUF_SZ = 256;
   char textValue[BUF_SZ];
@@ -294,7 +294,7 @@ doubleField(Group& target,
             double* value,
             const SDL_Point& p = {0})
 {
-  SDL_Rect box{fixInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
   auto g = labeledGroup(target, labelText, box);
   auto changed = doubleBox(g, id, value, box);
   g.end();
