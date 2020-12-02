@@ -15,7 +15,6 @@ MVP (0.1)
 - [x] panel
 - [x] Clip correctly
 - [x] numeric input
-- [ ] vector numeric input
 - [ ] section
 - [ ] image
 - [ ] auto scroll text so the end is always visible
@@ -33,6 +32,7 @@ Wishlist
 - [ ] treeNode
 - [ ] textArea
 - [ ] slider
+- [ ] vector numeric input
 - [ ] scrollbar
 - [ ] scrollarea
 - [ ] window
