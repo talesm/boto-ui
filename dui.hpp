@@ -2,6 +2,7 @@
 #define DUI_HPP_
 
 #include "DisplayList.hpp"
+#include "Font.hpp"
 #include "Frame.hpp"
 #include "Group.hpp"
 #include "Panel.hpp"

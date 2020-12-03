@@ -7,29 +7,39 @@
 #include <SDL_rect.h>
 #include <SDL_render.h>
 
-// TODO include this conditionally
-#include <SDL2_gfxPrimitives.h>
-
 namespace dui {
 
 struct Shape
 {
-  SDL_Rect rect;
   SDL_Texture* texture;
+  SDL_Rect rect;
+  SDL_Rect srcRect;
   SDL_Color color;
-  char content;
-  static Shape Character(const SDL_Point& p, SDL_Color c, char ch)
-  {
-    return {{p.x, p.y, 8, 8}, nullptr, c, ch};
-  }
 
   static Shape Box(const SDL_Rect& r, SDL_Color c)
   {
-    return {r, nullptr, c, 0};
+    return {nullptr, r, {0}, c};
   }
   static Shape Texture(const SDL_Rect& r, SDL_Texture* texture)
   {
-    return {r, texture, {255, 255, 255, 255}, 0};
+    return {texture, r, {0}, {255, 255, 255, 255}};
+  }
+  static Shape Texture(const SDL_Rect& r, SDL_Texture* texture, SDL_Color c)
+  {
+    return {texture, r, {0}, c};
+  }
+  static Shape Texture(const SDL_Rect& r,
+                       SDL_Texture* texture,
+                       SDL_Rect& srcRect)
+  {
+    return {texture, r, srcRect, {255, 255, 255, 255}};
+  }
+  static Shape Texture(const SDL_Rect& r,
+                       SDL_Texture* texture,
+                       SDL_Rect& srcRect,
+                       SDL_Color c)
+  {
+    return {texture, r, srcRect, c};
   }
 };
 
@@ -58,13 +68,13 @@ public:
   {
     // TODO coalesce multiple clips
     if (rect.w > 0 && rect.h > 0) {
-      items.push_back(Shape{rect, {0}, 0});
+      items.push_back(Shape{nullptr, rect, {0}, 0});
     } else {
-      items.push_back(Shape{{rect.x, rect.y, 1, 1}, {0}, 0});
+      items.push_back(Shape{nullptr, {rect.x, rect.y, 1, 1}, {0}, 0});
     }
   }
 
-  void popClip() { items.push_back(Shape{{0}, {0}, 0}); }
+  void popClip() { items.push_back(Shape{nullptr, {0}, {0}, 0}); }
 
   void render(SDL_Renderer* renderer) const;
 };
@@ -88,10 +98,12 @@ DisplayList::render(SDL_Renderer* renderer) const
       SDL_RenderSetClipRect(renderer,
                             stackSz > 0 ? &stack[stackSz - 1] : nullptr);
     } else if (it->texture != nullptr) {
-      SDL_RenderCopy(renderer, it->texture, nullptr, &it->rect);
-    } else if (it->content != 0) {
-      characterRGBA(
-        renderer, it->rect.x, it->rect.y, it->content, c.r, c.g, c.b, c.a);
+      SDL_SetTextureColorMod(it->texture, c.r, c.g, c.b);
+      if (it->srcRect.w) {
+        SDL_RenderCopy(renderer, it->texture, &it->srcRect, &it->rect);
+      } else {
+        SDL_RenderCopy(renderer, it->texture, nullptr, &it->rect);
+      }
     } else {
       SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
       SDL_RenderFillRect(renderer, &it->rect);

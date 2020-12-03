@@ -54,9 +54,12 @@ private:
   bool gGrabbed = false;
   bool gActive = false;
 
+  SDL_Texture* font;
+
 public:
   State(SDL_Renderer* renderer)
     : renderer(renderer)
+    , font(loadDefaultFont(renderer))
   {}
 
   /**
@@ -220,6 +223,8 @@ public:
    * @return Context
    */
   Context lockFrame() { return Context{this}; }
+
+  SDL_Texture* getFont() const { return font; }
 
 private:
   void beginFrame()

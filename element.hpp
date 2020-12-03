@@ -114,7 +114,9 @@ character(Group& target, char ch, const SDL_Point& p, SDL_Color c = style::TEXT)
   SDL_assert(!target.isLocked());
   auto caret = target.getCaret();
   target.advance({p.x + 8, p.y + 8});
-  state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
+  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, 8, 8};
+  SDL_Rect srcRect{(ch % 16) * 8, (ch / 16) * 8, 8, 8};
+  state.display(Shape::Texture(dstRect, state.getFont(), srcRect, c));
 }
 
 /**
@@ -128,7 +130,7 @@ character(Group& target, char ch, const SDL_Point& p, SDL_Color c = style::TEXT)
 inline void
 text(Group& target,
      std::string_view str,
-     SDL_Point p,
+     const SDL_Point& p,
      SDL_Color c = style::TEXT)
 {
   auto& state = target.getState();
@@ -136,9 +138,11 @@ text(Group& target,
   SDL_assert(!target.isLocked());
   auto caret = target.getCaret();
   target.advance({p.x + 8 * int(str.size()), p.y + 8});
+  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, 8, 8};
   for (auto ch : str) {
-    state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
-    p.x += 8;
+    SDL_Rect srcRect{(ch % 16) * 8, (ch / 16) * 8, 8, 8};
+    state.display(Shape::Texture(dstRect, state.getFont(), srcRect, c));
+    dstRect.x += 8;
   }
 }
 
