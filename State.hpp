@@ -140,6 +140,18 @@ public:
   std::string_view getText() const { return {tBuffer}; }
 
   /**
+   * @brief If true, the state wants the mouse events
+   */
+  bool wantsMouse() const { return !eGrabbed.empty(); }
+
+  /**
+   * @brief If true, the state wants the keyboard events
+   * @return true
+   * @return false
+   */
+  bool wantsKeyboard() const { return !eActive.empty(); }
+
+  /**
    * @brief Add the given item Shape to display list
    *
    * @param item
