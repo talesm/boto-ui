@@ -16,6 +16,8 @@ MVP (0.1)
 - [x] Clip correctly
 - [x] numeric input
 - [x] image
+- [ ] Bitmap Fonts
+- [ ] Remove dependency on SDL_gfx
 - [ ] auto scroll text so the end is always visible
 - [ ] want to capture mouse/keyboard
 - [x] Move elements to their own files
@@ -25,7 +27,6 @@ Wishlist
 --------
 
 - [ ] Styling
-- [ ] Bitmap Fonts
 - [ ] TTF Fonts
 - [ ] Allow some sort of cache on State
 - [ ] section
