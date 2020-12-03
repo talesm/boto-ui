@@ -15,14 +15,22 @@ namespace dui {
 struct Shape
 {
   SDL_Rect rect;
+  SDL_Texture* texture;
   SDL_Color color;
   char content;
   static Shape Character(const SDL_Point& p, SDL_Color c, char ch)
   {
-    return {{p.x, p.y, 8, 8}, c, ch};
+    return {{p.x, p.y, 8, 8}, nullptr, c, ch};
   }
 
-  static Shape Box(const SDL_Rect& r, SDL_Color c) { return {r, c, 0}; }
+  static Shape Box(const SDL_Rect& r, SDL_Color c)
+  {
+    return {r, nullptr, c, 0};
+  }
+  static Shape Texture(const SDL_Rect& r, SDL_Texture* texture)
+  {
+    return {r, texture, {255, 255, 255, 255}, 0};
+  }
 };
 
 /**
@@ -79,12 +87,14 @@ DisplayList::render(SDL_Renderer* renderer) const
       }
       SDL_RenderSetClipRect(renderer,
                             stackSz > 0 ? &stack[stackSz - 1] : nullptr);
-    } else if (it->content == 0) {
-      SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-      SDL_RenderFillRect(renderer, &it->rect);
-    } else {
+    } else if (it->texture != nullptr) {
+      SDL_RenderCopy(renderer, it->texture, nullptr, &it->rect);
+    } else if (it->content != 0) {
       characterRGBA(
         renderer, it->rect.x, it->rect.y, it->content, c.r, c.g, c.b, c.a);
+    } else {
+      SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+      SDL_RenderFillRect(renderer, &it->rect);
     }
   }
   SDL_assert(stackSz == 0);

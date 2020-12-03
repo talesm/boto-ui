@@ -24,8 +24,8 @@ box(Group& target, SDL_Rect rect, SDL_Color c)
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isLocked());
-  target.advance({rect.x + rect.w, rect.y + rect.h});
   auto caret = target.getCaret();
+  target.advance({rect.x + rect.w, rect.y + rect.h});
   rect.x += caret.x;
   rect.y += caret.y;
   state.display(Shape::Box(rect, c));
@@ -112,8 +112,8 @@ character(Group& target, char ch, const SDL_Point& p, SDL_Color c = style::TEXT)
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isLocked());
-  target.advance({p.x + 8, p.y + 8});
   auto caret = target.getCaret();
+  target.advance({p.x + 8, p.y + 8});
   state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
 }
 
@@ -134,12 +134,32 @@ text(Group& target,
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isLocked());
-  target.advance({p.x + 8 * int(str.size()), p.y + 8});
   auto caret = target.getCaret();
+  target.advance({p.x + 8 * int(str.size()), p.y + 8});
   for (auto ch : str) {
     state.display(Shape::Character({caret.x + p.x, caret.y + p.y}, c, ch));
     p.x += 8;
   }
+}
+
+/**
+ * @brief adds an texturedBox element to target
+ *
+ * @param target the parent group or frame
+ * @param texture the texture
+ * @param rect the box local position and size
+ */
+inline void
+texturedBox(Group& target, SDL_Texture* texture, SDL_Rect rect)
+{
+  auto& state = target.getState();
+  SDL_assert(state.isInFrame());
+  SDL_assert(!target.isLocked());
+  auto caret = target.getCaret();
+  target.advance({rect.x + rect.w, rect.y + rect.h});
+  rect.x += caret.x;
+  rect.y += caret.y;
+  state.display(Shape::Texture(rect, texture));
 }
 } // namespace dui
 

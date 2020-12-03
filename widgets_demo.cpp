@@ -36,6 +36,11 @@ main(int argc, char** argv)
   std::string str2 = "str2";
   int value1 = 42;
   double value2 = 11.25;
+  std::string basePath = SDL_GetBasePath();
+  SDL_Surface* surface = SDL_LoadBMP((basePath + "../dui.bmp").c_str());
+  SDL_SetColorKey(surface, 1, 0);
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+  SDL_FreeSurface(surface);
 
   for (;;) {
     SDL_Event ev;
@@ -92,6 +97,10 @@ main(int argc, char** argv)
     dui::label(p, "Number input", {0, 10});
     dui::intField(p, "value1", &value1);
     dui::doubleField(p, "value2", &value2);
+
+    dui::texturedBox(p, texture, {0, 0, 8, 8});
+    dui::texturedBox(p, texture, {0, 1, 64, 64});
+    dui::texturedBox(p, texture, {0, 1, 128, 128});
 
     p.end();
 
