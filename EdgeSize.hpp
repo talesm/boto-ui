@@ -41,11 +41,16 @@ struct EdgeSize
 };
 
 constexpr SDL_Point
-size(const EdgeSize& edge, const SDL_Point& client = {0})
+elementSize(const EdgeSize& edge, const SDL_Point& client = {0})
 {
   return {edge.left + edge.right + client.x, edge.top + edge.bottom + client.y};
 }
-
+constexpr SDL_Point
+clientSize(const EdgeSize& edge, const SDL_Point& element)
+{
+  return {element.x - edge.left - edge.right,
+          element.y - edge.top - edge.bottom};
+}
 }
 
 #endif // DUI_EDGESIZE_HPP

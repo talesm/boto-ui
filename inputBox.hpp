@@ -65,6 +65,16 @@ textBoxBase(Group& target,
   }
   auto& currentStyle = active ? style.boxActive : style.box;
   auto g = panel(target, id, r, Layout::NONE, currentStyle);
+
+  // This creates an auto scroll effect if value text don't fit in the box;
+  auto clientSz = clientSize(currentStyle.padding, {r.w, r.h});
+  auto contentSz = measure(value);
+  int deltaX = contentSz.x - clientSz.x;
+  if (deltaX > 0) {
+    int deltaChar = deltaX / 8 + 1;
+    value.remove_prefix(deltaChar);
+  }
+
   text(g, value, {0}, style.text);
 
   if (active) {
