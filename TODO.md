@@ -18,8 +18,9 @@ MVP (0.1)
 - [x] image
 - [x] Bitmap Fonts
 - [x] Remove dependency on SDL_gfx
-- [ ] auto scroll text so the end is always visible
+- [x] auto scroll text so the end is always visible
 - [x] want to capture mouse/keyboard
+  - [ ] Fix it for mouse hover
 - [x] Move elements to their own files
 - [ ] Generate doxygen
 
