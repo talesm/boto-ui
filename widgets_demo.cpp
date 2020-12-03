@@ -105,7 +105,7 @@ main(int argc, char** argv)
     p.end();
 
     // Render
-    SDL_SetRenderDrawColor(renderer, 0xfa, 0xfa, 0xd2, 0xff);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderFillRect(renderer, nullptr);
 
     f.render();
