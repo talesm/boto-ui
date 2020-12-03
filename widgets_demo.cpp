@@ -53,6 +53,8 @@ main(int argc, char** argv)
 
     // UI
     auto f = dui::frame(state);
+    dui::label(f, "Hello world", {400, 150});
+
     auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500});
     dui::label(p, "Hello world");
     dui::label(p, "Hello world", {5});
@@ -103,6 +105,7 @@ main(int argc, char** argv)
     dui::texturedBox(p, texture, {0, 1, 128, 128});
 
     p.end();
+    dui::texturedBox(f, texture, {400, 150, 256, 256});
 
     // Render
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
