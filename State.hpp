@@ -287,7 +287,6 @@ State::checkMouse(std::string_view id, SDL_Rect r)
       return MouseAction::GRAB;
     }
     if (isSameGroupId(eActive, id)) {
-      gActive = false;
       eActive.clear();
     }
     return MouseAction::NONE;
@@ -388,6 +387,10 @@ State::event(SDL_Event& ev)
     mPos = {ev.button.x, ev.button.y};
     if (ev.button.button == SDL_BUTTON_LEFT) {
       mLeftPressed = true;
+    }
+  } else if (ev.type == SDL_MOUSEMOTION) {
+    if (!(eGrabbed.empty() && mLeftPressed)) {
+      mPos = {ev.motion.x, ev.motion.y};
     }
   } else if (ev.type == SDL_MOUSEBUTTONUP) {
     mPos = {ev.button.x, ev.button.y};
