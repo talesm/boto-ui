@@ -16,8 +16,8 @@ MVP (0.1)
 - [x] Clip correctly
 - [x] numeric input
 - [x] image
-- [ ] Bitmap Fonts
-- [ ] Remove dependency on SDL_gfx
+- [x] Bitmap Fonts
+- [x] Remove dependency on SDL_gfx
 - [ ] auto scroll text so the end is always visible
 - [x] want to capture mouse/keyboard
 - [x] Move elements to their own files
