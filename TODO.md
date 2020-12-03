@@ -15,7 +15,7 @@ MVP (0.1)
 - [x] panel
 - [x] Clip correctly
 - [x] numeric input
-- [ ] image
+- [x] image
 - [ ] auto scroll text so the end is always visible
 - [ ] want to capture mouse/keyboard
 - [x] Move elements to their own files
