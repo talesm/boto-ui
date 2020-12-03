@@ -138,25 +138,61 @@ textBox(Group& target,
   return false;
 }
 
+// TODO delete copy ctor, other safety nets
+class BufferedInputBox
+{
+  Group& target;
+  std::string_view id;
+  SDL_Rect rect;
+
+  bool active;
+  bool refillBuffer;
+
+public:
+  static constexpr int BUF_SZ = 256;
+  char buffer[BUF_SZ];
+
+  BufferedInputBox(Group& target, std::string_view id, SDL_Rect r)
+    : target(target)
+    , id(id)
+    , rect(makeInputSize(r))
+  {
+    bool clicked = target.checkMouse(id, rect) == MouseAction::GRAB;
+    active = target.isActive(id);
+    refillBuffer = !active || clicked;
+  }
+
+  bool wantsRefill() const { return refillBuffer; }
+
+  bool end()
+  {
+    if (!active) {
+      textBox(target, id, buffer, BUF_SZ, rect);
+      return false;
+    }
+    static char editBuffer[BUF_SZ];
+    if (refillBuffer) {
+      SDL_strlcpy(editBuffer, buffer, BUF_SZ);
+    }
+    if (!textBox(target, id, editBuffer, BUF_SZ, rect)) {
+      return false;
+    }
+    SDL_strlcpy(buffer, editBuffer, BUF_SZ);
+    return true;
+  }
+};
+
 // A intBox
 inline bool
 intBox(Group& target, std::string_view id, int* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
-  constexpr int BUF_SZ = 256;
-  char textValue[BUF_SZ];
-  static char activeTextValue[BUF_SZ];
-
-  r = makeInputSize(r);
-  bool clicked = target.checkMouse(id, r) == MouseAction::GRAB;
-  bool active = target.isActive(id);
-  char* text = active ? activeTextValue : textValue;
-
-  if (!active || clicked) {
-    SDL_itoa(*value, text, 10);
+  BufferedInputBox bufferedBox{target, id, r};
+  if (bufferedBox.wantsRefill()) {
+    SDL_itoa(*value, bufferedBox.buffer, 10);
   }
-  if (textBox(target, id, text, BUF_SZ, r)) {
-    auto newValue = SDL_atoi(text);
+  if (bufferedBox.end()) {
+    auto newValue = SDL_atoi(bufferedBox.buffer);
     if (newValue != *value) {
       *value = newValue;
       return true;
@@ -170,17 +206,10 @@ inline bool
 doubleBox(Group& target, std::string_view id, double* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
-
-  constexpr int BUF_SZ = 256;
-  char textValue[BUF_SZ];
-  static char activeTextValue[BUF_SZ];
-
-  r = makeInputSize(r);
-  bool clicked = target.checkMouse(id, r) == MouseAction::GRAB;
-  bool active = target.isActive(id);
-  char* text = active ? activeTextValue : textValue;
-  if (!active || clicked) {
-    int n = SDL_snprintf(text, BUF_SZ, "%f", *value);
+  BufferedInputBox bufferedBox{target, id, r};
+  if (bufferedBox.wantsRefill()) {
+    auto text = bufferedBox.buffer;
+    int n = SDL_snprintf(text, bufferedBox.BUF_SZ, "%f", *value);
     for (int i = n - 1; i > 0; --i) {
       if (text[i] != '0' && text[i] != '.') {
         text[i + 1] = 0;
@@ -188,8 +217,8 @@ doubleBox(Group& target, std::string_view id, double* value, SDL_Rect r = {0})
       }
     }
   }
-  if (textBox(target, id, text, BUF_SZ, r)) {
-    auto newValue = SDL_strtod(text, nullptr);
+  if (bufferedBox.end()) {
+    auto newValue = SDL_strtod(bufferedBox.buffer, nullptr);
     if (newValue != *value) {
       *value = newValue;
       return true;
