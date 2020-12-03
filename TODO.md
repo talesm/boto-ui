@@ -20,7 +20,7 @@ MVP (0.1)
 - [x] Remove dependency on SDL_gfx
 - [x] auto scroll text so the end is always visible
 - [x] want to capture mouse/keyboard
-  - [ ] Fix it for mouse hover
+  - [x] Fix it for mouse hover
 - [x] Move elements to their own files
 - [ ] Generate doxygen
 
