@@ -18,6 +18,8 @@ add_executable(elements_demo examples/elements_demo.cpp)
 target_link_libraries(elements_demo PRIVATE dui)
 add_executable(focus_demo examples/focus_demo.cpp)
 target_link_libraries(focus_demo PRIVATE dui)
+add_executable(hello_demo examples/hello_demo.cpp)
+target_link_libraries(hello_demo PRIVATE dui)
 
 # Build documentation
 find_package(Doxygen)
