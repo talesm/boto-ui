@@ -54,9 +54,8 @@ label(Group& target,
              p.y,
              adv.x + margin.left + margin.right,
              adv.y + margin.top + margin.bottom};
-  auto g = group(target, str, r, Layout::NONE);
+  auto g = group(target, {}, r, Layout::NONE);
   text(g, str, {margin.left, margin.top}, style.text);
-
   g.end();
 }
 } // namespace dui

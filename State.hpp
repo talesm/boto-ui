@@ -43,6 +43,7 @@ private:
   SDL_Point mPos;
   bool mLeftPressed = false;
   std::string eGrabbed;
+  bool mHovering = false;
   bool mGrabbing = false;
   bool mReleasing = false;
   std::string eActive;
@@ -145,7 +146,7 @@ public:
   /**
    * @brief If true, the state wants the mouse events
    */
-  bool wantsMouse() const { return !eGrabbed.empty(); }
+  bool wantsMouse() const { return mHovering || !eGrabbed.empty(); }
 
   /**
    * @brief If true, the state wants the keyboard events
@@ -200,16 +201,14 @@ public:
     }
 
     /// Pushes a group. Must be paired with a proper popGroup
-    void pushGroup(std::string_view id, const SDL_Rect&)
+    void pushGroup(std::string_view id, const SDL_Rect& r)
     {
-      state->dList.popClip();
-      state->beginGroup(id);
+      state->beginGroup(id, r);
     }
     /// Pops a group, Must be have been a pushGroup with same id before
     void popGroup(std::string_view id, const SDL_Rect& r)
     {
-      state->endGroup(id);
-      state->dList.pushClip(r);
+      state->endGroup(id, r);
     }
   };
 
@@ -232,6 +231,7 @@ private:
     SDL_assert(inFrame == false);
     inFrame = true;
     dList.clear();
+    mHovering = false;
   }
 
   void endFrame()
@@ -246,8 +246,8 @@ private:
     }
   }
 
-  void beginGroup(std::string_view id);
-  void endGroup(std::string_view id);
+  void beginGroup(std::string_view id, const SDL_Rect& r);
+  void endGroup(std::string_view id, const SDL_Rect& r);
   bool isSameGroupId(std::string_view qualifiedId, std::string_view id) const;
 };
 
@@ -312,8 +312,9 @@ State::checkMouse(std::string_view id, SDL_Rect r)
 }
 
 inline void
-State::beginGroup(std::string_view id)
+State::beginGroup(std::string_view id, const SDL_Rect& r)
 {
+  dList.popClip();
   if (id.empty()) {
     return;
   }
@@ -351,15 +352,18 @@ State::beginGroup(std::string_view id)
 }
 
 inline void
-State::endGroup(std::string_view id)
+State::endGroup(std::string_view id, const SDL_Rect& r)
 {
   if (id.empty()) {
-    return;
-  }
-  if (id.size() >= group.size()) {
+    // Nothing to do
+  } else if (id.size() >= group.size()) {
+    // A top level group
     SDL_assert(group == id);
     group.clear();
     gActive = gGrabbed = false;
+    if (!mHovering && SDL_PointInRect(&mPos, &r)) {
+      mHovering = true;
+    }
   } else {
     auto groupSize = group.size();
     auto nextSize = groupSize - id.size() - 1;
@@ -378,6 +382,7 @@ State::endGroup(std::string_view id)
       gActive = true;
     }
   }
+  dList.pushClip(r);
 }
 
 inline void
