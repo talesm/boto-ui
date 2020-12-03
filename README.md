@@ -3,7 +3,7 @@ Direct User Interface
 
 A simple immediate mode user interface suitable for using with SDL2 2d renderer.
 
-![Widgets demo](widgets_demo.png)
+![Widgets demo](examples/elements_demo.png)
 
 Introduction
 ------------

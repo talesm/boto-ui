@@ -14,8 +14,8 @@ target_include_directories(dui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(dui INTERFACE PkgConfig::SDL2)
 target_compile_features(dui INTERFACE cxx_std_17)
 
-add_executable(widgets_demo widgets_demo.cpp)
-target_link_libraries(widgets_demo PRIVATE dui)
+add_executable(elements_demo examples/elements_demo.cpp)
+target_link_libraries(elements_demo PRIVATE dui)
 
 # Build documentation
 find_package(Doxygen)
