@@ -1,4 +1,3 @@
-#include <iostream>
 #include <SDL.h>
 #include "dui.hpp"
 
@@ -17,16 +16,15 @@ yesOrNo(dui::Group& target, bool value)
 int
 main(int argc, char** argv)
 {
-  using namespace std;
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    cerr << SDL_GetError() << '\n';
+    fprintf(stderr, "%s\n", SDL_GetError());
     return 1;
   }
   SDL_Window* window = nullptr;
   SDL_Renderer* renderer = nullptr;
   if (SDL_CreateWindowAndRenderer(
         800, 600, SDL_WINDOW_SHOWN, &window, &renderer) < 0) {
-    cerr << SDL_GetError() << '\n';
+    fprintf(stderr, "%s\n", SDL_GetError());
     return 1;
   }
 

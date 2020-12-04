@@ -6,7 +6,7 @@ main(int argc, char** argv)
 {
   // Init SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    fprintf(stderr, "%s", SDL_GetError());
+    fprintf(stderr, "%s\n", SDL_GetError());
     return 1;
   }
 
@@ -15,7 +15,7 @@ main(int argc, char** argv)
   SDL_Renderer* renderer = nullptr;
   if (SDL_CreateWindowAndRenderer(
         800, 600, SDL_WINDOW_SHOWN, &window, &renderer) < 0) {
-    fprintf(stderr, "%s", SDL_GetError());
+    fprintf(stderr, "%s\n", SDL_GetError());
     return 1;
   }
 
