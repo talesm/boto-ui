@@ -3,7 +3,7 @@ Direct User Interface
 
 A simple immediate mode user interface designed for using with SDL2 2d renderer.
 
-![Widgets demo](examples/elements_demo.png)
+![Elements demo](examples/elements_demo.png)
 
 <!-- Latest download here (put link to singleheader version and the file itself,
 and link for online docs) -->
@@ -228,6 +228,8 @@ Elements
 
 We support a short but useful number of elements. You can see a comprehensive
 example at [elements_demo.cpp][elements_demo].
+
+[![Elements demo](examples/elements_demo.png)][elements_demo]
 
 [elements_demo]: examples/elements_demo.cpp
 
