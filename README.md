@@ -16,39 +16,132 @@ Introduction
 ------------
 
 We aim to provide a simple non intrusive way to define simple user interfaces,
-based on rows.
+based on rows. The following is a minimal example:
 
-<!-- Here code with skeleton of SDL code. -->
+```cpp
+#include <SDL.h>
+#include "dui.hpp"
 
-Then we can easily put a State just before the main loop. A state holds all
-persistent UI data, like the mouse position, if it is pressed, as well as the
-current active element and so on. Think it as the main ui component.
+int
+main(int argc, char** argv)
+{
+   // Init SDL
+  SDL_Init(SDL_INIT_VIDEO);
+  SDL_Window* window = nullptr;
+  SDL_Renderer* renderer = nullptr;
+  SDL_CreateWindowAndRenderer(800, 600, SDL_WINDOW_SHOWN, &window, &renderer);
+  
+  // Create ui state
+  dui::State state{renderer};
 
-<!-- Here we add State creation and event handling code -->
+  // Main loop
+  for (;;) {
+    //Event handling
+    SDL_Event ev;
+    while (SDL_PollEvent(&ev)) {
+      // Send event to the state
+      state.event(ev);
 
-We need to send the events to the state, so it can known the mouse and keyboard
-status and store it for the elements. After all events are received, we can then
-start the frame:
+      if (ev.type == SDL_QUIT) {
+        return 0;
+      }
+    }
 
-<!-- Frame begin and .render() -->
+    // Begin frame
+    auto f = dui::frame(state);
+
+    // Add elements
+    dui::label(f, "Hello World", {350, 200});
+    if (dui::button(f, "Close App", {350, 220})) {
+      return 0;
+    }
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderFillRect(renderer, nullptr);
+
+    // End frame and render state
+    f.render();
+
+    SDL_RenderPresent(renderer);
+    SDL_Delay(1);
+  }
+  return 1;
+}
+```
+
+Let's dissect the code. Firstly we have the include. We just use the `dui.hpp`
+that includes all the necessary files. We could also use the dui
+`dui_single.hpp` that is the single file version so it is easier to attach on a
+project.
+
+```cpp
+#include "dui.hpp"
+```
+
+Then we create the State just before the main loop. A state holds all persistent
+UI data, like the mouse position, if it is pressed, as well as the current
+active element and so on. Think it as the main ui component.
+
+```cpp
+  // Create ui state
+  dui::State state{renderer};
+
+  // Main loop
+  for (;;) {
+    ...
+  }
+```
+
+We need to send the events to the state, so it knowns the mouse and keyboard
+status and store it for the elements.
+
+```cpp
+    //Event handling
+    SDL_Event ev;
+    while (SDL_PollEvent(&ev)) {
+      // Send event to the state
+      state.event(ev);
+
+      ...
+    }
+```
+
+After all events are received, we can then
+begin the frame and add elements:
+
+```cpp
+    // Begin frame
+    auto f = dui::frame(state);
+
+    // Add elements
+    dui::label(f, "Hello World", {350, 200});
+    if (dui::button(f, "Close App", {350, 220})) {
+      return 0;
+    }
+```
 
 The frame starts with the creation of a Frame object, which is done by frame()
 auxiliary function. Then when appropriated, we can call render() on it, which
-ends the frame and render it. Between these two, we add our elements:
+ends the frame and render it.
 
-<!-- Label -->
+```cpp
+    // Clear screen
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderFillRect(renderer, nullptr);
 
-(Label explanation. Comment it is too little to matter, so we need button)
+    // End frame and render state
+    f.render();
+```
 
-<!-- button -->
-
-(How button works.)
-
-Conclusion, link to example and image
+This is all what we need to get the following rendering. The button
+even works!
 
 ![Hello world](examples/hello_demo.png)
 
-<!-- Link to complete example here -->
+You can see this example complete with better error handling at
+[hello_demo.cpp][hello_demo]
+
+[hello_demo]: examples/hello_demo.cpp
 
 ### How to know when DUI is using the Mouse and Keyboard
 
