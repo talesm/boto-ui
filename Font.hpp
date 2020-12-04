@@ -1,7 +1,7 @@
 #ifndef DUI_FONT_HPP
 #define DUI_FONT_HPP
 
-#include "SDL.h"
+#include <SDL.h>
 
 namespace dui {
 

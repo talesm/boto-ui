@@ -1,7 +1,7 @@
 #ifndef DUI_EDGESIZE_HPP
 #define DUI_EDGESIZE_HPP
 
-#include "SDL.h"
+#include <SDL.h>
 
 namespace dui {
 
@@ -51,6 +51,6 @@ clientSize(const EdgeSize& edge, const SDL_Point& element)
   return {element.x - edge.left - edge.right,
           element.y - edge.top - edge.bottom};
 }
-}
+} // namespace dui
 
 #endif // DUI_EDGESIZE_HPP
