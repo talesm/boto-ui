@@ -166,12 +166,16 @@ header:
 Elements
 --------
 
-<!-- List and explain all elements we support -->
+We support a short but useful number of elements. You can see an comprehensive
+example at [elements_demo.cpp][elements_demo].
+
+[elements_demo]: examples/elements_demo.cpp
 
 Contributing
 ------------
 
-<!-- TODO -->
+Just open an issue if you have a problem, and just open a pull request if you
+have an solution.
 
 Credits
 -------
