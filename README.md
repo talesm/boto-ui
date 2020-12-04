@@ -161,12 +161,18 @@ header:
 
 ### Building examples
 
+The examples are all inside the examples subdirectory. You can build them using
+the cmake file provided on DUI root directory. They're built by default.
+
 ### Building single file header
+
+There is the custom target "single_header", that is disabled by default. It
+needs a decent version of nodejs installed on the system to work.
 
 Elements
 --------
 
-We support a short but useful number of elements. You can see an comprehensive
+We support a short but useful number of elements. You can see a comprehensive
 example at [elements_demo.cpp][elements_demo].
 
 [elements_demo]: examples/elements_demo.cpp
