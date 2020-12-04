@@ -12,8 +12,9 @@ namespace dui {
 struct InputBoxStyle
 {
   SDL_Color text;
-  PanelStyle box;
-  PanelStyle boxActive;
+  EdgeSize padding;
+  BorderedBoxStyle box;
+  BorderedBoxStyle boxActive;
 };
 
 namespace style {
@@ -21,22 +22,28 @@ namespace style {
 /// Default input box style
 constexpr InputBoxStyle INPUTBOX{
   TEXT,
-  {{{240, 240, 240, 255}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)},
-  {{{255, 255, 255, 255}, TEXT, TEXT, TEXT, TEXT}, EdgeSize::all(2)},
+  EdgeSize::all(2),
+  {{240, 240, 240, 255}, TEXT, TEXT, TEXT, TEXT},
+  {{255, 255, 255, 255}, TEXT, TEXT, TEXT, TEXT},
 };
 
 }
 
 inline SDL_Rect
-makeInputSize(SDL_Rect r)
+makeInputSize(SDL_Rect r, const EdgeSize& padding = style::INPUTBOX.padding)
 {
   if (r.w == 0 || r.h == 0) {
-    auto sz = measure('m'); // TODO allow customization for this
+    auto clientSz = measure('m'); // TODO allow customization for this
+    clientSz.x *= 16;
+
+    auto borderSize = EdgeSize::all(1);
+    auto elementSz = elementSize(padding + borderSize, clientSz);
+
     if (r.w == 0) {
-      r.w = sz.x * 16 + 4;
+      r.w = elementSz.x;
     }
     if (r.h == 0) {
-      r.h = sz.y + 4;
+      r.h = elementSz.y;
     }
   }
   return r;
@@ -49,7 +56,7 @@ textBoxBase(Group& target,
             SDL_Rect r,
             const InputBoxStyle& style = style::INPUTBOX)
 {
-  r = makeInputSize(r);
+  r = makeInputSize(r, style.padding);
   target.checkMouse(id, r);
 
   auto action = target.checkText(id);
@@ -64,10 +71,10 @@ textBoxBase(Group& target,
       break;
   }
   auto& currentStyle = active ? style.boxActive : style.box;
-  auto g = panel(target, id, r, Layout::NONE, currentStyle);
+  auto g = panel(target, id, r, Layout::NONE, {currentStyle, style.padding});
 
   // This creates an auto scroll effect if value text don't fit in the box;
-  auto clientSz = clientSize(currentStyle.padding, {r.w, r.h});
+  auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});
   auto contentSz = measure(value);
   int deltaX = contentSz.x - clientSz.x;
   if (deltaX > 0) {
@@ -79,9 +86,7 @@ textBoxBase(Group& target,
 
   if (active) {
     // Show cursor
-    auto cursorHeight =
-      r.h - currentStyle.padding.top - currentStyle.padding.bottom;
-    box(g, {int(value.size()) * 8, 0, 1, cursorHeight}, style.text);
+    box(g, {int(value.size()) * 8, 0, 1, clientSz.y}, style.text);
   }
   g.end();
   return action;
