@@ -1,16 +1,19 @@
 Direct User Interface
 =====================
 
-A simple immediate mode user interface designed for using with SDL2 2d renderer.
+[Click here to GET the latest single header file][dui_single]
+
+A simple immediate mode user interface designed for using with [SDL2][SDL2] 2d
+renderer.
 
 ![Elements demo](examples/elements_demo.png)
 
-<!-- Latest download here (put link to singleheader version and the file itself,
-and link for online docs) -->
+The project also can be used as it is, just by [downloading][dui_single] or
+checking out the current version. Be aware though that it might have some
+breakage and bugs as it still a very early stage project;
 
-The project <!--also--> can be used as it is, just by downloading or checking
-out the current version. Be aware though that it might have some breakage and
-bugs as it still a very early stage project;
+[SDL2]: https://www.libsdl.org/
+[dui_single]: dui_single.hpp
 
 Introduction
 ------------
