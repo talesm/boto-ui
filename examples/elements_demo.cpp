@@ -55,7 +55,7 @@ main(int argc, char** argv)
     auto f = dui::frame(state);
     dui::label(f, "Hello world", {400, 150});
 
-    auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500});
+    auto p = dui::panel(f, "mainPanel", {10, 10, 300, 580});
     dui::label(p, "Hello world");
     dui::label(p, "Hello world", {5});
     dui::label(p,
@@ -78,15 +78,15 @@ main(int argc, char** argv)
     }
     dui::choiceButton(p, "Option 2", &multiOption, OPTION2);
     dui::choiceButton(p, "Option 3", &multiOption, OPTION3);
-    if (auto g = dui::panel(p, "group1", {0, 10})) {
+    if (auto g = dui::panel(p, "group1")) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
       g.end();
     }
     auto panelStyle = dui::style::PANEL;
     panelStyle.border.center = {224, 255, 224, 255};
-    if (auto g = dui::panel(
-          p, "group2", {0, 10}, dui::Layout::HORIZONTAL, panelStyle)) {
+    if (auto g =
+          dui::panel(p, "group2", {0}, dui::Layout::HORIZONTAL, panelStyle)) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
       g.end();

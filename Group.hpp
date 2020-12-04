@@ -7,6 +7,10 @@
 
 namespace dui {
 
+namespace style {
+constexpr int elementSpacing = 2;
+} // namespace style
+
 enum class Layout : Uint8
 {
   NONE,
@@ -198,8 +202,29 @@ public:
 
   operator bool() const { return valid(); }
 
-  int width() const { return rect.w ? rect.w : bottomRight.x - topLeft.x; }
-  int height() const { return rect.h ? rect.h : bottomRight.y - topLeft.y; }
+  int width() const
+  {
+    if (rect.w > 0) {
+      return rect.w;
+    }
+    int w = bottomRight.x - topLeft.x;
+    if (layout == Layout::HORIZONTAL && w >= style::elementSpacing) {
+      w -= style::elementSpacing;
+    }
+    return w;
+  }
+
+  int height() const
+  {
+    if (rect.h > 0) {
+      return rect.h;
+    }
+    int h = bottomRight.y - topLeft.y;
+    if (layout == Layout::VERTICAL && h >= style::elementSpacing) {
+      h -= style::elementSpacing;
+    }
+    return h;
+  }
 
   void end();
 };
@@ -255,10 +280,10 @@ Group::end()
 {
   if (parent) {
     if (rect.w == 0) {
-      rect.w = bottomRight.x - topLeft.x;
+      rect.w = width();
     }
     if (rect.h == 0) {
-      rect.h = bottomRight.y - topLeft.y;
+      rect.h = height();
     }
     parent->unlock(id, rect);
     parent->advance({rect.x + rect.w, rect.y + rect.h});
@@ -305,9 +330,9 @@ Group::advance(const SDL_Point& p)
   SDL_assert(!locked);
   if (layout == Layout::VERTICAL) {
     bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
-    bottomRight.y += p.y;
+    bottomRight.y += p.y + 2;
   } else if (layout == Layout::HORIZONTAL) {
-    bottomRight.x += p.x;
+    bottomRight.x += p.x + 2;
     bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
   } else {
     bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);

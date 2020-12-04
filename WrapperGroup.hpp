@@ -46,6 +46,14 @@ WrapperGroup::end()
   }
   rect.x -= padding.left;
   rect.y -= padding.top;
+  if (layout == Layout::HORIZONTAL &&
+      bottomRight.x - topLeft.x > style::elementSpacing) {
+    bottomRight.x -= style::elementSpacing;
+  }
+  if (layout == Layout::VERTICAL &&
+      bottomRight.y - topLeft.y > style::elementSpacing) {
+    bottomRight.y -= style::elementSpacing;
+  }
   topLeft.x -= padding.left;
   topLeft.y -= padding.top;
   bottomRight.x += padding.right;

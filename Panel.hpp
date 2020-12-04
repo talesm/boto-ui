@@ -57,7 +57,7 @@ protected:
 inline Panel
 panel(Group& target,
       std::string_view id,
-      const SDL_Rect& r,
+      const SDL_Rect& r = {0},
       Layout layout = Layout::VERTICAL,
       const PanelStyle& style = style::PANEL)
 {
