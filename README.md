@@ -55,12 +55,20 @@ Conclusion, link to example and image
 <!-- Explain why we want to know about mouse and keyboard, explain it is a good
 time to introduce panels, then show the necessary changes -->
 
+![Focus](examples/focus_demo.gif)
+
 <!-- Link to complete examples, explain with colors -->
 
 Build
 -----
 
-<!-- TODO -->
+You need only to have a C++17 compiler and SDL library installed. The library
+itself is header only, but we use CMake to build examples and the single file
+header:
+
+### Building examples
+
+### Building single file header
 
 Elements
 --------
