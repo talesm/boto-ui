@@ -145,12 +145,66 @@ You can see this example complete with better error handling at
 
 ### How to know when DUI is using the Mouse and Keyboard
 
-<!-- Explain why we want to know about mouse and keyboard, explain it is a good
-time to introduce panels, then show the necessary changes -->
+In many situations, you don't want to delegate all interaction for dui, but
+manage some interactions by yourself. There are two methods that help with this,
+wantsMouse() and wantsKeyboard(). You can call these before instantiating the
+Frame to know if the mouse or keyboard are being used. As an example let's
+modify our previous example by adding this:
+
+```cpp
+  // main loop
+  for(;;) {
+    ...
+
+    // anywhere before frame() call
+    bool mouseFocus = state.wantsMouse();
+    bool keyboardFocus = state.wantsKeyboard();
+
+    ...
+  }
+```
+
+The mouse is only required if the pointer is hovering a named group or an
+actionable element *or* if you are actively draging an actionable element. The
+keyboard is requested only if you click an actionable element.
+
+You could tests mouseFocus or keyboardFocus on the events to check if they're
+free to you. Here in this example we want add some labels identifying if you
+have either focus. Let's use this moment to introduce a new element too:
+
+```cpp
+    // Frame begin
+    auto f = dui::frame(state);
+
+    // Panel begins
+    auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500});
+
+    // Panels are layout vertically by default, so no need add position
+    // If you do add the position, it will be used as an offset from the panel
+    dui::label(p, "Mouse Focus");
+    dui::label(p, (mouseFocus ? "Yes" : "No"), {5, 0}); // 5 pixels x-offset
+    dui::label(p, "Keyboard Focus");
+    dui::label(p, (keyboardFocus ? "Yes" : "No"), {5, 0});
+    dui::button(p, "dummy button");
+
+    ...
+
+    // Panel ends, you can add elements directly to f after that
+    p.end();
+```
+
+If hover the mouse inside the panel, mouseFocus is true, if you hover outside,
+it is false. If you press and hold the left mouse button on `dummy button`,
+mouseFocus will stay true even if you move outside the panel, until you release
+the button. The keyboardFocus in other hand, will only be true if you click in
+the button and will stay true until you click elsewhere,
+
+You can see this example, expanded with colors and more elements at
+[focus_demo.cpp][focus_demo]. The complete example looks like the image bellow:
 
 ![Focus](examples/focus_demo.gif)
 
-<!-- Link to complete examples, explain with colors -->
+[focus_demo]: examples/focus_demo.cpp
 
 Build
 -----
