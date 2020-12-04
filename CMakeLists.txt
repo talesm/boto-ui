@@ -21,6 +21,13 @@ target_link_libraries(focus_demo PRIVATE dui)
 add_executable(hello_demo examples/hello_demo.cpp)
 target_link_libraries(hello_demo PRIVATE dui)
 
+add_custom_target(single_header
+  node ${CMAKE_CURRENT_SOURCE_DIR}/makeSingleHeader.js
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMENT "Generating single header file" 
+  VERBATIM
+)
+
 # Build documentation
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

@@ -23,3 +23,4 @@ Version 0.1 - MVP
   - NONE: free positioning;
   - VERTICAL: position each element below the previous one;
   - HORIZONTAL: position each element on the left of the previous one;
+- Single header script
