@@ -68,12 +68,13 @@ buttonBase(Group& target,
   if (str.empty()) {
     str = id;
   }
-  auto adv = elementSize(style.padding, measure(str));
+  auto adv = elementSize(style.padding + EdgeSize::all(1), measure(str));
   SDL_Rect r{p.x, p.y, adv.x, adv.y};
   auto action = target.checkMouse(id, r);
   bool grabbing = action == MouseAction::HOLD;
 
   PanelStyle curStyle = style::PANEL;
+  curStyle.padding = style.padding;
   if (grabbing == pushed) {
     curStyle.border = grabbing ? style.grabbed : style.normal;
   } else {
