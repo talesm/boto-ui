@@ -22,11 +22,11 @@ MVP (0.1)
 - [x] want to capture mouse/keyboard
   - [x] Fix it for mouse hover
 - [x] Move elements to their own files
-- [ ] Generate doxygen
 
 Wishlist
 --------
 
+- [ ] Generate doxygen
 - [ ] Styling
 - [ ] TTF Fonts
 - [ ] Allow some sort of cache on State
