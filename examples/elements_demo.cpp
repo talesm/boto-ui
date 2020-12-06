@@ -71,7 +71,7 @@ main(int argc, char** argv)
     dui::label(p,
                "Hello world",
                {5},
-               dui::style::LABEL.withText({0xf0, 0x80, 0x80, 0xff}));
+               dui::style::LABEL.withTextColor({0xf0, 0x80, 0x80, 0xff}));
 
     // Push button example. It returns true only when you click on it (press and
     // release)

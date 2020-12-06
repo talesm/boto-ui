@@ -6,10 +6,10 @@ yesOrNo(dui::Group& target, bool value)
 {
   if (value) {
     dui::label(
-      target, "Yes", {5}, dui::style::LABEL.withText({20, 128, 100, 255}));
+      target, "Yes", {5}, dui::style::LABEL.withTextColor({20, 128, 100, 255}));
   } else {
     dui::label(
-      target, "No", {5}, dui::style::LABEL.withText({200, 100, 20, 255}));
+      target, "No", {5}, dui::style::LABEL.withTextColor({200, 100, 20, 255}));
   }
 }
 
