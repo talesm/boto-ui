@@ -85,17 +85,13 @@ buttonBase(Group& target,
   auto adv = elementSize(style.padding + style.border, measure(str));
   SDL_Rect r{p.x, p.y, adv.x, adv.y};
   auto action = target.checkMouse(id, r);
-  bool grabbing = action == MouseAction::HOLD;
 
-  auto& colors = decideButtonColors(style, pushed, grabbing);
-  auto g =
-    panel(target,
-          id,
+  element(target,
+          str,
           r,
-          Layout::NONE,
-          {{colors.background, colors.border, style.border}, style.padding});
-  text(g, str, {0}, colors.text);
-  g.end();
+          {style.padding,
+           style.border,
+           decideButtonColors(style, pushed, action == MouseAction::HOLD)});
   return action == MouseAction::ACTION;
 }
 
