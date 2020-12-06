@@ -4,6 +4,7 @@
 #include <string_view>
 #include "EdgeSize.hpp"
 #include "Group.hpp"
+#include "theme.hpp"
 
 namespace dui {
 
@@ -247,10 +248,18 @@ struct ElementStyle
 };
 
 namespace style {
-constexpr ElementStyle ELEMENT{
-  EdgeSize::all(2),
-  EdgeSize::all(0),
-  ElementColorStyle{TEXT},
+
+template<>
+struct FromTheme<ElementStyle, SteelBlue>
+{
+  constexpr static ElementStyle get()
+  {
+    return {
+      EdgeSize::all(2),
+      EdgeSize::all(0),
+      ElementColorStyle{TEXT},
+    };
+  }
 };
 } // namespace style
 
@@ -274,7 +283,7 @@ inline void
 element(Group& target,
         std::string_view str,
         const SDL_Rect& r = {0},
-        const ElementStyle& style = style::ELEMENT)
+        const ElementStyle& style = themeFor<ElementStyle>())
 {
   auto offset = style.border + style.padding;
   auto sz = computeSize(str, offset, {r.w, r.h});

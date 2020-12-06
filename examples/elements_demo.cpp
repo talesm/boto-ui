@@ -68,10 +68,11 @@ main(int argc, char** argv)
 
     // Labels inside the panel
     dui::label(p, "Hello world");
-    dui::label(p,
-               "Hello world",
-               {5},
-               dui::style::LABEL.withTextColor({0xf0, 0x80, 0x80, 0xff}));
+    dui::label(
+      p,
+      "Hello world",
+      {5},
+      dui::themeFor<dui::LabelStyle>().withTextColor({0xf0, 0x80, 0x80, 0xff}));
 
     // Push button example. It returns true only when you click on it (press and
     // release)
