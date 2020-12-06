@@ -4,7 +4,7 @@ TODO
 Freestyle (0.2)
 ---------------
 
-- [ ] textBox basic UTF-8 awareness;
+- [x] textBox basic UTF-8 awareness;
 - [ ] A basic element style model;
 - [ ] Styles for {text|int|double}Fields;
 - [ ] Custom border sizes;
