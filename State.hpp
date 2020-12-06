@@ -55,6 +55,8 @@ private:
   bool gGrabbed = false;
   bool gActive = false;
 
+  Uint32 ticksCount;
+
   SDL_Texture* font;
 
 public:
@@ -162,6 +164,9 @@ public:
    */
   void display(const Shape& item) { dList.insert(item); }
 
+  /// Ticks count
+  Uint32 ticks() const { return ticksCount; }
+
   /**
    * @brief Context for frames
    *
@@ -232,6 +237,7 @@ private:
     inFrame = true;
     dList.clear();
     mHovering = false;
+    ticksCount = SDL_GetTicks();
   }
 
   void endFrame()

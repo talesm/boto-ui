@@ -91,7 +91,7 @@ textBoxBase(Group& target,
 
   text(g, value, {0}, currentColors.text);
 
-  if (active) {
+  if (active && (g.getState().ticks() / 512) % 2) {
     // Show cursor
     box(g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text);
   }
