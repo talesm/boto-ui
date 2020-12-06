@@ -22,17 +22,20 @@ namespace style {
 
 constexpr BorderedBoxStyle BUTTONBOX{
   {176, 195, 222, 255},
-  {255, 255, 255, 255},
-  {255, 255, 255, 255},
-  {0, 0, 0, 255},
-  {0, 0, 0, 255},
+  {
+    {255, 255, 255, 255},
+    {255, 255, 255, 255},
+    {0, 0, 0, 255},
+    {0, 0, 0, 255},
+  },
 };
 
 constexpr BorderedBoxStyle BUTTONBOX_GRABBED{
-  BUTTONBOX.withCenter({147, 173, 210, 255})};
-constexpr BorderedBoxStyle BUTTONBOX_PRESSED{BUTTONBOX.withInvertedBorders()};
+  BUTTONBOX.withBackground({147, 173, 210, 255})};
+constexpr BorderedBoxStyle BUTTONBOX_PRESSED{
+  BUTTONBOX.withBorderColor(BUTTONBOX.borderColor.withInvertedBorders())};
 constexpr BorderedBoxStyle BUTTONBOX_PRESSED_GRABBED{
-  BUTTONBOX_PRESSED.withCenter(BUTTONBOX_GRABBED.center)};
+  BUTTONBOX_PRESSED.withBackground(BUTTONBOX_GRABBED.background)};
 
 constexpr ButtonStyle BUTTON{
   TEXT,

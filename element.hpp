@@ -2,6 +2,7 @@
 #define DUI_BASIC_WIDGETS_HPP_
 
 #include <string_view>
+#include "EdgeSize.hpp"
 #include "Group.hpp"
 
 namespace dui {
@@ -31,38 +32,51 @@ box(Group& target, SDL_Rect rect, SDL_Color c)
   state.display(Shape::Box(rect, c));
 }
 
-// Border style
-struct BorderedBoxStyle
+struct BorderColorStyle
 {
-  SDL_Color center;
   SDL_Color left;
   SDL_Color top;
   SDL_Color right;
   SDL_Color bottom;
 
-  constexpr BorderedBoxStyle withCenter(SDL_Color c) const
+  constexpr BorderColorStyle withLeft(SDL_Color c) const
   {
-    return {c, left, top, right, bottom};
+    return {c, top, right, bottom};
   }
-  constexpr BorderedBoxStyle withLeft(SDL_Color c) const
+  constexpr BorderColorStyle withTop(SDL_Color c) const
   {
-    return {center, c, top, right, bottom};
+    return {left, c, right, bottom};
   }
-  constexpr BorderedBoxStyle withTop(SDL_Color c) const
+  constexpr BorderColorStyle withRight(SDL_Color c) const
   {
-    return {center, left, c, right, bottom};
+    return {left, top, c, bottom};
   }
-  constexpr BorderedBoxStyle withRight(SDL_Color c) const
+  constexpr BorderColorStyle withBotton(SDL_Color c) const
   {
-    return {center, left, top, c, bottom};
+    return {left, top, right, c};
   }
-  constexpr BorderedBoxStyle withBotton(SDL_Color c) const
+  constexpr BorderColorStyle withInvertedBorders() const
   {
-    return {center, left, top, right, c};
+    return {right, bottom, left, top};
   }
-  constexpr BorderedBoxStyle withInvertedBorders() const
+
+  static constexpr BorderColorStyle all(SDL_Color c) { return {c, c, c, c}; }
+};
+
+// Border style
+struct BorderedBoxStyle
+{
+  SDL_Color background;
+  BorderColorStyle borderColor;
+
+  constexpr BorderedBoxStyle withBackground(SDL_Color c) const
   {
-    return {center, right, bottom, left, top};
+    return {c, borderColor};
+  }
+  constexpr BorderedBoxStyle withBorderColor(
+    const BorderColorStyle& borderColor) const
+  {
+    return {background, borderColor};
   }
 };
 
@@ -70,11 +84,11 @@ struct BorderedBoxStyle
 inline void
 borderedBox(Group& target, const SDL_Rect& r, const BorderedBoxStyle& style)
 {
-  auto c = style.center;
-  auto e = style.right;
-  auto n = style.top;
-  auto w = style.left;
-  auto s = style.bottom;
+  auto c = style.background;
+  auto e = style.borderColor.right;
+  auto n = style.borderColor.top;
+  auto w = style.borderColor.left;
+  auto s = style.borderColor.bottom;
   auto g = group(target, {}, {0}, Layout::NONE);
   box(g, {r.x + 1, r.y, r.w - 2, 1}, {n.r, n.g, n.b, n.a});
   box(g, {r.x, r.y + 1, 1, r.h - 2}, {w.r, w.g, w.b, w.a});

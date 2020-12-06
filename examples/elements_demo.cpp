@@ -112,7 +112,7 @@ main(int argc, char** argv)
 
     // Example changing background color of the next panel
     auto panelStyle = dui::style::PANEL;
-    panelStyle.border.center = {224, 255, 224, 255};
+    panelStyle.border.background = {224, 255, 224, 255};
     // And also making it grow horizontally
     if (auto g =
           dui::panel(p, "group2", {0}, dui::Layout::HORIZONTAL, panelStyle)) {
