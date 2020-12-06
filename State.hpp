@@ -404,11 +404,19 @@ State::event(SDL_Event& ev)
     if (eActive.empty()) {
       return;
     }
-    for (int i = 0; i < SDL_TEXTINPUTEVENT_TEXT_SIZE; ++i) {
-      tBuffer[i] = ev.text.text[i];
-      if (tBuffer[i] == 0) {
+    for (int i = 0, j = 0; i < SDL_TEXTINPUTEVENT_TEXT_SIZE; ++i) {
+      tBuffer[j] = ev.text.text[i];
+      if (tBuffer[j] == 0) {
         break;
       }
+      // Magic handling of utf8
+      if ((tBuffer[j] & 0xc0) == 0x80) {
+        continue;
+      }
+      if ((tBuffer[j] & 0x80) != 0) {
+        tBuffer[j] = '\x0f'; // This is valid on our particular font
+      }
+      ++j;
     }
     tChanged = true;
     tAction = TextAction::INPUT;
