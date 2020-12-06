@@ -11,7 +11,7 @@ namespace dui {
 // Style for panels
 struct PanelStyle
 {
-  BorderedBoxStyle border;
+  BorderedBoxStyle box;
   EdgeSize padding;
 };
 
@@ -40,7 +40,7 @@ protected:
   void afterUnwrap() final
   {
     layout = Layout::NONE;
-    borderedBox(*this, {0, 0, width(), height()}, style.border);
+    borderedBox(*this, {0, 0, width(), height()}, style.box);
   }
 };
 

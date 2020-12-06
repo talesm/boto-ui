@@ -11,33 +11,34 @@ namespace dui {
 /// Input box style
 struct InputBoxStyle
 {
-  SDL_Color text;
   EdgeSize padding;
-  BorderedBoxStyle box;
-  BorderedBoxStyle boxActive;
+  EdgeSize border;
+  ElementColorStyle normal;
+  ElementColorStyle active;
 };
 
 namespace style {
 
 /// Default input box style
 constexpr InputBoxStyle INPUTBOX{
-  TEXT,
   EdgeSize::all(2),
-  {{240, 240, 240, 255}, TEXT, TEXT, TEXT, TEXT},
-  {{255, 255, 255, 255}, TEXT, TEXT, TEXT, TEXT},
+  EdgeSize::all(1),
+  {TEXT, {240, 240, 240, 255}, BorderColorStyle::all(TEXT)},
+  {TEXT, {255, 255, 255, 255}, BorderColorStyle::all(TEXT)},
 };
 
 }
 
 inline SDL_Rect
-makeInputSize(SDL_Rect r, const EdgeSize& padding = style::INPUTBOX.padding)
+makeInputSize(SDL_Rect r,
+              const EdgeSize& padding = style::INPUTBOX.padding,
+              const EdgeSize& border = style::INPUTBOX.border)
 {
   if (r.w == 0 || r.h == 0) {
     auto clientSz = measure('m'); // TODO allow customization for this
     clientSz.x *= 16;
 
-    auto borderSize = EdgeSize::all(1);
-    auto elementSz = elementSize(padding + borderSize, clientSz);
+    auto elementSz = elementSize(padding + border, clientSz);
 
     if (r.w == 0) {
       r.w = elementSz.x;
@@ -70,8 +71,14 @@ textBoxBase(Group& target,
       active = true;
       break;
   }
-  auto& currentStyle = active ? style.boxActive : style.box;
-  auto g = panel(target, id, r, Layout::NONE, {currentStyle, style.padding});
+  auto& currentColors = active ? style.active : style.normal;
+  auto g =
+    panel(target,
+          id,
+          r,
+          Layout::NONE,
+          {{currentColors.background, currentColors.border, style.border},
+           style.padding});
 
   // This creates an auto scroll effect if value text don't fit in the box;
   auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});
@@ -82,11 +89,11 @@ textBoxBase(Group& target,
     value.remove_prefix(deltaChar);
   }
 
-  text(g, value, {0}, style.text);
+  text(g, value, {0}, currentColors.text);
 
   if (active) {
     // Show cursor
-    box(g, {int(value.size()) * 8, 0, 1, clientSz.y}, style.text);
+    box(g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text);
   }
   g.end();
   return action;

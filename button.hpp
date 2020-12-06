@@ -10,17 +10,18 @@ namespace dui {
 // Style for button
 struct ButtonStyle
 {
-  SDL_Color text;
   EdgeSize padding;
-  BorderedBoxStyle normal;
-  BorderedBoxStyle grabbed;
-  BorderedBoxStyle pressed;
-  BorderedBoxStyle pressedGrabbed;
+  EdgeSize border;
+  ElementColorStyle normal;
+  ElementColorStyle grabbed;
+  ElementColorStyle pressed;
+  ElementColorStyle pressedGrabbed;
 };
 
 namespace style {
 
-constexpr BorderedBoxStyle BUTTONBOX{
+constexpr ElementColorStyle BUTTONBOX{
+  TEXT,
   {176, 195, 222, 255},
   {
     {255, 255, 255, 255},
@@ -30,21 +31,31 @@ constexpr BorderedBoxStyle BUTTONBOX{
   },
 };
 
-constexpr BorderedBoxStyle BUTTONBOX_GRABBED{
+constexpr ElementColorStyle BUTTONBOX_GRABBED{
   BUTTONBOX.withBackground({147, 173, 210, 255})};
-constexpr BorderedBoxStyle BUTTONBOX_PRESSED{
-  BUTTONBOX.withBorderColor(BUTTONBOX.borderColor.withInvertedBorders())};
-constexpr BorderedBoxStyle BUTTONBOX_PRESSED_GRABBED{
+constexpr ElementColorStyle BUTTONBOX_PRESSED{
+  BUTTONBOX.withBorder(BUTTONBOX.border.invert())};
+constexpr ElementColorStyle BUTTONBOX_PRESSED_GRABBED{
   BUTTONBOX_PRESSED.withBackground(BUTTONBOX_GRABBED.background)};
 
 constexpr ButtonStyle BUTTON{
-  TEXT,
   EdgeSize::all(3),
+  EdgeSize::all(2),
   BUTTONBOX,
   BUTTONBOX_GRABBED,
   BUTTONBOX_PRESSED,
   BUTTONBOX_PRESSED_GRABBED,
 };
+}
+
+constexpr const ElementColorStyle&
+decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
+{
+  if (grabbing == pushed) {
+    return (grabbing) ? style.grabbed : style.normal;
+  } else {
+    return (grabbing) ? style.pressedGrabbed : style.pressed;
+  }
 }
 
 /**
@@ -71,20 +82,19 @@ buttonBase(Group& target,
   if (str.empty()) {
     str = id;
   }
-  auto adv = elementSize(style.padding + EdgeSize::all(1), measure(str));
+  auto adv = elementSize(style.padding + style.border, measure(str));
   SDL_Rect r{p.x, p.y, adv.x, adv.y};
   auto action = target.checkMouse(id, r);
   bool grabbing = action == MouseAction::HOLD;
 
-  PanelStyle curStyle = style::PANEL;
-  curStyle.padding = style.padding;
-  if (grabbing == pushed) {
-    curStyle.border = grabbing ? style.grabbed : style.normal;
-  } else {
-    curStyle.border = grabbing ? style.pressedGrabbed : style.pressed;
-  }
-  auto g = panel(target, id, r, Layout::NONE, curStyle);
-  text(g, str, {0}, style.text);
+  auto& colors = decideButtonColors(style, pushed, grabbing);
+  auto g =
+    panel(target,
+          id,
+          r,
+          Layout::NONE,
+          {{colors.background, colors.border, style.border}, style.padding});
+  text(g, str, {0}, colors.text);
   g.end();
   return action == MouseAction::ACTION;
 }

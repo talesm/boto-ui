@@ -55,7 +55,7 @@ struct BorderColorStyle
   {
     return {left, top, right, c};
   }
-  constexpr BorderColorStyle withInvertedBorders() const
+  constexpr BorderColorStyle invert() const
   {
     return {right, bottom, left, top};
   }
@@ -68,15 +68,20 @@ struct BorderedBoxStyle
 {
   SDL_Color background;
   BorderColorStyle borderColor;
+  EdgeSize borderSize;
 
-  constexpr BorderedBoxStyle withBackground(SDL_Color c) const
+  constexpr BorderedBoxStyle withBackground(SDL_Color background) const
   {
-    return {c, borderColor};
+    return {background, borderColor, borderSize};
   }
   constexpr BorderedBoxStyle withBorderColor(
     const BorderColorStyle& borderColor) const
   {
-    return {background, borderColor};
+    return {background, borderColor, borderSize};
+  }
+  constexpr BorderedBoxStyle withBorderSize(const EdgeSize& borderSize) const
+  {
+    return {background, borderColor, borderSize};
   }
 };
 
@@ -89,12 +94,18 @@ borderedBox(Group& target, const SDL_Rect& r, const BorderedBoxStyle& style)
   auto n = style.borderColor.top;
   auto w = style.borderColor.left;
   auto s = style.borderColor.bottom;
+  auto esz = style.borderSize.right;
+  auto nsz = style.borderSize.top;
+  auto wsz = style.borderSize.left;
+  auto ssz = style.borderSize.bottom;
   auto g = group(target, {}, {0}, Layout::NONE);
-  box(g, {r.x + 1, r.y, r.w - 2, 1}, {n.r, n.g, n.b, n.a});
-  box(g, {r.x, r.y + 1, 1, r.h - 2}, {w.r, w.g, w.b, w.a});
-  box(g, {r.x + 1, r.y + r.h - 2 + 1, r.w - 2, 1}, {s.r, s.g, s.b, s.a});
-  box(g, {r.x + r.w - 2 + 1, r.y + 1, 1, r.h - 2}, {e.r, e.g, e.b, e.a});
-  box(g, {r.x + 1, r.y + 1, r.w - 2, r.h - 2}, {c.r, c.g, c.b, c.a});
+  box(g, {r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
+  box(g, {r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
+  box(g, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, {s.r, s.g, s.b, s.a});
+  box(g, {r.x + r.w - esz, r.y + 1, esz, r.h - 2}, {e.r, e.g, e.b, e.a});
+  box(g,
+      {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz},
+      {c.r, c.g, c.b, c.a});
   g.end();
 }
 
@@ -179,6 +190,28 @@ texturedBox(Group& target, SDL_Texture* texture, SDL_Rect rect)
   rect.y += caret.y;
   state.display(Shape::Texture(rect, texture));
 }
+
+// Style for element state
+struct ElementColorStyle
+{
+  SDL_Color text;
+  SDL_Color background;
+  BorderColorStyle border;
+
+  constexpr ElementColorStyle withText(SDL_Color text) const
+  {
+    return {text, background, border};
+  }
+  constexpr ElementColorStyle withBackground(SDL_Color background) const
+  {
+    return {text, background, border};
+  }
+  constexpr ElementColorStyle withBorder(const BorderColorStyle& border) const
+  {
+    return {text, background, border};
+  }
+};
+
 } // namespace dui
 
 #endif // DUI_BASIC_WIDGETS_HPP_
