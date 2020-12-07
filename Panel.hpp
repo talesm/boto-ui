@@ -35,7 +35,7 @@ struct FromTheme<Panel, SteelBlue>
   {
     return {
       {219, 228, 240, 240},
-      {TEXT, TEXT, TEXT, TEXT},
+      BorderColorStyle::all(themeFor<Text>().color),
       EdgeSize::all(1),
       EdgeSize::all(2),
     };

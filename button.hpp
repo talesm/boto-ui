@@ -23,7 +23,7 @@ struct Button;
 namespace style {
 
 constexpr ElementColorStyle BUTTONBOX{
-  TEXT,
+  themeFor<Text>(),
   {176, 195, 222, 255},
   {
     {255, 255, 255, 255},

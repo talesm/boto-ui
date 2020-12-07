@@ -13,7 +13,7 @@ namespace dui {
 // Style for element state
 struct ElementColorStyle
 {
-  SDL_Color text;
+  TextStyle text;
   SDL_Color background;
   BorderColorStyle border;
 
@@ -77,7 +77,7 @@ struct FromTheme<Element, SteelBlue>
     return {
       EdgeSize::all(2),
       EdgeSize::all(0),
-      ElementColorStyle{TEXT},
+      themeFor<Text>(),
     };
   }
 };

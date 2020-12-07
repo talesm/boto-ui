@@ -26,11 +26,12 @@ struct FromTheme<InputBoxBase, SteelBlue>
 {
   constexpr static InputBoxStyle get()
   {
+    auto textStyle = themeFor<Text>();
     return {
       EdgeSize::all(2),
       EdgeSize::all(1),
-      {TEXT, {240, 240, 240, 255}, BorderColorStyle::all(TEXT)},
-      {TEXT, {255, 255, 255, 255}, BorderColorStyle::all(TEXT)},
+      {textStyle, {240, 240, 240, 255}, BorderColorStyle::all(textStyle.color)},
+      {textStyle, {255, 255, 255, 255}, BorderColorStyle::all(textStyle.color)},
     };
   }
 };
@@ -103,7 +104,7 @@ textBoxBase(Group& target,
 
   if (active && (g.getState().ticks() / 512) % 2) {
     // Show cursor
-    box(g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text);
+    box(g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text.color);
   }
   g.end();
   return action;

@@ -3,12 +3,27 @@
 
 #include <SDL.h>
 #include "Group.hpp"
+#include "theme.hpp"
 
 namespace dui {
 
+// Text style
+struct TextStyle
+{
+  SDL_Color color;
+  // TODO: Font
+};
+
+struct Text;
+
 namespace style {
+
 /// Default text style
-constexpr SDL_Color TEXT{45, 72, 106, 255};
+template<>
+struct FromTheme<Text, SteelBlue>
+{
+  constexpr static TextStyle get() { return {45, 72, 106, 255}; }
+};
 }
 
 /// Measure the given character
@@ -34,7 +49,10 @@ measure(std::string_view text)
  * @param c the color (style::TEXT by default)
  */
 inline void
-character(Group& target, char ch, const SDL_Point& p, SDL_Color c = style::TEXT)
+character(Group& target,
+          char ch,
+          const SDL_Point& p,
+          const TextStyle& style = themeFor<Text>())
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
@@ -43,7 +61,7 @@ character(Group& target, char ch, const SDL_Point& p, SDL_Color c = style::TEXT)
   target.advance({p.x + 8, p.y + 8});
   SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, 8, 8};
   SDL_Rect srcRect{(ch % 16) * 8, (ch / 16) * 8, 8, 8};
-  state.display(Shape::Texture(dstRect, state.getFont(), srcRect, c));
+  state.display(Shape::Texture(dstRect, state.getFont(), srcRect, style.color));
 }
 
 /**
@@ -58,7 +76,7 @@ inline void
 text(Group& target,
      std::string_view str,
      const SDL_Point& p,
-     SDL_Color c = style::TEXT)
+     const TextStyle& style = themeFor<Text>())
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
@@ -68,7 +86,8 @@ text(Group& target,
   SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, 8, 8};
   for (auto ch : str) {
     SDL_Rect srcRect{(ch % 16) * 8, (ch / 16) * 8, 8, 8};
-    state.display(Shape::Texture(dstRect, state.getFont(), srcRect, c));
+    state.display(
+      Shape::Texture(dstRect, state.getFont(), srcRect, style.color));
     dstRect.x += 8;
   }
 }
