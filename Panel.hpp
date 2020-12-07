@@ -9,10 +9,19 @@
 namespace dui {
 
 // Style for panels
-struct PanelStyle
+struct PanelStyle : BorderedBoxStyle
 {
-  BorderedBoxStyle box;
   EdgeSize padding;
+
+  PanelStyle() = default;
+
+  constexpr PanelStyle(SDL_Color background,
+                       const BorderColorStyle& borderColor,
+                       const EdgeSize& border,
+                       const EdgeSize& padding)
+    : BorderedBoxStyle{background, borderColor, border}
+    , padding(padding)
+  {}
 };
 
 namespace style {
@@ -23,11 +32,9 @@ struct FromTheme<PanelStyle, SteelBlue>
   constexpr static PanelStyle get()
   {
     return {
-      {
-        {219, 228, 240, 240},
-        {TEXT, TEXT, TEXT, TEXT},
-        EdgeSize::all(1),
-      },
+      {219, 228, 240, 240},
+      {TEXT, TEXT, TEXT, TEXT},
+      EdgeSize::all(1),
       EdgeSize::all(2),
     };
   }
@@ -53,7 +60,7 @@ protected:
   void afterUnwrap() final
   {
     layout = Layout::NONE;
-    borderedBox(*this, {0, 0, width(), height()}, style.box);
+    borderedBox(*this, {0, 0, width(), height()}, style);
   }
 };
 
