@@ -80,9 +80,29 @@ struct BorderedBoxStyle
   }
 };
 
+struct Box;
+
+namespace style {
+/// Default panel style
+template<>
+struct FromTheme<Box, SteelBlue>
+{
+  constexpr static BorderedBoxStyle get()
+  {
+    return {
+      {219, 228, 240, 240},
+      BorderColorStyle::all({45, 72, 106, 255}),
+      EdgeSize::all(1),
+    };
+  }
+};
+}
+
 // A box with colored border
 inline void
-borderedBox(Group& target, const SDL_Rect& r, const BorderedBoxStyle& style)
+borderedBox(Group& target,
+            const SDL_Rect& r,
+            const BorderedBoxStyle& style = themeFor<Box>())
 {
   auto c = style.background;
   auto e = style.borderColor.right;

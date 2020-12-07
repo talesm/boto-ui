@@ -22,6 +22,11 @@ struct PanelStyle : BorderedBoxStyle
     : BorderedBoxStyle{background, borderColor, border}
     , padding(padding)
   {}
+
+  constexpr PanelStyle(const BorderedBoxStyle& base, const EdgeSize& padding)
+    : BorderedBoxStyle(base)
+    , padding(padding)
+  {}
 };
 
 struct Panel;
@@ -33,12 +38,8 @@ struct FromTheme<Panel, SteelBlue>
 {
   constexpr static PanelStyle get()
   {
-    return {
-      {219, 228, 240, 240},
-      BorderColorStyle::all(themeFor<Text>().color),
-      EdgeSize::all(1),
-      EdgeSize::all(2),
-    };
+    auto boxStyle = themeFor<Box>();
+    return {boxStyle, EdgeSize::all(2)};
   }
 };
 }
