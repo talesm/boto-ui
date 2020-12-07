@@ -17,8 +17,21 @@ struct PanelStyle
 
 namespace style {
 /// Default panel style
-constexpr PanelStyle PANEL{{{219, 228, 240, 240}, TEXT, TEXT, TEXT, TEXT},
-                           EdgeSize::all(2)};
+template<>
+struct FromTheme<PanelStyle, SteelBlue>
+{
+  constexpr static PanelStyle get()
+  {
+    return {
+      {
+        {219, 228, 240, 240},
+        {TEXT, TEXT, TEXT, TEXT},
+        EdgeSize::all(1),
+      },
+      EdgeSize::all(2),
+    };
+  }
+};
 }
 
 /// A panel class @see panel()
@@ -59,7 +72,7 @@ panel(Group& target,
       std::string_view id,
       const SDL_Rect& r = {0},
       Layout layout = Layout::VERTICAL,
-      const PanelStyle& style = style::PANEL)
+      const PanelStyle& style = themeFor<PanelStyle>())
 {
   return {&target, id, r, layout, style};
 }

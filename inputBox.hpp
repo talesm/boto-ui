@@ -19,20 +19,25 @@ struct InputBoxStyle
 
 namespace style {
 
-/// Default input box style
-constexpr InputBoxStyle INPUTBOX{
-  EdgeSize::all(2),
-  EdgeSize::all(1),
-  {TEXT, {240, 240, 240, 255}, BorderColorStyle::all(TEXT)},
-  {TEXT, {255, 255, 255, 255}, BorderColorStyle::all(TEXT)},
+template<>
+struct FromTheme<InputBoxStyle, SteelBlue>
+{
+  constexpr static InputBoxStyle get()
+  {
+    return {
+      EdgeSize::all(2),
+      EdgeSize::all(1),
+      {TEXT, {240, 240, 240, 255}, BorderColorStyle::all(TEXT)},
+      {TEXT, {255, 255, 255, 255}, BorderColorStyle::all(TEXT)},
+    };
+  }
 };
-
 }
 
 inline SDL_Rect
 makeInputSize(SDL_Rect r,
-              const EdgeSize& padding = style::INPUTBOX.padding,
-              const EdgeSize& border = style::INPUTBOX.border)
+              const EdgeSize& padding = themeFor<InputBoxStyle>().padding,
+              const EdgeSize& border = themeFor<InputBoxStyle>().border)
 {
   if (r.w == 0 || r.h == 0) {
     auto clientSz = measure('m'); // TODO allow customization for this
@@ -55,7 +60,7 @@ textBoxBase(Group& target,
             std::string_view id,
             std::string_view value,
             SDL_Rect r,
-            const InputBoxStyle& style = style::INPUTBOX)
+            const InputBoxStyle& style = themeFor<InputBoxStyle>())
 {
   r = makeInputSize(r, style.padding);
   target.checkMouse(id, r);
