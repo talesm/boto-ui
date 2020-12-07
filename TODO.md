@@ -8,7 +8,7 @@ Freestyle (0.2)
 - [x] A basic element style model;
 - [ ] Styles for {text|int|double}Fields;
 - [x] Custom border sizes;
-- [ ] Static theming;
+- [x] Static theming;
 - [ ] Custom font sizes;
 - [ ] Custom fonts;
 - [ ] An alternative darkish theme;
