@@ -12,17 +12,17 @@ struct ButtonStyle
 {
   EdgeSize padding;
   EdgeSize border;
-  ElementColorStyle normal;
-  ElementColorStyle grabbed;
-  ElementColorStyle pressed;
-  ElementColorStyle pressedGrabbed;
+  ElementPaintStyle normal;
+  ElementPaintStyle grabbed;
+  ElementPaintStyle pressed;
+  ElementPaintStyle pressedGrabbed;
 };
 
 struct Button;
 
 namespace style {
 
-constexpr ElementColorStyle BUTTONBOX{
+constexpr ElementPaintStyle BUTTONBOX{
   themeFor<Text>(),
   {176, 195, 222, 255},
   {
@@ -33,11 +33,11 @@ constexpr ElementColorStyle BUTTONBOX{
   },
 };
 
-constexpr ElementColorStyle BUTTONBOX_GRABBED{
+constexpr ElementPaintStyle BUTTONBOX_GRABBED{
   BUTTONBOX.withBackground({147, 173, 210, 255})};
-constexpr ElementColorStyle BUTTONBOX_PRESSED{
+constexpr ElementPaintStyle BUTTONBOX_PRESSED{
   BUTTONBOX.withBorder(BUTTONBOX.border.invert())};
-constexpr ElementColorStyle BUTTONBOX_PRESSED_GRABBED{
+constexpr ElementPaintStyle BUTTONBOX_PRESSED_GRABBED{
   BUTTONBOX_PRESSED.withBackground(BUTTONBOX_GRABBED.background)};
 
 template<>
@@ -57,7 +57,7 @@ struct FromTheme<Button, SteelBlue>
 };
 } // namespace style
 
-constexpr const ElementColorStyle&
+constexpr const ElementPaintStyle&
 decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
 {
   if (grabbing == pushed) {

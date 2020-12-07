@@ -11,21 +11,21 @@
 namespace dui {
 
 // Style for element state
-struct ElementColorStyle
+struct ElementPaintStyle
 {
   TextStyle text;
   SDL_Color background;
   BorderColorStyle border;
 
-  constexpr ElementColorStyle withText(SDL_Color text) const
+  constexpr ElementPaintStyle withText(SDL_Color text) const
   {
     return {text, background, border};
   }
-  constexpr ElementColorStyle withBackground(SDL_Color background) const
+  constexpr ElementPaintStyle withBackground(SDL_Color background) const
   {
     return {text, background, border};
   }
-  constexpr ElementColorStyle withBorder(const BorderColorStyle& border) const
+  constexpr ElementPaintStyle withBorder(const BorderColorStyle& border) const
   {
     return {text, background, border};
   }
@@ -35,7 +35,7 @@ struct ElementStyle
 {
   EdgeSize padding;
   EdgeSize border;
-  ElementColorStyle paint;
+  ElementPaintStyle paint;
 
   constexpr ElementStyle withPadding(EdgeSize padding) const
   {
@@ -45,7 +45,7 @@ struct ElementStyle
   {
     return {padding, border, paint};
   }
-  constexpr ElementStyle withPaint(const ElementColorStyle& paint) const
+  constexpr ElementStyle withPaint(const ElementPaintStyle& paint) const
   {
     return {padding, border, paint};
   }

@@ -13,8 +13,8 @@ struct InputBoxStyle
 {
   EdgeSize padding;
   EdgeSize border;
-  ElementColorStyle normal;
-  ElementColorStyle active;
+  ElementPaintStyle normal;
+  ElementPaintStyle active;
 };
 
 struct InputBoxBase;
