@@ -59,22 +59,21 @@ struct BorderColorStyle
 };
 
 // Border style
-struct BorderedBoxStyle
+struct BoxStyle
 {
   SDL_Color background;
   BorderColorStyle borderColor;
   EdgeSize borderSize;
 
-  constexpr BorderedBoxStyle withBackground(SDL_Color background) const
+  constexpr BoxStyle withBackground(SDL_Color background) const
   {
     return {background, borderColor, borderSize};
   }
-  constexpr BorderedBoxStyle withBorderColor(
-    const BorderColorStyle& borderColor) const
+  constexpr BoxStyle withBorderColor(const BorderColorStyle& borderColor) const
   {
     return {background, borderColor, borderSize};
   }
-  constexpr BorderedBoxStyle withBorderSize(const EdgeSize& borderSize) const
+  constexpr BoxStyle withBorderSize(const EdgeSize& borderSize) const
   {
     return {background, borderColor, borderSize};
   }
@@ -87,7 +86,7 @@ namespace style {
 template<>
 struct FromTheme<Box, SteelBlue>
 {
-  constexpr static BorderedBoxStyle get()
+  constexpr static BoxStyle get()
   {
     return {
       {219, 228, 240, 240},
@@ -102,7 +101,7 @@ struct FromTheme<Box, SteelBlue>
 inline void
 borderedBox(Group& target,
             const SDL_Rect& r,
-            const BorderedBoxStyle& style = themeFor<Box>())
+            const BoxStyle& style = themeFor<Box>())
 {
   auto c = style.background;
   auto e = style.borderColor.right;

@@ -9,7 +9,7 @@
 namespace dui {
 
 // Style for panels
-struct PanelStyle : BorderedBoxStyle
+struct PanelStyle : BoxStyle
 {
   EdgeSize padding;
 
@@ -19,12 +19,12 @@ struct PanelStyle : BorderedBoxStyle
                        const BorderColorStyle& borderColor,
                        const EdgeSize& border,
                        const EdgeSize& padding)
-    : BorderedBoxStyle{background, borderColor, border}
+    : BoxStyle{background, borderColor, border}
     , padding(padding)
   {}
 
-  constexpr PanelStyle(const BorderedBoxStyle& base, const EdgeSize& padding)
-    : BorderedBoxStyle(base)
+  constexpr PanelStyle(const BoxStyle& base, const EdgeSize& padding)
+    : BoxStyle(base)
     , padding(padding)
   {}
 };
