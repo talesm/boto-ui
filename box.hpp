@@ -8,14 +8,14 @@
 namespace dui {
 
 /**
- * @brief adds a box element to target
+ * @brief adds a colorBox element to target
  *
  * @param target the parent group or frame
- * @param rect the box local position and size
- * @param c the box color
+ * @param rect the colorBox local position and size
+ * @param c the colorBox color
  */
 inline void
-box(Group& target, SDL_Rect rect, SDL_Color c)
+colorBox(Group& target, SDL_Rect rect, SDL_Color c)
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
@@ -25,6 +25,26 @@ box(Group& target, SDL_Rect rect, SDL_Color c)
   rect.x += caret.x;
   rect.y += caret.y;
   state.display(Shape::Box(rect, c));
+}
+
+/**
+ * @brief adds an texturedBox element to target
+ *
+ * @param target the parent group or frame
+ * @param texture the texture
+ * @param rect the box local position and size
+ */
+inline void
+textureBox(Group& target, SDL_Texture* texture, SDL_Rect rect)
+{
+  auto& state = target.getState();
+  SDL_assert(state.isInFrame());
+  SDL_assert(!target.isLocked());
+  auto caret = target.getCaret();
+  target.advance({rect.x + rect.w, rect.y + rect.h});
+  rect.x += caret.x;
+  rect.y += caret.y;
+  state.display(Shape::Texture(rect, texture));
 }
 
 struct BorderColorStyle
@@ -99,9 +119,7 @@ struct FromTheme<Box, SteelBlue>
 
 // A box with colored border
 inline void
-borderedBox(Group& target,
-            const SDL_Rect& r,
-            const BoxStyle& style = themeFor<Box>())
+box(Group& target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
 {
   auto c = style.background;
   auto e = style.borderColor.right;
@@ -113,34 +131,14 @@ borderedBox(Group& target,
   auto wsz = style.borderSize.left;
   auto ssz = style.borderSize.bottom;
   auto g = group(target, {}, {0}, Layout::NONE);
-  box(g, {r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
-  box(g, {r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
-  box(g, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, {s.r, s.g, s.b, s.a});
-  box(g, {r.x + r.w - esz, r.y + 1, esz, r.h - 2}, {e.r, e.g, e.b, e.a});
-  box(g,
-      {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz},
-      {c.r, c.g, c.b, c.a});
+  colorBox(g, {r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
+  colorBox(g, {r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
+  colorBox(g, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, {s.r, s.g, s.b, s.a});
+  colorBox(g, {r.x + r.w - esz, r.y + 1, esz, r.h - 2}, {e.r, e.g, e.b, e.a});
+  colorBox(g,
+           {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz},
+           {c.r, c.g, c.b, c.a});
   g.end();
-}
-
-/**
- * @brief adds an texturedBox element to target
- *
- * @param target the parent group or frame
- * @param texture the texture
- * @param rect the box local position and size
- */
-inline void
-texturedBox(Group& target, SDL_Texture* texture, SDL_Rect rect)
-{
-  auto& state = target.getState();
-  SDL_assert(state.isInFrame());
-  SDL_assert(!target.isLocked());
-  auto caret = target.getCaret();
-  target.advance({rect.x + rect.w, rect.y + rect.h});
-  rect.x += caret.x;
-  rect.y += caret.y;
-  state.display(Shape::Texture(rect, texture));
 }
 
 } // namespace dui

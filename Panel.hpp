@@ -63,7 +63,7 @@ protected:
   void afterUnwrap() final
   {
     layout = Layout::NONE;
-    borderedBox(*this, {0, 0, width(), height()}, style);
+    box(*this, {0, 0, width(), height()}, style);
   }
 };
 

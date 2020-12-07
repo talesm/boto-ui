@@ -133,16 +133,16 @@ main(int argc, char** argv)
     dui::doubleField(p, "value2", &value2);
 
     // images
-    dui::texturedBox(p, texture, {0, 0, 8, 8});
-    dui::texturedBox(p, texture, {0, 1, 64, 64});
-    dui::texturedBox(p, texture, {0, 1, 128, 128});
+    dui::textureBox(p, texture, {0, 0, 8, 8});
+    dui::textureBox(p, texture, {0, 1, 64, 64});
+    dui::textureBox(p, texture, {0, 1, 128, 128});
 
     // Here we end the panel p, we can add elements to the frame directly again
     // after that
     p.end();
 
     // For example, we can add this big texture
-    dui::texturedBox(f, texture, {400, 150, 256, 256});
+    dui::textureBox(f, texture, {400, 150, 256, 256});
 
     // Render
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
