@@ -17,10 +17,12 @@ struct InputBoxStyle
   ElementColorStyle active;
 };
 
+struct InputBoxBase;
+
 namespace style {
 
 template<>
-struct FromTheme<InputBoxStyle, SteelBlue>
+struct FromTheme<InputBoxBase, SteelBlue>
 {
   constexpr static InputBoxStyle get()
   {
@@ -36,8 +38,8 @@ struct FromTheme<InputBoxStyle, SteelBlue>
 
 inline SDL_Rect
 makeInputSize(SDL_Rect r,
-              const EdgeSize& padding = themeFor<InputBoxStyle>().padding,
-              const EdgeSize& border = themeFor<InputBoxStyle>().border)
+              const EdgeSize& padding = themeFor<InputBoxBase>().padding,
+              const EdgeSize& border = themeFor<InputBoxBase>().border)
 {
   if (r.w == 0 || r.h == 0) {
     auto clientSz = measure('m'); // TODO allow customization for this
@@ -60,7 +62,7 @@ textBoxBase(Group& target,
             std::string_view id,
             std::string_view value,
             SDL_Rect r,
-            const InputBoxStyle& style = themeFor<InputBoxStyle>())
+            const InputBoxStyle& style = themeFor<InputBoxBase>())
 {
   r = makeInputSize(r, style.padding);
   target.checkMouse(id, r);

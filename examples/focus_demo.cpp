@@ -5,17 +5,15 @@ void
 yesOrNo(dui::Group& target, bool value)
 {
   if (value) {
-    dui::label(
-      target,
-      "Yes",
-      {5},
-      dui::themeFor<dui::LabelStyle>().withTextColor({20, 128, 100, 255}));
+    dui::label(target,
+               "Yes",
+               {5},
+               dui::themeFor<dui::Label>().withTextColor({20, 128, 100, 255}));
   } else {
-    dui::label(
-      target,
-      "No",
-      {5},
-      dui::themeFor<dui::LabelStyle>().withTextColor({200, 100, 20, 255}));
+    dui::label(target,
+               "No",
+               {5},
+               dui::themeFor<dui::Label>().withTextColor({200, 100, 20, 255}));
   }
 }
 

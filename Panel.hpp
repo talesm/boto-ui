@@ -24,10 +24,12 @@ struct PanelStyle : BorderedBoxStyle
   {}
 };
 
+struct Panel;
+
 namespace style {
 /// Default panel style
 template<>
-struct FromTheme<PanelStyle, SteelBlue>
+struct FromTheme<Panel, SteelBlue>
 {
   constexpr static PanelStyle get()
   {
@@ -79,7 +81,7 @@ panel(Group& target,
       std::string_view id,
       const SDL_Rect& r = {0},
       Layout layout = Layout::VERTICAL,
-      const PanelStyle& style = themeFor<PanelStyle>())
+      const PanelStyle& style = themeFor<Panel>())
 {
   return {&target, id, r, layout, style};
 }

@@ -65,10 +65,12 @@ struct ElementStyle
   }
 };
 
+struct Element;
+
 namespace style {
 
 template<>
-struct FromTheme<ElementStyle, SteelBlue>
+struct FromTheme<Element, SteelBlue>
 {
   constexpr static ElementStyle get()
   {
@@ -101,7 +103,7 @@ inline void
 element(Group& target,
         std::string_view str,
         const SDL_Rect& r = {0},
-        const ElementStyle& style = themeFor<ElementStyle>())
+        const ElementStyle& style = themeFor<Element>())
 {
   auto offset = style.border + style.padding;
   auto sz = computeSize(str, offset, {r.w, r.h});

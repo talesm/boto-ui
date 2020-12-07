@@ -13,25 +13,22 @@ struct SteelBlue
 #define DUI_THEME dui::style::SteelBlue
 #endif
 
-template<class StyleType, class Theme = DUI_THEME>
+template<class Element, class Theme = DUI_THEME>
 struct FromTheme;
 
-template<class StyleType, class BaseTheme = DUI_THEME>
+template<class Element, class BaseTheme = DUI_THEME>
 struct DerivedTheme
 {
-  static constexpr StyleType get()
-  {
-    return FromTheme<StyleType, BaseTheme>::get();
-  }
+  static constexpr auto get() { return FromTheme<Element, BaseTheme>::get(); }
 };
 
 } // namespace style
 
-template<class StyleType, class BaseTheme = DUI_THEME>
-constexpr StyleType
+template<class Element, class BaseTheme = DUI_THEME>
+constexpr auto
 themeFor()
 {
-  return style::FromTheme<StyleType>::get();
+  return style::FromTheme<Element>::get();
 }
 
 } // namespace dui

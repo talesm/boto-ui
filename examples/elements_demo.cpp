@@ -72,7 +72,7 @@ main(int argc, char** argv)
       p,
       "Hello world",
       {5},
-      dui::themeFor<dui::LabelStyle>().withTextColor({0xf0, 0x80, 0x80, 0xff}));
+      dui::themeFor<dui::Label>().withTextColor({0xf0, 0x80, 0x80, 0xff}));
 
     // Push button example. It returns true only when you click on it (press and
     // release)
@@ -112,7 +112,7 @@ main(int argc, char** argv)
     }
 
     // Example changing background color of the next panel
-    auto panelStyle = dui::themeFor<dui::PanelStyle>();
+    auto panelStyle = dui::themeFor<dui::Panel>();
     panelStyle.background = {224, 255, 224, 255};
     // And also making it grow horizontally
     if (auto g =

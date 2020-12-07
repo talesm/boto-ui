@@ -8,7 +8,13 @@
 
 namespace dui {
 
-using LabelStyle = ElementStyle;
+struct Label;
+
+namespace style {
+template<class Theme>
+struct FromTheme<Label, Theme> : FromTheme<Element, Theme>
+{};
+} // namespace style
 
 /**
  * @brief
@@ -23,7 +29,7 @@ inline void
 label(Group& target,
       std::string_view str,
       const SDL_Point& p = {0},
-      const ElementStyle& style = themeFor<LabelStyle>())
+      const ElementStyle& style = themeFor<Label>())
 {
   element(target, str, {p.x, p.y, 0, 0}, style);
 }
