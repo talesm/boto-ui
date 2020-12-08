@@ -18,7 +18,10 @@ struct ButtonStyle
   ElementPaintStyle pressedGrabbed;
 };
 
+struct ButtonBase;
 struct Button;
+struct ToggleButton;
+struct ChoiceButton;
 
 namespace style {
 
@@ -41,7 +44,7 @@ constexpr ElementPaintStyle BUTTONBOX_PRESSED_GRABBED{
   BUTTONBOX_PRESSED.withBackground(BUTTONBOX_GRABBED.background)};
 
 template<>
-struct FromTheme<Button, SteelBlue>
+struct FromTheme<ButtonBase, SteelBlue>
 {
   constexpr static ButtonStyle get()
   {
@@ -55,6 +58,16 @@ struct FromTheme<Button, SteelBlue>
     };
   }
 };
+
+template<class Theme>
+struct FromTheme<Button, Theme> : FromTheme<ButtonBase, Theme>
+{};
+template<class Theme>
+struct FromTheme<ToggleButton, Theme> : FromTheme<ButtonBase, Theme>
+{};
+template<class Theme>
+struct FromTheme<ChoiceButton, Theme> : FromTheme<ButtonBase, Theme>
+{};
 } // namespace style
 
 constexpr const ElementPaintStyle&
@@ -86,7 +99,7 @@ buttonBase(Group& target,
            std::string_view str,
            bool pushed,
            const SDL_Point& p = {0},
-           const ButtonStyle& style = themeFor<Button>())
+           const ButtonStyle& style = themeFor<ButtonBase>())
 {
   if (str.empty()) {
     str = id;
@@ -161,7 +174,7 @@ toggleButton(Group& target,
              std::string_view str,
              bool* value,
              const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<Button>())
+             const ButtonStyle& style = themeFor<ToggleButton>())
 {
   if (buttonBase(target, id, str, *value, p, style)) {
     *value = !*value;
@@ -174,7 +187,7 @@ toggleButton(Group& target,
              std::string_view id,
              bool* value,
              const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<Button>())
+             const ButtonStyle& style = themeFor<ToggleButton>())
 {
   return toggleButton(target, id, id, value, p, style);
 }
@@ -207,7 +220,7 @@ choiceButton(Group& target,
              T* value,
              U option,
              const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<Button>())
+             const ButtonStyle& style = themeFor<ChoiceButton>())
 {
   bool selected = *value == option;
   if (buttonBase(target, id, str, selected, p, style) && !selected) {
@@ -223,7 +236,7 @@ choiceButton(Group& target,
              T* value,
              U option,
              const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<Button>())
+             const ButtonStyle& style = themeFor<ChoiceButton>())
 {
   return choiceButton(target, id, id, value, option, p, style);
 }
