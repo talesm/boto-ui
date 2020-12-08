@@ -82,6 +82,12 @@ public:
 inline void
 DisplayList::render(SDL_Renderer* renderer) const
 {
+  // Save render state
+  SDL_BlendMode blendMode;
+  SDL_GetRenderDrawBlendMode(renderer, &blendMode);
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+  // Stack
   constexpr int STACK_MAX_SIZE = 32;
   SDL_Rect stack[STACK_MAX_SIZE]; // TODO make this configurable
   int stackSz = 0;
@@ -109,6 +115,7 @@ DisplayList::render(SDL_Renderer* renderer) const
       SDL_RenderFillRect(renderer, &it->rect);
     }
   }
+  SDL_SetRenderDrawBlendMode(renderer, blendMode);
   SDL_assert(stackSz == 0);
 }
 
