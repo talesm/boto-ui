@@ -1,6 +1,7 @@
 #include <sstream>
 #include <string>
 #include <SDL.h>
+// #include "DarkTheme.hpp" // enable this to check the dark theme
 #include "dui.hpp"
 
 int

@@ -8,14 +8,6 @@
 
 namespace dui {
 
-struct Label;
-
-namespace style {
-template<class Theme>
-struct FromTheme<Label, Theme> : FromTheme<Element, Theme>
-{};
-} // namespace style
-
 /**
  * @brief
  *

@@ -3,64 +3,11 @@
 
 #include <string_view>
 #include "Group.hpp"
+#include "InputBoxStyle.hpp"
 #include "Panel.hpp"
 #include "element.hpp"
 
 namespace dui {
-
-/// Input box style
-struct InputBoxStyle
-{
-  EdgeSize padding;
-  EdgeSize border;
-  Font font;
-  int scale;
-  ElementPaintStyle normal;
-  ElementPaintStyle active;
-};
-
-struct InputBoxBase;
-struct TextBox;
-struct NumberBox;
-struct IntBox;
-struct DoubleBox;
-
-namespace style {
-
-template<>
-struct FromTheme<InputBoxBase, SteelBlue>
-{
-  constexpr static InputBoxStyle get()
-  {
-    auto element = themeFor<Element>();
-    return {
-      EdgeSize::all(2),
-      EdgeSize::all(1),
-      element.font,
-      element.scale,
-      {element.paint.text,
-       {240, 240, 240, 255},
-       BorderColorStyle::all(element.paint.text)},
-      {element.paint.text,
-       {255, 255, 255, 255},
-       BorderColorStyle::all(element.paint.text)},
-    };
-  }
-};
-
-template<class Theme>
-struct FromTheme<TextBox, Theme> : FromTheme<InputBoxBase, Theme>
-{};
-template<class Theme>
-struct FromTheme<NumberBox, Theme> : FromTheme<InputBoxBase, Theme>
-{};
-template<class Theme>
-struct FromTheme<IntBox, Theme> : FromTheme<NumberBox, Theme>
-{};
-template<class Theme>
-struct FromTheme<DoubleBox, Theme> : FromTheme<NumberBox, Theme>
-{};
-}
 
 inline SDL_Rect
 makeInputSize(SDL_Rect r, const InputBoxStyle& style)

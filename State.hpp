@@ -4,6 +4,7 @@
 #include <string>
 #include <SDL.h>
 #include "DisplayList.hpp"
+#include "Font.hpp"
 
 namespace dui {
 

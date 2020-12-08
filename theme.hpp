@@ -6,17 +6,16 @@ namespace dui {
 namespace style {
 
 // Default theme
-struct SteelBlue
-{};
+struct SteelBlue;
 
 #ifndef DUI_THEME
 #define DUI_THEME dui::style::SteelBlue
 #endif
 
-template<class Element, class Theme = DUI_THEME>
+template<class Element, class Theme>
 struct FromTheme;
 
-template<class Element, class BaseTheme = DUI_THEME>
+template<class Element, class BaseTheme>
 struct DerivedTheme
 {
   static constexpr auto get() { return FromTheme<Element, BaseTheme>::get(); }
