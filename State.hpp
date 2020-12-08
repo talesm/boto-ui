@@ -1,7 +1,8 @@
 #ifndef DUI_STATE_HPP_
 #define DUI_STATE_HPP_
 
-#include <SDL_events.h>
+#include <string>
+#include <SDL.h>
 #include "DisplayList.hpp"
 
 namespace dui {

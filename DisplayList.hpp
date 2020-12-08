@@ -1,8 +1,6 @@
 #ifndef DUI_DISPLAY_LIST_HPP
 #define DUI_DISPLAY_LIST_HPP
 
-#include <algorithm>
-#include <string>
 #include <vector>
 #include <SDL_rect.h>
 #include <SDL_render.h>
