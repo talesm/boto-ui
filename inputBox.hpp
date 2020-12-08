@@ -80,16 +80,8 @@ textBoxBase(Group& target,
       break;
   }
   auto& currentColors = active ? style.active : style.normal;
-  auto g = panel(target,
-                 id,
-                 r,
-                 Layout::NONE,
-                 {
-                   currentColors.background,
-                   currentColors.border,
-                   style.border,
-                   style.padding,
-                 });
+  auto g = panel(
+    target, id, r, Layout::NONE, {style.padding, style.border, currentColors});
 
   // This creates an auto scroll effect if value text don't fit in the box;
   auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});

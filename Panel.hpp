@@ -9,37 +9,50 @@
 namespace dui {
 
 // Style for panels
-struct PanelStyle : BoxStyle
+struct PanelStyle
 {
   EdgeSize padding;
+  EdgeSize border;
+  BoxPaintStyle paint;
 
-  PanelStyle() = default;
-
-  constexpr PanelStyle(SDL_Color background,
-                       const BorderColorStyle& borderColor,
-                       const EdgeSize& border,
-                       const EdgeSize& padding)
-    : BoxStyle{background, borderColor, border}
-    , padding(padding)
-  {}
-
-  constexpr PanelStyle(const BoxStyle& base, const EdgeSize& padding)
-    : BoxStyle(base)
-    , padding(padding)
-  {}
+  constexpr PanelStyle withPadding(const EdgeSize& padding) const
+  {
+    return {padding, border, paint};
+  }
+  constexpr PanelStyle withBorderSize(const EdgeSize& border) const
+  {
+    return {padding, border, paint};
+  }
+  constexpr PanelStyle withPaint(const BoxPaintStyle& paint) const
+  {
+    return {padding, border, paint};
+  }
+  constexpr PanelStyle withBackgroundColor(SDL_Color background) const
+  {
+    return withPaint(paint.withBackground(background));
+  }
+  constexpr PanelStyle withBorderColor(const BorderColorStyle& border) const
+  {
+    return withPaint(paint.withBorder(border));
+  }
+  constexpr operator BoxStyle() const { return {border, paint}; }
 };
 
 struct Panel;
 
 namespace style {
 /// Default panel style
-template<>
-struct FromTheme<Panel, SteelBlue>
+template<class Theme>
+struct FromTheme<Panel, Theme>
 {
   constexpr static PanelStyle get()
   {
     auto boxStyle = themeFor<Box>();
-    return {boxStyle, EdgeSize::all(2)};
+    return {
+      EdgeSize::all(2),
+      boxStyle.border,
+      boxStyle.paint,
+    };
   }
 };
 }

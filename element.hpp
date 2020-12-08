@@ -29,6 +29,8 @@ struct ElementPaintStyle
   {
     return {text, background, border};
   }
+
+  constexpr operator BoxPaintStyle() const { return {background, border}; }
 };
 
 struct ElementStyle
@@ -63,6 +65,7 @@ struct ElementStyle
   {
     return {padding, border, paint.withBorder(borderColor)};
   }
+  constexpr operator BoxStyle() const { return {border, paint}; }
 };
 
 struct Element;
@@ -109,9 +112,7 @@ element(Group& target,
   auto sz = computeSize(str, offset, {r.w, r.h});
   auto g = group(target, {}, {r.x, r.y, sz.x, sz.y}, Layout::NONE);
   text(g, str, {offset.left, offset.top}, style.paint.text);
-  box(g,
-      {0, 0, sz.x, sz.y},
-      {style.paint.background, style.paint.border, style.border});
+  box(g, {0, 0, sz.x, sz.y}, style);
   g.end();
 }
 

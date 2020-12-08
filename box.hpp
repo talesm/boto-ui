@@ -78,24 +78,43 @@ struct BorderColorStyle
   static constexpr BorderColorStyle all(SDL_Color c) { return {c, c, c, c}; }
 };
 
+// Style for element state
+struct BoxPaintStyle
+{
+  SDL_Color background;
+  BorderColorStyle border;
+
+  constexpr BoxPaintStyle withBackground(SDL_Color background) const
+  {
+    return {background, border};
+  }
+  constexpr BoxPaintStyle withBorder(const BorderColorStyle& border) const
+  {
+    return {background, border};
+  }
+};
+
 // Border style
 struct BoxStyle
 {
-  SDL_Color background;
-  BorderColorStyle borderColor;
-  EdgeSize borderSize;
+  EdgeSize border;
+  BoxPaintStyle paint;
 
-  constexpr BoxStyle withBackground(SDL_Color background) const
+  constexpr BoxStyle withBorderSize(const EdgeSize& border) const
   {
-    return {background, borderColor, borderSize};
+    return {border, paint};
   }
-  constexpr BoxStyle withBorderColor(const BorderColorStyle& borderColor) const
+  constexpr BoxStyle withPaint(const BoxPaintStyle& paint) const
   {
-    return {background, borderColor, borderSize};
+    return {border, paint};
   }
-  constexpr BoxStyle withBorderSize(const EdgeSize& borderSize) const
+  constexpr BoxStyle withBackgroundColor(SDL_Color background) const
   {
-    return {background, borderColor, borderSize};
+    return withPaint(paint.withBackground(background));
+  }
+  constexpr BoxStyle withBorderColor(const BorderColorStyle& border) const
+  {
+    return withPaint(paint.withBorder(border));
   }
 };
 
@@ -109,9 +128,11 @@ struct FromTheme<Box, SteelBlue>
   constexpr static BoxStyle get()
   {
     return {
-      {219, 228, 240, 240},
-      BorderColorStyle::all({45, 72, 106, 255}),
       EdgeSize::all(1),
+      {
+        {219, 228, 240, 240},
+        BorderColorStyle::all({45, 72, 106, 255}),
+      },
     };
   }
 };
@@ -121,15 +142,15 @@ struct FromTheme<Box, SteelBlue>
 inline void
 box(Group& target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
 {
-  auto c = style.background;
-  auto e = style.borderColor.right;
-  auto n = style.borderColor.top;
-  auto w = style.borderColor.left;
-  auto s = style.borderColor.bottom;
-  auto esz = style.borderSize.right;
-  auto nsz = style.borderSize.top;
-  auto wsz = style.borderSize.left;
-  auto ssz = style.borderSize.bottom;
+  auto c = style.paint.background;
+  auto e = style.paint.border.right;
+  auto n = style.paint.border.top;
+  auto w = style.paint.border.left;
+  auto s = style.paint.border.bottom;
+  auto esz = style.border.right;
+  auto nsz = style.border.top;
+  auto wsz = style.border.left;
+  auto ssz = style.border.bottom;
   auto g = group(target, {}, {0}, Layout::NONE);
   colorBox(g, {r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
   colorBox(g, {r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
