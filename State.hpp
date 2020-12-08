@@ -57,7 +57,7 @@ private:
 
   Uint32 ticksCount;
 
-  SDL_Texture* font;
+  Font font;
 
 public:
   State(SDL_Renderer* renderer)
@@ -228,7 +228,9 @@ public:
    */
   Context lockFrame() { return Context{this}; }
 
-  SDL_Texture* getFont() const { return font; }
+  const Font& getFont() const { return font; }
+
+  void setFont(const Font& f) { font = f; }
 
 private:
   void beginFrame()

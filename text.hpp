@@ -57,11 +57,17 @@ character(Group& target,
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isLocked());
+  auto& font = state.getFont();
+  SDL_assert(font.texture != nullptr);
+
   auto caret = target.getCaret();
-  target.advance({p.x + 8, p.y + 8});
-  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, 8, 8};
-  SDL_Rect srcRect{(ch % 16) * 8, (ch / 16) * 8, 8, 8};
-  state.display(Shape::Texture(dstRect, state.getFont(), srcRect, style.color));
+  target.advance({p.x + font.charW, p.y + font.charH});
+  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, font.charW, font.charH};
+  SDL_Rect srcRect{(ch % font.cols) * font.charW,
+                   (ch / font.cols) * font.charH,
+                   font.charW,
+                   font.charH};
+  state.display(Shape::Texture(dstRect, font.texture, srcRect, style.color));
 }
 
 /**
@@ -81,13 +87,18 @@ text(Group& target,
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isLocked());
+  auto& font = state.getFont();
+  SDL_assert(font.texture != nullptr);
+
   auto caret = target.getCaret();
-  target.advance({p.x + 8 * int(str.size()), p.y + 8});
-  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, 8, 8};
+  target.advance({p.x + font.charW * int(str.size()), p.y + font.charH});
+  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, font.charW, font.charH};
   for (auto ch : str) {
-    SDL_Rect srcRect{(ch % 16) * 8, (ch / 16) * 8, 8, 8};
-    state.display(
-      Shape::Texture(dstRect, state.getFont(), srcRect, style.color));
+    SDL_Rect srcRect{(ch % font.cols) * font.charW,
+                     (ch / font.cols) * font.charH,
+                     font.charW,
+                     font.charH};
+    state.display(Shape::Texture(dstRect, font.texture, srcRect, style.color));
     dstRect.x += 8;
   }
 }
