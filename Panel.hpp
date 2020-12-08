@@ -47,7 +47,7 @@ struct FromTheme<Panel, Theme>
 {
   constexpr static PanelStyle get()
   {
-    auto boxStyle = themeFor<Box>();
+    auto boxStyle = themeFor<Box, SteelBlue>();
     return {
       EdgeSize::all(2),
       boxStyle.border,

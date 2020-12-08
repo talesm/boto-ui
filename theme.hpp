@@ -24,11 +24,11 @@ struct DerivedTheme
 
 } // namespace style
 
-template<class Element, class BaseTheme = DUI_THEME>
+template<class Element, class Theme = DUI_THEME>
 constexpr auto
 themeFor()
 {
-  return style::FromTheme<Element>::get();
+  return style::FromTheme<Element, Theme>::get();
 }
 
 } // namespace dui

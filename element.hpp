@@ -80,7 +80,7 @@ struct FromTheme<Element, SteelBlue>
     return {
       EdgeSize::all(2),
       EdgeSize::all(0),
-      themeFor<Text>(),
+      themeFor<Text, SteelBlue>(),
     };
   }
 };

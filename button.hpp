@@ -31,7 +31,7 @@ struct FromTheme<ButtonBase, SteelBlue>
   constexpr static ButtonStyle get()
   {
     ElementPaintStyle buttonBox = {
-      themeFor<Text>(),
+      themeFor<Text, SteelBlue>(),
       {176, 195, 222, 255},
       {
         {255, 255, 255, 255},

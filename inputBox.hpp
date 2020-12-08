@@ -30,7 +30,7 @@ struct FromTheme<InputBoxBase, SteelBlue>
 {
   constexpr static InputBoxStyle get()
   {
-    auto textStyle = themeFor<Text>();
+    auto textStyle = themeFor<Text, SteelBlue>();
     return {
       EdgeSize::all(2),
       EdgeSize::all(1),
