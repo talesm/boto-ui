@@ -11,7 +11,7 @@ Freestyle (0.2)
 - [x] Static theming;
 - [x] Custom font sizes;
 - [x] Custom fonts;
-- [ ] An alternative darkish theme;
+- [x] An alternative darkish theme;
 - [ ] cursor over inputBox;
 - [ ] int and double box stepable;
 - [ ] slider
