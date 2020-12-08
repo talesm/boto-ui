@@ -9,10 +9,16 @@ Freestyle (0.2)
 - [x] Styles for {text|int|double}Fields;
 - [x] Custom border sizes;
 - [x] Static theming;
-- [ ] Custom font sizes;
-- [ ] Custom fonts;
+- [x] Custom font sizes;
+- [x] Custom fonts;
 - [ ] An alternative darkish theme;
+- [ ] cursor over inputBox;
+- [ ] int and double box stepable;
+- [ ] slider
+- [ ] Scrollbar (derived from slider)
+- [ ] ScrollPanel
 - [ ] textArea
+- [ ] Section
 
 Wishlist
 --------
@@ -25,7 +31,6 @@ Wishlist
 - [ ] radioBox
 - [ ] selectable
 - [ ] treeNode
-- [ ] slider
 - [ ] vector numeric input
 - [ ] scrollbar
 - [ ] scrollarea
