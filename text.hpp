@@ -2,6 +2,7 @@
 #define DUI_TEXT_HPP_
 
 #include <SDL.h>
+#include "Font.hpp"
 #include "Group.hpp"
 #include "theme.hpp"
 
@@ -10,8 +11,24 @@ namespace dui {
 // Text style
 struct TextStyle
 {
+  Font font;
   SDL_Color color;
-  // TODO: Font
+  int scale; // 0: 1x, 1: 2x, 2: 4x, 3: 8x, and so on
+
+  constexpr TextStyle withFont(const Font& font) const
+  {
+    return {font, color, scale};
+  }
+
+  constexpr TextStyle withColor(SDL_Color color) const
+  {
+    return {font, color, scale};
+  }
+
+  constexpr TextStyle withScale(int scale) const
+  {
+    return {font, color, scale};
+  }
 };
 
 struct Text;
@@ -22,22 +39,25 @@ namespace style {
 template<>
 struct FromTheme<Text, SteelBlue>
 {
-  constexpr static TextStyle get() { return {45, 72, 106, 255}; }
+  constexpr static TextStyle get()
+  {
+    return {{nullptr, 8, 8, 16}, {45, 72, 106, 255}, 0};
+  }
 };
 }
 
 /// Measure the given character
-SDL_Point
-measure(char ch)
+constexpr SDL_Point
+measure(char ch, const Font& font, int scale)
 {
-  return {8, 8};
+  return {font.charW << scale, font.charH << scale};
 }
 
 /// Measure the given text
-SDL_Point
-measure(std::string_view text)
+constexpr SDL_Point
+measure(std::string_view text, const Font& font, int scale)
 {
-  return {int(8 * text.size()), 8};
+  return {int((font.charW << scale) * text.size()), font.charH << scale};
 }
 
 /**
@@ -61,8 +81,11 @@ character(Group& target,
   SDL_assert(font.texture != nullptr);
 
   auto caret = target.getCaret();
-  target.advance({p.x + font.charW, p.y + font.charH});
-  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, font.charW, font.charH};
+  SDL_Rect dstRect{p.x + caret.x,
+                   p.y + caret.y,
+                   font.charW << style.scale,
+                   font.charH << style.scale};
+  target.advance({p.x + dstRect.w, p.y + dstRect.h});
   SDL_Rect srcRect{(ch % font.cols) * font.charW,
                    (ch / font.cols) * font.charH,
                    font.charW,
@@ -87,19 +110,22 @@ text(Group& target,
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
   SDL_assert(!target.isLocked());
-  auto& font = state.getFont();
+  auto font = style.font.texture ? style.font : state.getFont();
   SDL_assert(font.texture != nullptr);
 
   auto caret = target.getCaret();
-  target.advance({p.x + font.charW * int(str.size()), p.y + font.charH});
-  SDL_Rect dstRect{p.x + caret.x, p.y + caret.y, font.charW, font.charH};
+  SDL_Rect dstRect{p.x + caret.x,
+                   p.y + caret.y,
+                   font.charW << style.scale,
+                   font.charH << style.scale};
+  target.advance({p.x + dstRect.w * int(str.size()), p.y + dstRect.h});
   for (auto ch : str) {
     SDL_Rect srcRect{(ch % font.cols) * font.charW,
                      (ch / font.cols) * font.charH,
                      font.charW,
                      font.charH};
     state.display(Shape::Texture(dstRect, font.texture, srcRect, style.color));
-    dstRect.x += 8;
+    dstRect.x += dstRect.w;
   }
 }
 } // namespace dui

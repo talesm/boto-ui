@@ -13,6 +13,8 @@ struct InputBoxStyle
 {
   EdgeSize padding;
   EdgeSize border;
+  Font font;
+  int scale;
   ElementPaintStyle normal;
   ElementPaintStyle active;
 };
@@ -30,12 +32,18 @@ struct FromTheme<InputBoxBase, SteelBlue>
 {
   constexpr static InputBoxStyle get()
   {
-    auto textStyle = themeFor<Text, SteelBlue>();
+    auto element = themeFor<Element>();
     return {
       EdgeSize::all(2),
       EdgeSize::all(1),
-      {textStyle, {240, 240, 240, 255}, BorderColorStyle::all(textStyle.color)},
-      {textStyle, {255, 255, 255, 255}, BorderColorStyle::all(textStyle.color)},
+      element.font,
+      element.scale,
+      {element.paint.text,
+       {240, 240, 240, 255},
+       BorderColorStyle::all(element.paint.text)},
+      {element.paint.text,
+       {255, 255, 255, 255},
+       BorderColorStyle::all(element.paint.text)},
     };
   }
 };
@@ -58,7 +66,8 @@ inline SDL_Rect
 makeInputSize(SDL_Rect r, const InputBoxStyle& style)
 {
   if (r.w == 0 || r.h == 0) {
-    auto clientSz = measure('m'); // TODO allow customization for this
+    auto clientSz = measure(
+      'm', style.font, style.scale); // TODO allow customization for this
     clientSz.x *= 16;
 
     auto elementSz = elementSize(style.padding + style.border, clientSz);
@@ -100,19 +109,18 @@ textBoxBase(Group& target,
 
   // This creates an auto scroll effect if value text don't fit in the box;
   auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});
-  auto contentSz = measure(value);
+  auto contentSz = measure(value, style.font, style.scale);
   int deltaX = contentSz.x - clientSz.x;
   if (deltaX > 0) {
     int deltaChar = deltaX / 8 + 1;
     value.remove_prefix(deltaChar);
   }
 
-  text(g, value, {0}, currentColors.text);
+  text(g, value, {0}, {style.font, currentColors.text, style.scale});
 
   if (active && (g.getState().ticks() / 512) % 2) {
     // Show cursor
-    colorBox(
-      g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text.color);
+    colorBox(g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text);
   }
   g.end();
   return action;

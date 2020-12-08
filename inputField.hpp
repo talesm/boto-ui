@@ -53,7 +53,7 @@ labeledGroup(Group& target,
 {
   SDL_Rect r{clientRect};
   SDL_Point labelPos = {r.w + 1, 0};
-  r.w += measure(labelText).x + 1;
+  r.w += measure(labelText, style.font, style.scale).x + 1;
 
   auto g = group(target, {}, r, Layout::NONE);
   label(g, labelText, labelPos, style);

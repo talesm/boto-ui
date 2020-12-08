@@ -12,6 +12,8 @@ struct ButtonStyle
 {
   EdgeSize padding;
   EdgeSize border;
+  Font font;
+  int scale;
   ElementPaintStyle normal;
   ElementPaintStyle grabbed;
   ElementPaintStyle pressed;
@@ -30,8 +32,9 @@ struct FromTheme<ButtonBase, SteelBlue>
 {
   constexpr static ButtonStyle get()
   {
+    auto element = themeFor<Element>();
     ElementPaintStyle buttonBox = {
-      themeFor<Text, SteelBlue>(),
+      element.paint.text,
       {176, 195, 222, 255},
       {
         {255, 255, 255, 255},
@@ -45,6 +48,8 @@ struct FromTheme<ButtonBase, SteelBlue>
     return {
       EdgeSize::all(3),
       EdgeSize::all(2),
+      element.font,
+      element.scale,
       buttonBox,
       buttonBoxGrabbed,
       buttonBox.withBorder(buttonBox.border.invert()),
@@ -98,7 +103,8 @@ buttonBase(Group& target,
   if (str.empty()) {
     str = id;
   }
-  auto adv = elementSize(style.padding + style.border, measure(str));
+  auto adv = elementSize(style.padding + style.border,
+                         measure(str, style.font, style.scale));
   SDL_Rect r{p.x, p.y, adv.x, adv.y};
   auto action = target.checkMouse(id, r);
 
@@ -107,6 +113,8 @@ buttonBase(Group& target,
           r,
           {style.padding,
            style.border,
+           style.font,
+           style.scale,
            decideButtonColors(style, pushed, action == MouseAction::HOLD)});
   return action == MouseAction::ACTION;
 }
