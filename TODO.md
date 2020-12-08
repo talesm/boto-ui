@@ -6,7 +6,7 @@ Freestyle (0.2)
 
 - [x] textBox basic UTF-8 awareness;
 - [x] A basic element style model;
-- [ ] Styles for {text|int|double}Fields;
+- [x] Styles for {text|int|double}Fields;
 - [x] Custom border sizes;
 - [x] Static theming;
 - [ ] Custom font sizes;
