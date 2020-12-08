@@ -30,7 +30,7 @@ textField(Group& target,
           size_t maxSize,
           const SDL_Point& p = {0})
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<TextBox>())};
   auto g = labeledGroup(target, labelText, box);
   auto changed = textBox(g, id, value, maxSize, box);
   g.end();
@@ -54,7 +54,7 @@ textField(Group& target,
           std::string* value,
           const SDL_Point& p = {0})
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<TextBox>())};
   auto g = labeledGroup(target, labelText, box);
   auto changed = textBox(g, id, value, box);
   g.end();
@@ -77,7 +77,7 @@ intField(Group& target,
          int* value,
          const SDL_Point& p = {0})
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<IntBox>())};
   auto g = labeledGroup(target, labelText, box);
   auto changed = intBox(g, id, value, box);
   g.end();
@@ -100,7 +100,7 @@ doubleField(Group& target,
             double* value,
             const SDL_Point& p = {0})
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0})};
+  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<DoubleBox>())};
   auto g = labeledGroup(target, labelText, box);
   auto changed = doubleBox(g, id, value, box);
   g.end();

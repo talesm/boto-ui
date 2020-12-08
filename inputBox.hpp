@@ -18,6 +18,10 @@ struct InputBoxStyle
 };
 
 struct InputBoxBase;
+struct TextBox;
+struct NumberBox;
+struct IntBox;
+struct DoubleBox;
 
 namespace style {
 
@@ -35,18 +39,29 @@ struct FromTheme<InputBoxBase, SteelBlue>
     };
   }
 };
+
+template<class Theme>
+struct FromTheme<TextBox, Theme> : FromTheme<InputBoxBase, Theme>
+{};
+template<class Theme>
+struct FromTheme<NumberBox, Theme> : FromTheme<InputBoxBase, Theme>
+{};
+template<class Theme>
+struct FromTheme<IntBox, Theme> : FromTheme<NumberBox, Theme>
+{};
+template<class Theme>
+struct FromTheme<DoubleBox, Theme> : FromTheme<NumberBox, Theme>
+{};
 }
 
 inline SDL_Rect
-makeInputSize(SDL_Rect r,
-              const EdgeSize& padding = themeFor<InputBoxBase>().padding,
-              const EdgeSize& border = themeFor<InputBoxBase>().border)
+makeInputSize(SDL_Rect r, const InputBoxStyle& style)
 {
   if (r.w == 0 || r.h == 0) {
     auto clientSz = measure('m'); // TODO allow customization for this
     clientSz.x *= 16;
 
-    auto elementSz = elementSize(padding + border, clientSz);
+    auto elementSz = elementSize(style.padding + style.border, clientSz);
 
     if (r.w == 0) {
       r.w = elementSz.x;
@@ -65,7 +80,7 @@ textBoxBase(Group& target,
             SDL_Rect r,
             const InputBoxStyle& style = themeFor<InputBoxBase>())
 {
-  r = makeInputSize(r, style.padding);
+  r = makeInputSize(r, style);
   target.checkMouse(id, r);
 
   auto action = target.checkText(id);
@@ -108,10 +123,11 @@ textBox(Group& target,
         std::string_view id,
         char* value,
         size_t maxSize,
-        const SDL_Rect& r = {0})
+        const SDL_Rect& r = {0},
+        const InputBoxStyle& style = themeFor<TextBox>())
 {
   auto len = strlen(value);
-  switch (textBoxBase(target, id, {value, len}, r)) {
+  switch (textBoxBase(target, id, {value, len}, r, style)) {
     case TextAction::NONE:
       break;
     case TextAction::INPUT:
@@ -143,9 +159,10 @@ inline bool
 textBox(Group& target,
         std::string_view id,
         std::string* value,
-        const SDL_Rect& r = {0})
+        const SDL_Rect& r = {0},
+        const InputBoxStyle& style = themeFor<TextBox>())
 {
-  switch (textBoxBase(target, id, *value, r)) {
+  switch (textBoxBase(target, id, *value, r, style)) {
     case TextAction::NONE:
       break;
     case TextAction::INPUT:
@@ -170,6 +187,7 @@ class BufferedInputBox
   Group& target;
   std::string_view id;
   SDL_Rect rect;
+  const InputBoxStyle& style;
 
   bool active;
   bool refillBuffer;
@@ -178,10 +196,14 @@ public:
   static constexpr int BUF_SZ = 256;
   char buffer[BUF_SZ];
 
-  BufferedInputBox(Group& target, std::string_view id, SDL_Rect r)
+  BufferedInputBox(Group& target,
+                   std::string_view id,
+                   SDL_Rect r,
+                   const InputBoxStyle& style)
     : target(target)
     , id(id)
-    , rect(makeInputSize(r))
+    , rect(makeInputSize(r, style))
+    , style(style)
   {
     bool clicked = target.checkMouse(id, rect) == MouseAction::GRAB;
     active = target.isActive(id);
@@ -193,14 +215,14 @@ public:
   bool end()
   {
     if (!active) {
-      textBox(target, id, buffer, BUF_SZ, rect);
+      textBox(target, id, buffer, BUF_SZ, rect, style);
       return false;
     }
     static char editBuffer[BUF_SZ];
     if (refillBuffer) {
       SDL_strlcpy(editBuffer, buffer, BUF_SZ);
     }
-    if (!textBox(target, id, editBuffer, BUF_SZ, rect)) {
+    if (!textBox(target, id, editBuffer, BUF_SZ, rect, style)) {
       return false;
     }
     SDL_strlcpy(buffer, editBuffer, BUF_SZ);
@@ -210,10 +232,14 @@ public:
 
 // A intBox
 inline bool
-intBox(Group& target, std::string_view id, int* value, SDL_Rect r = {0})
+intBox(Group& target,
+       std::string_view id,
+       int* value,
+       SDL_Rect r = {0},
+       const InputBoxStyle& style = themeFor<IntBox>())
 {
   SDL_assert(value != nullptr);
-  BufferedInputBox bufferedBox{target, id, r};
+  BufferedInputBox bufferedBox{target, id, r, style};
   if (bufferedBox.wantsRefill()) {
     SDL_itoa(*value, bufferedBox.buffer, 10);
   }
@@ -229,10 +255,14 @@ intBox(Group& target, std::string_view id, int* value, SDL_Rect r = {0})
 
 // A doubleBox
 inline bool
-doubleBox(Group& target, std::string_view id, double* value, SDL_Rect r = {0})
+doubleBox(Group& target,
+          std::string_view id,
+          double* value,
+          SDL_Rect r = {0},
+          const InputBoxStyle& style = themeFor<DoubleBox>())
 {
   SDL_assert(value != nullptr);
-  BufferedInputBox bufferedBox{target, id, r};
+  BufferedInputBox bufferedBox{target, id, r, style};
   if (bufferedBox.wantsRefill()) {
     auto text = bufferedBox.buffer;
     int n = SDL_snprintf(text, bufferedBox.BUF_SZ, "%f", *value);
