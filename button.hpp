@@ -25,36 +25,30 @@ struct ChoiceButton;
 
 namespace style {
 
-constexpr ElementPaintStyle BUTTONBOX{
-  themeFor<Text>(),
-  {176, 195, 222, 255},
-  {
-    {255, 255, 255, 255},
-    {255, 255, 255, 255},
-    {0, 0, 0, 255},
-    {0, 0, 0, 255},
-  },
-};
-
-constexpr ElementPaintStyle BUTTONBOX_GRABBED{
-  BUTTONBOX.withBackground({147, 173, 210, 255})};
-constexpr ElementPaintStyle BUTTONBOX_PRESSED{
-  BUTTONBOX.withBorder(BUTTONBOX.border.invert())};
-constexpr ElementPaintStyle BUTTONBOX_PRESSED_GRABBED{
-  BUTTONBOX_PRESSED.withBackground(BUTTONBOX_GRABBED.background)};
-
 template<>
 struct FromTheme<ButtonBase, SteelBlue>
 {
   constexpr static ButtonStyle get()
   {
+    ElementPaintStyle buttonBox = {
+      themeFor<Text>(),
+      {176, 195, 222, 255},
+      {
+        {255, 255, 255, 255},
+        {255, 255, 255, 255},
+        {0, 0, 0, 255},
+        {0, 0, 0, 255},
+      },
+    };
+    ElementPaintStyle buttonBoxGrabbed =
+      buttonBox.withBackground({147, 173, 210, 255});
     return {
       EdgeSize::all(3),
       EdgeSize::all(2),
-      BUTTONBOX,
-      BUTTONBOX_GRABBED,
-      BUTTONBOX_PRESSED,
-      BUTTONBOX_PRESSED_GRABBED,
+      buttonBox,
+      buttonBoxGrabbed,
+      buttonBox.withBorder(buttonBox.border.invert()),
+      buttonBoxGrabbed.withBorder(buttonBox.border.invert()),
     };
   }
 };
