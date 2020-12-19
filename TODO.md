@@ -12,7 +12,7 @@ Freestyle (0.2)
 - [x] Custom font sizes;
 - [x] Custom fonts;
 - [x] An alternative darkish theme;
-- [ ] cursor over inputBox;
+- [x] cursor over inputBox;
 - [ ] int and double box stepable;
 - [ ] slider
 - [ ] Scrollbar (derived from slider)
