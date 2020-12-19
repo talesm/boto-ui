@@ -29,7 +29,14 @@ makeInputSize(SDL_Rect r, const InputBoxStyle& style)
   return r;
 }
 
-inline TextAction
+struct TextChange
+{
+  std::string_view insert;
+  size_t index;
+  size_t erase;
+};
+
+inline TextChange
 textBoxBase(Group& target,
             std::string_view id,
             std::string_view value,
@@ -40,16 +47,7 @@ textBoxBase(Group& target,
   target.checkMouse(id, r);
 
   auto action = target.checkText(id);
-  bool active = false;
-  switch (action) {
-    case TextAction::NONE:
-      active = target.isActive(id);
-      break;
-    case TextAction::INPUT:
-    case TextAction::BACKSPACE:
-      active = true;
-      break;
-  }
+  bool active = action == TextAction::NONE ? target.isActive(id) : true;
   auto& currentColors = active ? style.active : style.normal;
   auto g = panel(
     target, id, r, Layout::NONE, {style.padding, style.border, currentColors});
@@ -70,7 +68,13 @@ textBoxBase(Group& target,
     colorBox(g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text);
   }
   g.end();
-  return action;
+  if (action == TextAction::INPUT) {
+    return {target.getText(), value.size(), 0};
+  }
+  if (action == TextAction::BACKSPACE && !value.empty()) {
+    return {{}, value.size() - 1, 1};
+  }
+  return {};
 }
 
 inline bool
@@ -82,32 +86,30 @@ textBox(Group& target,
         const InputBoxStyle& style = themeFor<TextBox>())
 {
   auto len = strlen(value);
-  switch (textBoxBase(target, id, {value, len}, r, style)) {
-    case TextAction::NONE:
-      break;
-    case TextAction::INPUT:
-      if (auto input = target.getText(); !input.empty() && maxSize > 0) {
-        if (len >= maxSize - 1) {
-          value[maxSize - 2] = input[0];
-          value[maxSize - 1] = 0;
-        } else {
-          auto count = std::min(maxSize - len - 1, input.size());
-          for (size_t i = 0; i < count; ++i) {
-            value[len + i] = input[i];
-          }
-          value[len + count] = 0;
-        }
-        return true;
-      }
-      break;
-    case TextAction::BACKSPACE:
-      if (len > 0) {
-        value[len - 1] = 0;
-        return true;
-      }
-      break;
+  auto change = textBoxBase(target, id, {value, len}, r, style);
+  if (change.erase == 0 && change.insert.empty()) {
+    return false;
   }
-  return false;
+  int offset = int(change.insert.size()) - int(change.erase);
+  if (offset != 0) {
+    size_t target = change.index + change.insert.size();
+    int maxCount = maxSize - target;
+    if (maxCount > 0) {
+      size_t source = target - offset;
+      SDL_memmove(&value[target],
+                  &value[source],
+                  std::min(len - source + 1, size_t(maxCount)));
+    }
+  }
+  if (!change.insert.empty()) {
+    int maxCount = maxSize - 1 - change.index;
+    if (maxCount > 0) {
+      SDL_memcpy(&value[change.index],
+                 change.insert.data(),
+                 std::min(change.insert.size(), size_t(maxCount)));
+    }
+  }
+  return true;
 }
 
 inline bool
@@ -117,23 +119,12 @@ textBox(Group& target,
         const SDL_Rect& r = {0},
         const InputBoxStyle& style = themeFor<TextBox>())
 {
-  switch (textBoxBase(target, id, *value, r, style)) {
-    case TextAction::NONE:
-      break;
-    case TextAction::INPUT:
-      if (auto input = target.getText(); !input.empty()) {
-        *value += input;
-        return true;
-      }
-      break;
-    case TextAction::BACKSPACE:
-      if (value->size() > 0) {
-        value->pop_back();
-        return true;
-      }
-      break;
+  auto change = textBoxBase(target, id, *value, r, style);
+  if (change.erase == 0 && change.insert.empty()) {
+    return false;
   }
-  return false;
+  value->replace(change.index, change.erase, change.insert);
+  return true;
 }
 
 // TODO delete copy ctor, other safety nets
