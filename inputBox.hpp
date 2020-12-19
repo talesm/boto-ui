@@ -69,10 +69,19 @@ textBoxBase(Group& target,
   }
   g.end();
   if (action == TextAction::INPUT) {
-    return {target.getText(), value.size(), 0};
+    return {target.lastText(), value.size(), 0};
   }
-  if (action == TextAction::BACKSPACE && !value.empty()) {
-    return {{}, value.size() - 1, 1};
+  if (action == TextAction::KEYDOWN) {
+    SDL_Keysym keysym = target.lastKeyDown();
+    switch (keysym.sym) {
+      case SDLK_BACKSPACE:
+        if (!value.empty()) {
+          return {{}, value.size() - 1, 1};
+        }
+        break;
+      default:
+        break;
+    }
   }
   return {};
 }

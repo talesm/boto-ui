@@ -30,9 +30,9 @@ enum class MouseAction
  */
 enum class TextAction
 {
-  NONE,      ///< Default status
-  INPUT,     ///< text input
-  BACKSPACE, ///< erased last character
+  NONE,    ///< Default status
+  INPUT,   ///< text input
+  KEYDOWN, ///< erased last character
 };
 
 class State
@@ -50,6 +50,7 @@ private:
   bool mReleasing = false;
   std::string eActive;
   char tBuffer[SDL_TEXTINPUTEVENT_TEXT_SIZE];
+  SDL_Keysym tKeysym;
   bool tChanged = false;
   TextAction tAction = TextAction::NONE;
 
@@ -145,7 +146,17 @@ public:
    *
    * @return std::string_view
    */
-  std::string_view getText() const { return {tBuffer}; }
+  std::string_view lastText() const { return {tBuffer}; }
+
+  /**
+   * @brief Get the last key
+   *
+   * To check if the text was for the current element and frame, use checkText()
+   * or Group.checkText().
+   *
+   * @return SDL_Keysym
+   */
+  SDL_Keysym lastKeyDown() const { return tKeysym; }
 
   /**
    * @brief If true, the state wants the mouse events
@@ -431,9 +442,10 @@ State::event(SDL_Event& ev)
     tChanged = true;
     tAction = TextAction::INPUT;
   } else if (ev.type == SDL_KEYDOWN) {
-    if (ev.key.keysym.sym == SDLK_BACKSPACE) {
+    if (!tChanged) {
+      tKeysym = ev.key.keysym;
       tChanged = true;
-      tAction = TextAction::BACKSPACE;
+      tAction = TextAction::KEYDOWN;
     }
   }
 }

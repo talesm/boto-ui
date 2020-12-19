@@ -162,7 +162,16 @@ public:
    *
    * @return std::string_view
    */
-  std::string_view getText() const { return state->getText(); }
+  std::string_view lastText() const { return state->lastText(); }
+  /**
+   * @brief Get the last key down
+   *
+   * To check if the text was for the current element and frame, use checkText()
+   * or Frame.checkText().
+   *
+   * @return std::string_view
+   */
+  SDL_Keysym lastKeyDown() const { return state->lastKeyDown(); }
 
   /**
    * @brief Advances the caret with the given offset
