@@ -65,6 +65,14 @@ textBoxBase(Group& target,
   int deltaX = contentSz.x - clientSz.x;
   if (deltaX < 0) {
     deltaX = 0;
+  } else if (active && deltaX + 8 > int(cursorPos) * 8) {
+    // TODO Use proper scrolling here
+    deltaX = cursorPos * 8;
+    if (deltaX > 8) {
+      deltaX -= 8;
+    } else {
+      deltaX = 0;
+    }
   }
   text(g, value, {-deltaX, 0}, {style.font, currentColors.text, style.scale});
 
