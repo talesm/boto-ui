@@ -43,11 +43,18 @@ textBoxBase(Group& target,
             SDL_Rect r,
             const InputBoxStyle& style = themeFor<InputBoxBase>())
 {
+  static size_t cursorPos = 0;
+  static size_t maxPos = 0;
   r = makeInputSize(r, style);
-  target.checkMouse(id, r);
+  if (target.checkMouse(id, r) == MouseAction::GRAB) {
+    maxPos = cursorPos = value.size();
+  }
 
   auto action = target.checkText(id);
   bool active = action == TextAction::NONE ? target.isActive(id) : true;
+  if (active && cursorPos > value.size()) {
+    maxPos = cursorPos = value.size();
+  }
   auto& currentColors = active ? style.active : style.normal;
   auto g = panel(
     target, id, r, Layout::NONE, {style.padding, style.border, currentColors});
@@ -65,18 +72,34 @@ textBoxBase(Group& target,
 
   if (active && (g.getState().ticks() / 512) % 2) {
     // Show cursor
-    colorBox(g, {int(value.size()) * 8, 0, 1, clientSz.y}, currentColors.text);
+    colorBox(g, {int(cursorPos) * 8, 0, 1, clientSz.y}, currentColors.text);
   }
   g.end();
   if (action == TextAction::INPUT) {
-    return {target.lastText(), value.size(), 0};
+    auto insert = target.lastText();
+    auto index = cursorPos;
+    cursorPos += insert.size();
+    maxPos += insert.size();
+    return {insert, index, 0};
   }
   if (action == TextAction::KEYDOWN) {
     SDL_Keysym keysym = target.lastKeyDown();
     switch (keysym.sym) {
       case SDLK_BACKSPACE:
         if (!value.empty()) {
-          return {{}, value.size() - 1, 1};
+          cursorPos -= 1;
+          maxPos -= 1;
+          return {{}, cursorPos, 1};
+        }
+        break;
+      case SDLK_LEFT:
+        if (cursorPos > 0) {
+          cursorPos -= 1;
+        }
+        break;
+      case SDLK_RIGHT:
+        if (cursorPos < maxPos) {
+          cursorPos += 1;
         }
         break;
       default:
