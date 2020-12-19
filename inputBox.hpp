@@ -63,16 +63,15 @@ textBoxBase(Group& target,
   auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});
   auto contentSz = measure(value, style.font, style.scale);
   int deltaX = contentSz.x - clientSz.x;
-  if (deltaX > 0) {
-    int deltaChar = deltaX / 8 + 1;
-    value.remove_prefix(deltaChar);
+  if (deltaX < 0) {
+    deltaX = 0;
   }
-
-  text(g, value, {0}, {style.font, currentColors.text, style.scale});
+  text(g, value, {-deltaX, 0}, {style.font, currentColors.text, style.scale});
 
   if (active && (g.getState().ticks() / 512) % 2) {
     // Show cursor
-    colorBox(g, {int(cursorPos) * 8, 0, 1, clientSz.y}, currentColors.text);
+    colorBox(
+      g, {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y}, currentColors.text);
   }
   g.end();
   if (action == TextAction::INPUT) {
