@@ -17,17 +17,14 @@ class WrapperGroup
   bool autoW;
   bool autoH;
 
-  static constexpr SDL_Rect paddedSize(SDL_Rect rect, const EdgeSize& padding)
+  static constexpr SDL_Rect paddedSize(const SDL_Rect& rect,
+                                       const EdgeSize& padding)
   {
-    rect.x += padding.left;
-    rect.y += padding.top;
-    if (rect.w > padding.left + padding.right) {
-      rect.w -= padding.left + padding.right;
-    }
-    if (rect.h > padding.top + padding.bottom) {
-      rect.h -= padding.top + padding.bottom;
-    }
-    return rect;
+    int pw = padding.left + padding.right;
+    int dw = rect.w > pw ? pw : 0;
+    int ph = padding.top + padding.bottom;
+    int dh = rect.h > ph ? ph : 0;
+    return {padding.left, padding.top, rect.w - dw, rect.h - dh};
   }
 
 public:
