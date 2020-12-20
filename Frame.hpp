@@ -1,9 +1,8 @@
 #ifndef _DUI_FRAME_HPP
 #define _DUI_FRAME_HPP
 
-#include <string_view>
-#include "Group.hpp"
 #include "State.hpp"
+#include "Target.hpp"
 
 namespace dui {
 
@@ -13,7 +12,7 @@ namespace dui {
  */
 class Frame
 {
-  State::Context context;
+  State* state;
   SDL_Rect rect;
   SDL_Point topLeft;
   SDL_Point bottomRight;
@@ -28,8 +27,8 @@ public:
 
   void render()
   {
-    SDL_assert(context.valid());
-    auto& state = context.getState();
+    SDL_assert(state != nullptr);
+    auto& state = *this->state;
     end();
     state.render();
   }
@@ -39,15 +38,7 @@ public:
 
   operator Target() &
   {
-    return {
-      &context.getState(),
-      {},
-      rect,
-      topLeft,
-      bottomRight,
-      Layout::NONE,
-      locked,
-    };
+    return {state, {}, rect, topLeft, bottomRight, Layout::NONE, locked};
   }
 };
 
@@ -58,16 +49,18 @@ frame(State& state)
 }
 
 inline Frame::Frame(State* state)
-  : context(state->lockFrame())
+  : state(state)
   , rect({0, 0, 0, 0})
   , topLeft({0, 0})
   , bottomRight({0, 0})
-{}
+{
+  state->beginFrame();
+}
 
 inline void
 Frame::end()
 {
-  context.unlockFrame();
+  state->endFrame();
   locked = false;
 }
 

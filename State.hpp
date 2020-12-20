@@ -37,7 +37,6 @@ enum class TextAction
 
 class State
 {
-private:
   bool inFrame = false;
   SDL_Renderer* renderer;
   DisplayList dList;
@@ -180,65 +179,10 @@ public:
   /// Ticks count
   Uint32 ticks() const { return ticksCount; }
 
-  /**
-   * @brief Context for frames
-   *
-   * Ignore this unless you are developing this library
-   */
-  class Context
-  {
-  private:
-    State* state;
-    Context(State* state)
-      : state(state)
-    {
-      state->beginFrame();
-    }
-    friend class State;
-
-  public:
-    ~Context() { unlockFrame(); }
-
-    bool valid() const { return state; }
-
-    State& getState() const { return *state; }
-
-    /**
-     * @brief Ends the lifetime of this object and unlock the state
-     *
-     */
-    void unlockFrame()
-    {
-      if (state) {
-        state->endFrame();
-        state = nullptr;
-      }
-    }
-    Context(const Context&) = delete;
-    Context(Context&& rhs) { std::swap(state, rhs.state); }
-    Context& operator=(Context rhs)
-    {
-      std::swap(state, rhs.state);
-      return *this;
-    }
-  };
-
+  // These are experimental and should not be used
   void beginGroup(std::string_view id, const SDL_Rect& r);
   void endGroup(std::string_view id, const SDL_Rect& r);
-
-  /**
-   * @brief Lock the state, starts a frame
-   *
-   * The frame is going to be active until the Context lifetime ends
-   *
-   * You probably want to use a Frame instead of calling this directly.
-   *
-   * @return Context
-   */
-  Context lockFrame() { return Context{this}; }
-
   const Font& getFont() const { return font; }
-
   void setFont(const Font& f) { font = f; }
 
 private:
@@ -264,6 +208,8 @@ private:
   }
 
   bool isSameGroupId(std::string_view qualifiedId, std::string_view id) const;
+
+  friend class Frame;
 };
 
 inline bool
