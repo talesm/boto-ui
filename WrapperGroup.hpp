@@ -9,42 +9,13 @@ namespace dui {
 /// A class to make wrapper elements
 class WrapperGroup
 {
-  struct Wrapper
-  {
-    Target parent;
-    std::string_view id;
-    SDL_Rect rect;
-    SDL_Point topLeft;
-    SDL_Point bottomRight;
-    bool locked = false;
-
-    Wrapper(Target parent, std::string_view id, const SDL_Rect& rect)
-      : parent(parent)
-      , id(id)
-      , rect(rect)
-      , topLeft(makeCaret(parent.getCaret(), rect.x, rect.y))
-      , bottomRight(topLeft)
-    {
-      parent.lock(id, rect);
-    }
-
-    operator Target() &
-    {
-      auto s = &parent.getState();
-      return {s, id, rect, topLeft, bottomRight, Layout::NONE, locked};
-    }
-    void end()
-    {
-      parent.unlock(id, rect);
-      parent.advance({rect.x + rect.w, rect.y + rect.h});
-    }
-  };
-
-  Wrapper wrapper;
+  Group wrapper;
   EdgeSize padding;
   Group client;
   bool onClient = false;
   bool ended = false;
+  bool autoW;
+  bool autoH;
 
   static constexpr SDL_Rect paddedSize(SDL_Rect rect, const EdgeSize& padding)
   {
@@ -65,9 +36,11 @@ public:
                const SDL_Rect& rect,
                Layout layout,
                const EdgeSize& padding)
-    : wrapper(parent, id, rect)
+    : wrapper(parent, id, rect, Layout::NONE)
     , padding(padding)
     , client(wrapper, {}, paddedSize(rect, padding), layout)
+    , autoW(rect.w == 0)
+    , autoH(rect.h == 0)
   {
     onClient = true;
   }
@@ -84,15 +57,15 @@ inline SDL_Point
 WrapperGroup::endClient()
 {
   SDL_assert(onClient);
-  if (wrapper.rect.w == 0) {
-    wrapper.rect.w = client.width() + padding.left + padding.right;
+  if (autoW) {
+    wrapper.width(client.width() + padding.left + padding.right);
   }
-  if (wrapper.rect.h == 0) {
-    wrapper.rect.h = client.height() + padding.top + padding.bottom;
+  if (autoH) {
+    wrapper.height(client.height() + padding.top + padding.bottom);
   }
   client.end();
   onClient = false;
-  return {wrapper.rect.w, wrapper.rect.h};
+  return {wrapper.width(), wrapper.height()};
 }
 
 inline void

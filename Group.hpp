@@ -58,7 +58,11 @@ public:
 
   int width() const { return makeWidth(rect, topLeft, bottomRight, layout); }
 
+  void width(int v) { rect.w = v; }
+
   int height() const { return makeHeight(rect, topLeft, bottomRight, layout); }
+
+  void height(int v) { rect.h = v; }
 
   operator Target() &
   {
