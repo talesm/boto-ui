@@ -37,7 +37,7 @@ struct TextChange
 };
 
 inline TextChange
-textBoxBase(Group& target,
+textBoxBase(Target target,
             std::string_view id,
             std::string_view value,
             SDL_Rect r,
@@ -76,7 +76,7 @@ textBoxBase(Group& target,
   }
   text(g, value, {-deltaX, 0}, {style.font, currentColors.text, style.scale});
 
-  if (active && (g.getState().ticks() / 512) % 2) {
+  if (active && (target.getState().ticks() / 512) % 2) {
     // Show cursor
     colorBox(
       g, {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y}, currentColors.text);
@@ -117,7 +117,7 @@ textBoxBase(Group& target,
 }
 
 inline bool
-textBox(Group& target,
+textBox(Target target,
         std::string_view id,
         char* value,
         size_t maxSize,
@@ -152,7 +152,7 @@ textBox(Group& target,
 }
 
 inline bool
-textBox(Group& target,
+textBox(Target target,
         std::string_view id,
         std::string* value,
         const SDL_Rect& r = {0},
@@ -169,7 +169,7 @@ textBox(Group& target,
 // TODO delete copy ctor, other safety nets
 class BufferedInputBox
 {
-  Group& target;
+  Target target;
   std::string_view id;
   SDL_Rect rect;
   const InputBoxStyle& style;
@@ -181,7 +181,7 @@ public:
   static constexpr int BUF_SZ = 256;
   char buffer[BUF_SZ];
 
-  BufferedInputBox(Group& target,
+  BufferedInputBox(Target target,
                    std::string_view id,
                    SDL_Rect r,
                    const InputBoxStyle& style)
@@ -217,7 +217,7 @@ public:
 
 // A intBox
 inline bool
-intBox(Group& target,
+intBox(Target target,
        std::string_view id,
        int* value,
        SDL_Rect r = {0},
@@ -240,7 +240,7 @@ intBox(Group& target,
 
 // A doubleBox
 inline bool
-doubleBox(Group& target,
+doubleBox(Target target,
           std::string_view id,
           double* value,
           SDL_Rect r = {0},

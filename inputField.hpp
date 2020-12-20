@@ -10,7 +10,7 @@
 namespace dui {
 
 inline Group
-labeledGroup(Group& target,
+labeledGroup(Target target,
              std::string_view labelText,
              const SDL_Rect& clientRect,
              const ElementStyle& style = themeFor<Label>())
@@ -25,7 +25,7 @@ labeledGroup(Group& target,
 }
 
 inline bool
-textField(Group& target,
+textField(Target target,
           std::string_view id,
           std::string_view labelText,
           char* value,
@@ -41,7 +41,7 @@ textField(Group& target,
 }
 
 inline bool
-textField(Group& target,
+textField(Target target,
           std::string_view id,
           char* value,
           size_t maxSize,
@@ -52,7 +52,7 @@ textField(Group& target,
 }
 
 inline bool
-textField(Group& target,
+textField(Target target,
           std::string_view id,
           std::string_view labelText,
           std::string* value,
@@ -67,7 +67,7 @@ textField(Group& target,
 }
 
 inline bool
-textField(Group& target,
+textField(Target target,
           std::string_view id,
           std::string* value,
           const SDL_Point& p = {0},
@@ -77,7 +77,7 @@ textField(Group& target,
 }
 
 inline bool
-intField(Group& target,
+intField(Target target,
          std::string_view id,
          std::string_view labelText,
          int* value,
@@ -92,7 +92,7 @@ intField(Group& target,
 }
 
 inline bool
-intField(Group& target,
+intField(Target target,
          std::string_view id,
          int* value,
          const SDL_Point& p = {0},
@@ -102,7 +102,7 @@ intField(Group& target,
 }
 
 inline bool
-doubleField(Group& target,
+doubleField(Target target,
             std::string_view id,
             std::string_view labelText,
             double* value,
@@ -117,7 +117,7 @@ doubleField(Group& target,
 }
 
 inline bool
-doubleField(Group& target,
+doubleField(Target target,
             std::string_view id,
             double* value,
             const SDL_Point& p = {0},

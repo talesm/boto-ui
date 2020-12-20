@@ -2,7 +2,7 @@
 #include "dui.hpp"
 
 void
-yesOrNo(dui::Group& target, bool value)
+yesOrNo(dui::Target target, bool value)
 {
   if (value) {
     dui::label(target,

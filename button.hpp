@@ -32,7 +32,7 @@ decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
  * @return false otherwise
  */
 inline bool
-buttonBase(Group& target,
+buttonBase(Target target,
            std::string_view id,
            std::string_view str,
            bool pushed,
@@ -74,7 +74,7 @@ buttonBase(Group& target,
  * @return false otherwise
  */
 inline bool
-button(Group& target,
+button(Target target,
        std::string_view id,
        std::string_view str,
        const SDL_Point& p = {0},
@@ -83,7 +83,7 @@ button(Group& target,
   return buttonBase(target, id, str, false, p, style);
 }
 inline bool
-button(Group& target,
+button(Target target,
        std::string_view id,
        const SDL_Point& p = {0},
        const ButtonStyle& style = themeFor<Button>())
@@ -110,7 +110,7 @@ button(Group& target,
  * @return false otherwise
  */
 inline bool
-toggleButton(Group& target,
+toggleButton(Target target,
              std::string_view id,
              std::string_view str,
              bool* value,
@@ -124,7 +124,7 @@ toggleButton(Group& target,
   return false;
 }
 inline bool
-toggleButton(Group& target,
+toggleButton(Target target,
              std::string_view id,
              bool* value,
              const SDL_Point& p = {0},
@@ -155,7 +155,7 @@ toggleButton(Group& target,
  */
 template<class T, class U>
 inline bool
-choiceButton(Group& target,
+choiceButton(Target target,
              std::string_view id,
              std::string_view str,
              T* value,
@@ -172,7 +172,7 @@ choiceButton(Group& target,
 }
 template<class T, class U>
 inline bool
-choiceButton(Group& target,
+choiceButton(Target target,
              std::string_view id,
              T* value,
              U option,

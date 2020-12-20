@@ -31,7 +31,7 @@ measure(std::string_view text, const Font& font, int scale)
  * @param c the color (style::TEXT by default)
  */
 inline void
-character(Group& target,
+character(Target target,
           char ch,
           const SDL_Point& p,
           const TextStyle& style = themeFor<Text>())
@@ -64,7 +64,7 @@ character(Group& target,
  * @param c the color (style::TEXT by default)
  */
 inline void
-text(Group& target,
+text(Target target,
      std::string_view str,
      const SDL_Point& p,
      const TextStyle& style = themeFor<Text>())

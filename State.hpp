@@ -199,6 +199,10 @@ public:
   public:
     ~Context() { unlockFrame(); }
 
+    bool valid() const { return state; }
+
+    State& getState() const { return *state; }
+
     /**
      * @brief Ends the lifetime of this object and unlock the state
      *
@@ -217,18 +221,10 @@ public:
       std::swap(state, rhs.state);
       return *this;
     }
-
-    /// Pushes a group. Must be paired with a proper popGroup
-    void pushGroup(std::string_view id, const SDL_Rect& r)
-    {
-      state->beginGroup(id, r);
-    }
-    /// Pops a group, Must be have been a pushGroup with same id before
-    void popGroup(std::string_view id, const SDL_Rect& r)
-    {
-      state->endGroup(id, r);
-    }
   };
+
+  void beginGroup(std::string_view id, const SDL_Rect& r);
+  void endGroup(std::string_view id, const SDL_Rect& r);
 
   /**
    * @brief Lock the state, starts a frame
@@ -267,8 +263,6 @@ private:
     }
   }
 
-  void beginGroup(std::string_view id, const SDL_Rect& r);
-  void endGroup(std::string_view id, const SDL_Rect& r);
   bool isSameGroupId(std::string_view qualifiedId, std::string_view id) const;
 };
 

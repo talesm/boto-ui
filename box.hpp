@@ -17,7 +17,7 @@ namespace dui {
  * @param c the colorBox color
  */
 inline void
-colorBox(Group& target, SDL_Rect rect, SDL_Color c)
+colorBox(Target target, SDL_Rect rect, SDL_Color c)
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
@@ -37,7 +37,7 @@ colorBox(Group& target, SDL_Rect rect, SDL_Color c)
  * @param rect the box local position and size
  */
 inline void
-textureBox(Group& target, SDL_Texture* texture, SDL_Rect rect)
+textureBox(Target target, SDL_Texture* texture, SDL_Rect rect)
 {
   auto& state = target.getState();
   SDL_assert(state.isInFrame());
@@ -51,7 +51,7 @@ textureBox(Group& target, SDL_Texture* texture, SDL_Rect rect)
 
 // A box with colored border
 inline void
-box(Group& target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
+box(Target target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
 {
   auto c = style.paint.background;
   auto e = style.paint.border.right;

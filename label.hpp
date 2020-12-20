@@ -18,7 +18,7 @@ namespace dui {
  * @param style
  */
 inline void
-label(Group& target,
+label(Target target,
       std::string_view str,
       const SDL_Point& p = {0},
       const ElementStyle& style = themeFor<Label>())

@@ -30,7 +30,7 @@ computeSize(std::string_view str,
 }
 
 inline void
-element(Group& target,
+element(Target target,
         std::string_view str,
         const SDL_Rect& r = {0},
         const ElementStyle& style = themeFor<Element>())

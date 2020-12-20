@@ -11,13 +11,16 @@ namespace dui {
  * @brief Represents a single frame on the app
  *
  */
-class Frame : public Group
+class Frame
 {
   State::Context context;
+  SDL_Rect rect;
+  SDL_Point topLeft;
+  SDL_Point bottomRight;
+  bool locked = false;
 
 public:
   Frame(State* state = nullptr);
-  ~Frame() { end(); }
   Frame(const Frame&) = delete;
   Frame(Frame&& rhs) = default;
   Frame& operator=(const Frame&) = delete;
@@ -25,8 +28,8 @@ public:
 
   void render()
   {
-    SDL_assert(valid());
-    auto& state = getState();
+    SDL_assert(context.valid());
+    auto& state = context.getState();
     end();
     state.render();
   }
@@ -34,14 +37,17 @@ public:
   // It is called by render normally
   void end();
 
-protected:
-  void afterLock(int deepness, std::string_view id, const SDL_Rect& r) final
+  operator Target() &
   {
-    context.pushGroup(id, r);
-  }
-  void beforeUnlock(int deepness, std::string_view id, const SDL_Rect& r) final
-  {
-    context.popGroup(id, r);
+    return {
+      &context.getState(),
+      {},
+      rect,
+      topLeft,
+      bottomRight,
+      Layout::NONE,
+      locked,
+    };
   }
 };
 
@@ -52,17 +58,17 @@ frame(State& state)
 }
 
 inline Frame::Frame(State* state)
-  : Group("", {0}, state, Layout::NONE)
-  , context(state->lockFrame())
+  : context(state->lockFrame())
+  , rect({0, 0, 0, 0})
+  , topLeft({0, 0})
+  , bottomRight({0, 0})
 {}
 
 inline void
 Frame::end()
 {
-  if (bool(*this)) {
-    context.unlockFrame();
-    Group::end();
-  }
+  context.unlockFrame();
+  locked = false;
 }
 
 } // namespace dui

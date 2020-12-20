@@ -10,26 +10,31 @@
 namespace dui {
 
 /// A panel class @see panel()
-class Panel final : public WrapperGroup
+class Panel
 {
   PanelStyle style;
+  WrapperGroup wrapper;
 
 public:
-  Panel(Group* parent,
+  Panel(Target parent,
         std::string_view id,
         const SDL_Rect& r,
         Layout layout,
         const PanelStyle& style)
-    : WrapperGroup(parent, id, r, layout, style.padding + EdgeSize::all(1))
-    , style(style)
+    : style(style)
+    , wrapper(parent, id, r, layout, style.padding + style.border)
   {}
 
-protected:
-  void afterUnwrap() final
+  void end()
   {
-    layout = Layout::NONE;
-    box(*this, {0, 0, width(), height()}, style);
+    auto sz = wrapper.endClient();
+    box(*this, {0, 0, sz.x, sz.y}, style);
+    wrapper.endWrapper();
   }
+
+  operator Target() & { return wrapper; }
+
+  operator bool() const { return wrapper; }
 };
 
 /**
@@ -43,13 +48,13 @@ protected:
  * @return Panel
  */
 inline Panel
-panel(Group& target,
+panel(Target target,
       std::string_view id,
       const SDL_Rect& r = {0},
       Layout layout = Layout::VERTICAL,
       const PanelStyle& style = themeFor<Panel>())
 {
-  return {&target, id, r, layout, style};
+  return {target, id, r, layout, style};
 }
 
 } // namespace dui
