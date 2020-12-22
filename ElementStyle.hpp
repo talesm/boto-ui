@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include "BoxStyle.hpp"
 #include "TextStyle.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

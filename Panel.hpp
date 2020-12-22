@@ -2,10 +2,10 @@
 #define DUI_PANEL_HPP_
 
 #include <string_view>
+#include "Element.hpp"
 #include "Group.hpp"
 #include "PanelStyle.hpp"
 #include "WrapperGroup.hpp"
-#include "element.hpp"
 
 namespace dui {
 

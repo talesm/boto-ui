@@ -6,8 +6,7 @@
 #include "ButtonStyle.hpp"
 #include "InputBoxStyle.hpp"
 #include "PanelStyle.hpp"
-#include "inputBox.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

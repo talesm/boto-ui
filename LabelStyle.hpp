@@ -2,7 +2,7 @@
 #define DUI_LABELSTYLE_HPP_
 
 #include "ElementStyle.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

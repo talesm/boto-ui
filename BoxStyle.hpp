@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 #include "EdgeSize.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

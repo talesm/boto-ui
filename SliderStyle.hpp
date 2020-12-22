@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include "LabelStyle.hpp"
 #include "ScrollBarStyle.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

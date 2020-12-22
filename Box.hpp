@@ -5,7 +5,7 @@
 #include "BoxStyle.hpp"
 #include "EdgeSize.hpp"
 #include "Group.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

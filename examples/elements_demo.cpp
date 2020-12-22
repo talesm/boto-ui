@@ -7,6 +7,7 @@
 int
 main(int argc, char** argv)
 {
+  SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     fprintf(stderr, "%s\n", SDL_GetError());
     return 1;

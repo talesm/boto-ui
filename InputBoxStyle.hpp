@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 #include "ElementStyle.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

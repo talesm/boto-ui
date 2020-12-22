@@ -3,7 +3,7 @@
 
 #include "BoxStyle.hpp"
 #include "EdgeSize.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

@@ -3,7 +3,7 @@
 
 #include "InputBoxStyle.hpp"
 #include "LabelStyle.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

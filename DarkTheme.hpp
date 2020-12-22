@@ -15,7 +15,7 @@ struct DarkTheme;
 #include "ElementStyle.hpp"
 #include "InputBoxStyle.hpp"
 #include "TextStyle.hpp"
-#include "theme.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

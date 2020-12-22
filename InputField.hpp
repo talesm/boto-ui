@@ -3,9 +3,9 @@
 
 #include <string_view>
 #include "Group.hpp"
+#include "InputBox.hpp"
 #include "InputFieldStyle.hpp"
-#include "inputBox.hpp"
-#include "label.hpp"
+#include "Label.hpp"
 
 namespace dui {
 

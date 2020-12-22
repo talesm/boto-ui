@@ -2,12 +2,12 @@
 #define DUI_BASIC_WIDGETS_HPP_
 
 #include <string_view>
+#include "Box.hpp"
 #include "EdgeSize.hpp"
 #include "ElementStyle.hpp"
 #include "Group.hpp"
-#include "box.hpp"
-#include "text.hpp"
-#include "theme.hpp"
+#include "Text.hpp"
+#include "Theme.hpp"
 
 namespace dui {
 

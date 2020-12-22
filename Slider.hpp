@@ -4,11 +4,11 @@
 #include <algorithm>
 #include <SDL.h>
 #include "Group.hpp"
+#include "InputBox.hpp"
+#include "InputField.hpp"
 #include "ScrollBar.hpp"
 #include "SliderStyle.hpp"
 #include "Target.hpp"
-#include "inputBox.hpp"
-#include "inputField.hpp"
 
 namespace dui {
 

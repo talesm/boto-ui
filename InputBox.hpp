@@ -2,10 +2,10 @@
 #define DUI_INPUTBOX_HPP
 
 #include <string_view>
+#include "Element.hpp"
 #include "Group.hpp"
 #include "InputBoxStyle.hpp"
 #include "Panel.hpp"
-#include "element.hpp"
 
 namespace dui {
 

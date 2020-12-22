@@ -3,10 +3,10 @@
 
 #include <algorithm>
 #include <SDL.h>
+#include "Button.hpp"
 #include "Group.hpp"
 #include "ScrollBarStyle.hpp"
 #include "Target.hpp"
-#include "button.hpp"
 
 namespace dui {
 
