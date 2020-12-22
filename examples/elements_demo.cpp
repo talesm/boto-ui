@@ -132,8 +132,8 @@ main(int argc, char** argv)
 
     // numeric input examples
     dui::label(p, "Number input", {0, 10});
-    dui::intField(p, "value1", &value1);
-    dui::doubleField(p, "value2", &value2);
+    dui::numberField(p, "value1", &value1);
+    dui::numberField(p, "value2", &value2);
     dui::slider(p, "value1 b", &value1, 0, 100);
 
     // images

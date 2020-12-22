@@ -77,32 +77,32 @@ textField(Target target,
 }
 
 inline bool
-intField(Target target,
-         std::string_view id,
-         std::string_view labelText,
-         int* value,
-         const SDL_Point& p = {0},
-         const InputFieldStyle& style = themeFor<IntField>())
+numberField(Target target,
+            std::string_view id,
+            std::string_view labelText,
+            int* value,
+            const SDL_Point& p = {0},
+            const InputFieldStyle& style = themeFor<IntField>())
 {
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<IntBox>())};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = intBox(g, id, value, box, style.box);
+  auto changed = numberBox(g, id, value, box, style.box);
   g.end();
   return changed;
 }
 
 inline bool
-intField(Target target,
-         std::string_view id,
-         int* value,
-         const SDL_Point& p = {0},
-         const InputFieldStyle& style = themeFor<IntField>())
+numberField(Target target,
+            std::string_view id,
+            int* value,
+            const SDL_Point& p = {0},
+            const InputFieldStyle& style = themeFor<IntField>())
 {
-  return intField(target, id, id, value, p, style);
+  return numberField(target, id, id, value, p, style);
 }
 
 inline bool
-doubleField(Target target,
+numberField(Target target,
             std::string_view id,
             std::string_view labelText,
             double* value,
@@ -111,19 +111,19 @@ doubleField(Target target,
 {
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<DoubleBox>())};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = doubleBox(g, id, value, box, style.box);
+  auto changed = numberBox(g, id, value, box, style.box);
   g.end();
   return changed;
 }
 
 inline bool
-doubleField(Target target,
+numberField(Target target,
             std::string_view id,
             double* value,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<DoubleField>())
 {
-  return doubleField(target, id, id, value, p, style);
+  return numberField(target, id, id, value, p, style);
 }
 } // namespace dui
 

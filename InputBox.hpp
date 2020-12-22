@@ -238,13 +238,13 @@ public:
   }
 };
 
-// A intBox
+// An int Box
 inline bool
-intBox(Target target,
-       std::string_view id,
-       int* value,
-       SDL_Rect r = {0},
-       const InputBoxStyle& style = themeFor<IntBox>())
+numberBox(Target target,
+          std::string_view id,
+          int* value,
+          SDL_Rect r = {0},
+          const InputBoxStyle& style = themeFor<IntBox>())
 {
   SDL_assert(value != nullptr);
   BufferedInputBox bufferedBox{target, id, r, style};
@@ -264,9 +264,9 @@ intBox(Target target,
   return false;
 }
 
-// A doubleBox
+// A double box
 inline bool
-doubleBox(Target target,
+numberBox(Target target,
           std::string_view id,
           double* value,
           SDL_Rect r = {0},
