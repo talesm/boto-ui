@@ -9,24 +9,36 @@
 
 namespace dui {
 
-inline SDL_Rect
-makeInputSize(SDL_Rect r, const InputBoxStyle& style)
+inline SDL_Point
+makeInputSize(SDL_Point defaultSz,
+              const Font& font,
+              int scale,
+              const EdgeSize& padding)
 {
-  if (r.w == 0 || r.h == 0) {
-    auto clientSz = measure(
-      'm', style.font, style.scale); // TODO allow customization for this
-    clientSz.x *= 16;
-
-    auto elementSz = elementSize(style.padding + style.border, clientSz);
-
-    if (r.w == 0) {
-      r.w = elementSz.x;
-    }
-    if (r.h == 0) {
-      r.h = elementSz.y;
-    }
+  if (defaultSz.x != 0 && defaultSz.y != 0) {
+    return defaultSz;
   }
-  return r;
+  // TODO allow customization for this
+  auto clientSz = measure('m', font, scale);
+  clientSz.x *= 16;
+
+  auto elementSz = elementSize(padding, clientSz);
+
+  if (defaultSz.x == 0) {
+    defaultSz.x = elementSz.x;
+  }
+  if (defaultSz.y == 0) {
+    defaultSz.y = elementSz.y;
+  }
+  return defaultSz;
+}
+
+inline SDL_Rect
+makeInputRect(SDL_Rect r, const InputBoxStyle& style)
+{
+  auto sz = makeInputSize(
+    {r.w, r.h}, style.font, style.scale, style.padding + style.border);
+  return {r.x, r.y, sz.x, sz.y};
 }
 
 struct TextChange
@@ -45,7 +57,7 @@ textBoxBase(Target target,
 {
   static size_t cursorPos = 0;
   static size_t maxPos = 0;
-  r = makeInputSize(r, style);
+  r = makeInputRect(r, style);
   if (target.checkMouse(id, r) == MouseAction::GRAB) {
     maxPos = cursorPos = value.size();
   }
@@ -187,7 +199,7 @@ public:
                    const InputBoxStyle& style)
     : target(target)
     , id(id)
-    , rect(makeInputSize(r, style))
+    , rect(makeInputRect(r, style))
     , style(style)
   {
     bool clicked = target.checkMouse(id, rect) == MouseAction::GRAB;

@@ -33,7 +33,7 @@ textField(Target target,
           const SDL_Point& p = {0},
           const InputFieldStyle& style = themeFor<TextField>())
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<TextBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<TextBox>())};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = textBox(g, id, value, maxSize, box, style.box);
   g.end();
@@ -59,7 +59,7 @@ textField(Target target,
           const SDL_Point& p = {0},
           const InputFieldStyle& style = themeFor<TextField>())
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<TextBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<TextBox>())};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = textBox(g, id, value, box, style.box);
   g.end();
@@ -84,7 +84,7 @@ intField(Target target,
          const SDL_Point& p = {0},
          const InputFieldStyle& style = themeFor<IntField>())
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<IntBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<IntBox>())};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = intBox(g, id, value, box, style.box);
   g.end();
@@ -109,7 +109,7 @@ doubleField(Target target,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<DoubleField>())
 {
-  SDL_Rect box{makeInputSize({p.x, p.y, 0, 0}, themeFor<DoubleBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<DoubleBox>())};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = doubleBox(g, id, value, box, style.box);
   g.end();

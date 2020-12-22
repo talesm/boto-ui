@@ -6,6 +6,8 @@
 #include "Frame.hpp"
 #include "Group.hpp"
 #include "Panel.hpp"
+#include "ScrollBar.hpp"
+#include "Slider.hpp"
 #include "State.hpp"
 #include "WrapperGroup.hpp"
 #include "button.hpp"
