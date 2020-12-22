@@ -190,6 +190,7 @@ class BufferedInputBox
   bool refillBuffer;
 
 public:
+  int incAmount = 0;
   static constexpr int BUF_SZ = 256;
   char buffer[BUF_SZ];
 
@@ -205,6 +206,16 @@ public:
     bool clicked = target.checkMouse(id, rect) == MouseAction::GRAB;
     active = target.isActive(id);
     refillBuffer = !active || clicked;
+    if (active && target.checkText(id) == TextAction::KEYDOWN) {
+      auto keysym = target.lastKeyDown();
+      if (keysym.sym == SDLK_UP) {
+        incAmount = 1;
+        refillBuffer = true;
+      } else if (keysym.sym == SDLK_DOWN) {
+        incAmount = -1;
+        refillBuffer = true;
+      }
+    }
   }
 
   bool wantsRefill() const { return refillBuffer; }
@@ -220,7 +231,7 @@ public:
       SDL_strlcpy(editBuffer, buffer, BUF_SZ);
     }
     if (!textBox(target, id, editBuffer, BUF_SZ, rect, style)) {
-      return false;
+      return incAmount != 0;
     }
     SDL_strlcpy(buffer, editBuffer, BUF_SZ);
     return true;
@@ -238,6 +249,9 @@ intBox(Target target,
   SDL_assert(value != nullptr);
   BufferedInputBox bufferedBox{target, id, r, style};
   if (bufferedBox.wantsRefill()) {
+    if (bufferedBox.incAmount != 0) {
+      *value += bufferedBox.incAmount;
+    }
     SDL_itoa(*value, bufferedBox.buffer, 10);
   }
   if (bufferedBox.end()) {
@@ -261,6 +275,9 @@ doubleBox(Target target,
   SDL_assert(value != nullptr);
   BufferedInputBox bufferedBox{target, id, r, style};
   if (bufferedBox.wantsRefill()) {
+    if (bufferedBox.incAmount != 0) {
+      *value += bufferedBox.incAmount;
+    }
     auto text = bufferedBox.buffer;
     int n = SDL_snprintf(text, bufferedBox.BUF_SZ, "%f", *value);
     for (int i = n - 1; i > 0; --i) {
