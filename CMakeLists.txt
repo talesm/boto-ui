@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project(dui)
+project(dui VERSION 0.2)
 
 add_definitions(-Wall -pedantic)
 
