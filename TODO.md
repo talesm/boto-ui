@@ -15,14 +15,15 @@ Freestyle (0.2)
 - [x] cursor over inputBox;
 - [x] int and double box stepable;
 - [x] slider
-- [ ] Scrollbar (derived from slider)
-- [ ] ScrollPanel
-- [ ] textArea
-- [ ] Section
 
 Wishlist
 --------
 
+- [ ] Scrollbar (derived from slider)
+- [ ] ScrollPanel
+- [ ] textArea
+- [ ] Section
+- [ ] Allow using the SDL_gfx font
 - [ ] Generate doxygen
 - [ ] TTF Fonts
 - [ ] Allow some sort of cache on State
