@@ -1,6 +1,21 @@
 DUI CHANGELOG
 =============
 
+Version 0.2 - Freestyle
+-----------------------
+
+- textBox basic UTF-8 awareness;
+- A basic element style model;
+- Styles for {text|int|double}Fields;
+- Custom border sizes;
+- Static theming;
+- Custom font sizes;
+- Custom fonts;
+- An alternative darkish theme;
+- movable cursor over inputBox;
+- int and double box stepable;
+- slider;
+
 Version 0.1 - MVP
 -----------------
 
