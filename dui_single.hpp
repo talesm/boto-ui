@@ -2698,7 +2698,7 @@ scrollBar(Target target,
     *value = *value < max ? *value + 1 : max;
     action = true;
   }
-  action = scrollBarSlider(
+  action |= scrollBarSlider(
     g,
     "bar",
     value,
