@@ -16,6 +16,7 @@ struct InputFieldStyle
 struct TextField;
 struct IntField;
 struct DoubleField;
+struct FloatField;
 
 namespace style {
 
@@ -41,6 +42,10 @@ struct FromTheme<IntField, Theme> : FieldFromThemeBase<IntBox, Theme>
 
 template<class Theme>
 struct FromTheme<DoubleField, Theme> : FieldFromThemeBase<DoubleBox, Theme>
+{};
+
+template<class Theme>
+struct FromTheme<FloatField, Theme> : FieldFromThemeBase<FloatBox, Theme>
 {};
 } // namespace style
 

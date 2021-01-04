@@ -23,6 +23,7 @@ struct TextBox;
 struct NumberBox;
 struct IntBox;
 struct DoubleBox;
+struct FloatBox;
 
 namespace style {
 
@@ -58,6 +59,9 @@ struct FromTheme<IntBox, Theme> : FromTheme<NumberBox, Theme>
 {};
 template<class Theme>
 struct FromTheme<DoubleBox, Theme> : FromTheme<NumberBox, Theme>
+{};
+template<class Theme>
+struct FromTheme<FloatBox, Theme> : FromTheme<NumberBox, Theme>
 {};
 }
 } // namespace dui

@@ -302,7 +302,7 @@ numberBox(Target target,
           std::string_view id,
           float* value,
           SDL_Rect r = {0},
-          const InputBoxStyle& style = themeFor<DoubleBox>())
+          const InputBoxStyle& style = themeFor<FloatBox>())
 {
   SDL_assert(value != nullptr);
   BufferedInputBox bufferedBox{target, id, r, style};

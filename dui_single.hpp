@@ -2082,6 +2082,7 @@ struct TextBox;
 struct NumberBox;
 struct IntBox;
 struct DoubleBox;
+struct FloatBox;
 
 namespace style {
 
@@ -2117,6 +2118,9 @@ struct FromTheme<IntBox, Theme> : FromTheme<NumberBox, Theme>
 {};
 template<class Theme>
 struct FromTheme<DoubleBox, Theme> : FromTheme<NumberBox, Theme>
+{};
+template<class Theme>
+struct FromTheme<FloatBox, Theme> : FromTheme<NumberBox, Theme>
 {};
 }
 
@@ -2414,7 +2418,7 @@ numberBox(Target target,
           std::string_view id,
           float* value,
           SDL_Rect r = {0},
-          const InputBoxStyle& style = themeFor<DoubleBox>())
+          const InputBoxStyle& style = themeFor<FloatBox>())
 {
   SDL_assert(value != nullptr);
   BufferedInputBox bufferedBox{target, id, r, style};
@@ -2460,6 +2464,7 @@ struct InputFieldStyle
 struct TextField;
 struct IntField;
 struct DoubleField;
+struct FloatField;
 
 namespace style {
 
@@ -2485,6 +2490,10 @@ struct FromTheme<IntField, Theme> : FieldFromThemeBase<IntBox, Theme>
 
 template<class Theme>
 struct FromTheme<DoubleField, Theme> : FieldFromThemeBase<DoubleBox, Theme>
+{};
+
+template<class Theme>
+struct FromTheme<FloatField, Theme> : FieldFromThemeBase<FloatBox, Theme>
 {};
 } // namespace style
 
@@ -2532,7 +2541,7 @@ textField(Target target,
           const SDL_Point& p = {0},
           const InputFieldStyle& style = themeFor<TextField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<TextBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = textBox(g, id, value, maxSize, box, style.box);
   g.end();
@@ -2558,7 +2567,7 @@ textField(Target target,
           const SDL_Point& p = {0},
           const InputFieldStyle& style = themeFor<TextField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<TextBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = textBox(g, id, value, box, style.box);
   g.end();
@@ -2583,7 +2592,7 @@ numberField(Target target,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<IntField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<IntBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = numberBox(g, id, value, box, style.box);
   g.end();
@@ -2608,7 +2617,7 @@ numberField(Target target,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<DoubleField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<DoubleBox>())};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = numberBox(g, id, value, box, style.box);
   g.end();
@@ -2621,6 +2630,31 @@ numberField(Target target,
             double* value,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<DoubleField>())
+{
+  return numberField(target, id, id, value, p, style);
+}
+
+inline bool
+numberField(Target target,
+            std::string_view id,
+            std::string_view labelText,
+            float* value,
+            const SDL_Point& p = {0},
+            const InputFieldStyle& style = themeFor<FloatField>())
+{
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
+  auto g = labeledGroup(target, labelText, box, style.label);
+  auto changed = numberBox(g, id, value, box, style.box);
+  g.end();
+  return changed;
+}
+
+inline bool
+numberField(Target target,
+            std::string_view id,
+            float* value,
+            const SDL_Point& p = {0},
+            const InputFieldStyle& style = themeFor<FloatField>())
 {
   return numberField(target, id, id, value, p, style);
 }
