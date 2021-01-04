@@ -720,8 +720,12 @@ DisplayList::render(SDL_Renderer* renderer) const
     }
     if (it->type == PUSH_CLIP) {
       SDL_assert(stackSz < STACK_MAX_SIZE);
-      stack[stackSz++] = it->rect;
-      SDL_RenderSetClipRect(renderer, &it->rect);
+      SDL_Rect rect = it->rect;
+      if (stackSz > 0) {
+        SDL_IntersectRect(&it->rect, &stack[stackSz - 1], &rect);
+      }
+      stack[stackSz++] = rect;
+      SDL_RenderSetClipRect(renderer, &rect);
       continue;
     }
     auto& shape = it->shape;
@@ -2404,6 +2408,38 @@ numberBox(Target target,
   }
   return false;
 }
+// A float box
+inline bool
+numberBox(Target target,
+          std::string_view id,
+          float* value,
+          SDL_Rect r = {0},
+          const InputBoxStyle& style = themeFor<DoubleBox>())
+{
+  SDL_assert(value != nullptr);
+  BufferedInputBox bufferedBox{target, id, r, style};
+  if (bufferedBox.wantsRefill()) {
+    if (bufferedBox.incAmount != 0) {
+      *value += bufferedBox.incAmount;
+    }
+    auto text = bufferedBox.buffer;
+    int n = SDL_snprintf(text, bufferedBox.BUF_SZ, "%f", *value);
+    for (int i = n - 1; i > 0; --i) {
+      if (text[i] != '0' && text[i] != '.') {
+        text[i + 1] = 0;
+        break;
+      }
+    }
+  }
+  if (bufferedBox.end()) {
+    auto newValue = SDL_strtod(bufferedBox.buffer, nullptr);
+    if (newValue != *value) {
+      *value = newValue;
+      return true;
+    }
+  }
+  return false;
+}
 
 // begin LabelStyle.hpp
 struct Label;
@@ -2749,29 +2785,33 @@ struct FromTheme
  * @return true
  * @return false
  */
+template<class T>
 inline bool
 slider(Target target,
        std::string_view id,
        std::string_view labelText,
-       int* value,
-       int min,
-       int max,
+       T* value,
+       T min,
+       T max,
        const SDL_Point& p = {0},
        const SliderStyle& style = themeFor<Slider>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<TextBox>())};
+  auto& buttons = style.scroll.buttons;
+  auto adv = makeInputSize(
+    p, buttons.font, buttons.scale, buttons.padding + buttons.border);
+  SDL_Rect box{p.x, p.y, adv.x, adv.y};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = scrollBar(g, id, value, min, max, box, style.scroll);
   g.end();
   return changed;
 }
-
+template<class T>
 inline bool
 slider(Target target,
        std::string_view id,
-       int* value,
-       int min,
-       int max,
+       T* value,
+       T min,
+       T max,
        const SDL_Point& p = {0},
        const SliderStyle& style = themeFor<Slider>())
 {
