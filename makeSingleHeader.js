@@ -1,13 +1,11 @@
 const fs = require('fs')
 
 const cwd = process.cwd()
-process.chdir(cwd + '/src')
 const fileQueue = makeQueue('dui.hpp')
-process.chdir(cwd)
 
-const output = fs.openSync('dui_single.hpp', 'w')
+const output = fs.openSync(process.argv[2], 'w')
 fs.writeSync(output, "/*\n * ", undefined)
-const copywrite = fs.readFileSync('LICENSE', 'utf-8')
+const copywrite = fs.readFileSync('../LICENSE', 'utf-8')
 fs.writeSync(output, copywrite.replace(/\n/g, '\n * '))
 fs.writeSync(output, "\n */\n", undefined)
 fs.writeSync(output, "#ifndef DUI_SINGLE_HPP\n", undefined)
@@ -24,7 +22,7 @@ fs.writeSync(output, "#endif\n\n", undefined)
 
 for (const fileName of fileQueue) {
   fs.writeSync(output, `// begin ${fileName}\n`)
-  const content = fs.readFileSync('src/' + fileName, 'utf-8')
+  const content = fs.readFileSync(fileName, 'utf-8')
   fs.writeSync(output, content
     .replace(/^#.*$/gm, '')
     .replace(/^namespace dui \{$/gm, '')
