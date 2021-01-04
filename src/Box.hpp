@@ -70,7 +70,6 @@ box(Target target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
   colorBox(g,
            {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz},
            {c.r, c.g, c.b, c.a});
-  g.end();
 }
 
 } // namespace dui

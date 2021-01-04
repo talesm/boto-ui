@@ -35,9 +35,7 @@ textField(Target target,
 {
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = textBox(g, id, value, maxSize, box, style.box);
-  g.end();
-  return changed;
+  return textBox(g, id, value, maxSize, box, style.box);
 }
 
 inline bool
@@ -61,9 +59,7 @@ textField(Target target,
 {
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = textBox(g, id, value, box, style.box);
-  g.end();
-  return changed;
+  return textBox(g, id, value, box, style.box);
 }
 
 inline bool
@@ -86,9 +82,7 @@ numberField(Target target,
 {
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = numberBox(g, id, value, box, style.box);
-  g.end();
-  return changed;
+  return numberBox(g, id, value, box, style.box);
 }
 
 inline bool
@@ -111,9 +105,7 @@ numberField(Target target,
 {
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = numberBox(g, id, value, box, style.box);
-  g.end();
-  return changed;
+  return numberBox(g, id, value, box, style.box);
 }
 
 inline bool
@@ -136,9 +128,7 @@ numberField(Target target,
 {
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = numberBox(g, id, value, box, style.box);
-  g.end();
-  return changed;
+  return numberBox(g, id, value, box, style.box);
 }
 
 inline bool

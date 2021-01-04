@@ -40,7 +40,6 @@ element(Target target,
   auto g = group(target, {}, {r.x, r.y, sz.x, sz.y}, Layout::NONE);
   text(g, str, {offset.left, offset.top}, style);
   box(g, {0, 0, sz.x, sz.y}, style);
-  g.end();
 }
 
 } // namespace dui

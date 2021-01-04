@@ -29,7 +29,6 @@ scrollBarSlider(Target target,
   int cursorPos =
     std::clamp((*value - min) * cursorMax / distance, 0, cursorMax);
   box(g, {cursorPos - 1, -1, cursorWidth, r.h}, style.cursor);
-  g.end();
   return false;
 }
 
@@ -80,7 +79,6 @@ scrollBar(Target target,
     max,
     {buttonWidth - 1, 0, r.w - buttonWidth * 2 + 2, buttonHeight},
     style.bar);
-  g.end();
   return action;
 }
 

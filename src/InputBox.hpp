@@ -93,7 +93,6 @@ textBoxBase(Target target,
     colorBox(
       g, {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y}, currentColors.text);
   }
-  g.end();
   if (action == TextAction::INPUT) {
     auto insert = target.lastText();
     auto index = cursorPos;

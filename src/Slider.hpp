@@ -43,9 +43,7 @@ slider(Target target,
     p, buttons.font, buttons.scale, buttons.padding + buttons.border);
   SDL_Rect box{p.x, p.y, adv.x, adv.y};
   auto g = labeledGroup(target, labelText, box, style.label);
-  auto changed = scrollBar(g, id, value, min, max, box, style.scroll);
-  g.end();
-  return changed;
+  return scrollBar(g, id, value, min, max, box, style.scroll);
 }
 template<class T>
 inline bool
