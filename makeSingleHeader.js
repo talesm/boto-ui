@@ -1,6 +1,9 @@
 const fs = require('fs')
 
+const cwd = process.cwd()
+process.chdir(cwd + '/src')
 const fileQueue = makeQueue('dui.hpp')
+process.chdir(cwd)
 
 const output = fs.openSync('dui_single.hpp', 'w')
 fs.writeSync(output, "/*\n * ", undefined)
@@ -21,7 +24,7 @@ fs.writeSync(output, "#endif\n\n", undefined)
 
 for (const fileName of fileQueue) {
   fs.writeSync(output, `// begin ${fileName}\n`)
-  const content = fs.readFileSync(fileName, 'utf-8')
+  const content = fs.readFileSync('src/' + fileName, 'utf-8')
   fs.writeSync(output, content
     .replace(/^#.*$/gm, '')
     .replace(/^namespace dui \{$/gm, '')

@@ -10,7 +10,7 @@ pkg_search_module(SDL2 REQUIRED IMPORTED_TARGET SDL2>=2.0.8 sdl2>=2.0.8)
 # pkg_search_module(SDL2_image REQUIRED IMPORTED_TARGET SDL2_image>=2.0.0 SDL2_Image>=2.0.0)
 
 add_library(dui INTERFACE)
-target_include_directories(dui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(dui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(dui INTERFACE PkgConfig::SDL2)
 target_compile_features(dui INTERFACE cxx_std_17)
 
