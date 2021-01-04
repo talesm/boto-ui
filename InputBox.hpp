@@ -296,6 +296,38 @@ numberBox(Target target,
   }
   return false;
 }
+// A float box
+inline bool
+numberBox(Target target,
+          std::string_view id,
+          float* value,
+          SDL_Rect r = {0},
+          const InputBoxStyle& style = themeFor<DoubleBox>())
+{
+  SDL_assert(value != nullptr);
+  BufferedInputBox bufferedBox{target, id, r, style};
+  if (bufferedBox.wantsRefill()) {
+    if (bufferedBox.incAmount != 0) {
+      *value += bufferedBox.incAmount;
+    }
+    auto text = bufferedBox.buffer;
+    int n = SDL_snprintf(text, bufferedBox.BUF_SZ, "%f", *value);
+    for (int i = n - 1; i > 0; --i) {
+      if (text[i] != '0' && text[i] != '.') {
+        text[i + 1] = 0;
+        break;
+      }
+    }
+  }
+  if (bufferedBox.end()) {
+    auto newValue = SDL_strtod(bufferedBox.buffer, nullptr);
+    if (newValue != *value) {
+      *value = newValue;
+      return true;
+    }
+  }
+  return false;
+}
 } // namespace dui
 
 #endif // DUI_INPUTBOX_HPP
