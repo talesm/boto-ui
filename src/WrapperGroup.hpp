@@ -13,7 +13,6 @@ class WrapperGroup
   EdgeSize padding;
   Group client;
   bool onClient = false;
-  bool ended = false;
   bool autoW;
   bool autoH;
 
@@ -43,7 +42,7 @@ public:
   }
 
   operator Target() & { return onClient ? Target{client} : Target{wrapper}; }
-  operator bool() const { return !ended; }
+  operator bool() const { return onClient || bool(wrapper); }
 
   SDL_Point endClient();
 
@@ -68,9 +67,8 @@ WrapperGroup::endClient()
 inline void
 WrapperGroup::endWrapper()
 {
-  SDL_assert(!ended && !onClient);
+  SDL_assert(!onClient);
   wrapper.end();
-  ended = true;
 }
 
 } // namespace dui

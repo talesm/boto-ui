@@ -111,7 +111,6 @@ main(int argc, char** argv)
     if (auto g = dui::panel(p, "group1")) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
-      g.end();
     }
 
     // Example changing background color of the next panel
@@ -122,7 +121,6 @@ main(int argc, char** argv)
           dui::panel(p, "group2", {0}, dui::Layout::HORIZONTAL, panelStyle)) {
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
-      g.end();
     }
 
     // Text input examples
@@ -141,8 +139,8 @@ main(int argc, char** argv)
     dui::textureBox(p, texture, {0, 1, 64, 64});
     dui::textureBox(p, texture, {0, 1, 128, 128});
 
-    // Here we end the panel p, we can add elements to the frame directly again
-    // after that
+    // Here we explicitly end the panel p, so we can add elements to the frame
+    // directly again after that.
     p.end();
 
     // For example, we can add this big texture

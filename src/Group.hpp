@@ -48,7 +48,12 @@ public:
         const SDL_Rect& rect,
         Layout layout);
 
-  ~Group() { SDL_assert(ended); }
+  ~Group()
+  {
+    if (!ended) {
+      end();
+    }
+  }
   Group(const Group&) = delete;
   Group(Group&& rhs);
   Group& operator=(Group&& rhs) = default;
@@ -106,6 +111,7 @@ inline Group::Group(Target parent,
 inline void
 Group::end()
 {
+  SDL_assert(!ended);
   if (rect.w == 0) {
     rect.w = width();
   }

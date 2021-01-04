@@ -24,9 +24,19 @@ public:
     : style(style)
     , wrapper(parent, id, r, layout, style.padding + style.border)
   {}
+  Panel(Panel&&) = default;
+  Panel& operator=(Panel&&) = default;
+
+  ~Panel()
+  {
+    if (wrapper) {
+      end();
+    }
+  }
 
   void end()
   {
+    SDL_assert(wrapper);
     auto sz = wrapper.endClient();
     box(*this, {0, 0, sz.x, sz.y}, style);
     wrapper.endWrapper();

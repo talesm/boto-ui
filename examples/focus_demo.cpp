@@ -51,16 +51,16 @@ main(int argc, char** argv)
     auto f = dui::frame(state);
     dui::label(f, "This doesn't take focus", {350, 200});
     dui::button(f, "This takes focus", {350, 220});
-    auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500});
-    dui::label(p, "Mouse Focus");
-    yesOrNo(p, mouseFocus);
-    dui::label(p, "Keyboard Focus");
-    yesOrNo(p, keyboardFocus);
-    dui::button(p, "dummy button");
-    static std::string dummyText{"Ahoy"};
-    dui::textField(p, "dummy text", &dummyText);
-
-    p.end();
+    if (auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500})) {
+      ;
+      dui::label(p, "Mouse Focus");
+      yesOrNo(p, mouseFocus);
+      dui::label(p, "Keyboard Focus");
+      yesOrNo(p, keyboardFocus);
+      dui::button(p, "dummy button");
+      static std::string dummyText{"Ahoy"};
+      dui::textField(p, "dummy text", &dummyText);
+    }
 
     // Render
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
