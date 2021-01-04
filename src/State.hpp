@@ -158,6 +158,13 @@ public:
   SDL_Keysym lastKeyDown() const { return tKeysym; }
 
   /**
+   * @brief Last mouse position
+   *
+   * @return SDL_Point the last mouse pos
+   */
+  SDL_Point lastMousePos() const { return mPos; }
+
+  /**
    * @brief If true, the state wants the mouse events
    */
   bool wantsMouse() const { return mHovering || !eGrabbed.empty(); }

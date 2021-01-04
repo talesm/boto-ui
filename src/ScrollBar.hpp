@@ -16,7 +16,7 @@ scrollBarSlider(Target target,
                 int* value,
                 int min,
                 int max,
-                SDL_Rect r = {0},
+                const SDL_Rect& r,
                 const ScrollBarSliderStyle& style = themeFor<ScrollBarSlider>())
 {
   SDL_assert(value != nullptr);
@@ -28,8 +28,35 @@ scrollBarSlider(Target target,
   int cursorMax = r.w - cursorWidth;
   int cursorPos =
     std::clamp((*value - min) * cursorMax / distance, 0, cursorMax);
-  box(g, {cursorPos - 1, -1, cursorWidth, r.h}, style.cursor);
-  return false;
+  SDL_Rect boxRect{cursorPos - 1, -1, cursorWidth, r.h};
+  box(g, boxRect, style.cursor);
+  g.end();
+  auto action = target.checkMouse(id, r);
+  if (action != MouseAction::ACTION) {
+    return false;
+  }
+  SDL_Point mPos = target.lastMousePos();
+  int delta = std::max(distance / 8, 1);
+  if (mPos.x - r.x < boxRect.x) {
+    if (*value == min) {
+      return false;
+    }
+    if (*value - delta <= min) {
+      *value = min;
+    } else {
+      *value -= delta;
+    }
+  } else {
+    if (*value == max) {
+      return false;
+    }
+    if (*value + delta >= max) {
+      *value = max;
+    } else {
+      *value += delta;
+    }
+  }
+  return true;
 }
 
 inline bool

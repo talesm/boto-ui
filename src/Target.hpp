@@ -151,6 +151,19 @@ public:
   SDL_Keysym lastKeyDown() const { return state->lastKeyDown(); }
 
   /**
+   * @brief Last mouse position
+   *
+   * @return SDL_Point the last mouse pos
+   */
+  SDL_Point lastMousePos() const
+  {
+    auto pos = state->lastMousePos();
+    pos.x -= topLeft.x;
+    pos.y -= topLeft.y;
+    return pos;
+  }
+
+  /**
    * @brief Advances the caret with the given offset
    *
    * @param p a point where x and y are the horizontal and vertical offsets,
