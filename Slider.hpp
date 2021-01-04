@@ -37,7 +37,10 @@ slider(Target target,
        const SDL_Point& p = {0},
        const SliderStyle& style = themeFor<Slider>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, themeFor<TextBox>())};
+  auto& buttons = style.scroll.buttons;
+  auto adv = makeInputSize(
+    p, buttons.font, buttons.scale, buttons.padding + buttons.border);
+  SDL_Rect box{p.x, p.y, adv.x, adv.y};
   auto g = labeledGroup(target, labelText, box, style.label);
   auto changed = scrollBar(g, id, value, min, max, box, style.scroll);
   g.end();
