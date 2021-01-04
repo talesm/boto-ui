@@ -27,13 +27,14 @@ namespace dui {
  * @return true
  * @return false
  */
+template<class T>
 inline bool
 slider(Target target,
        std::string_view id,
        std::string_view labelText,
-       int* value,
-       int min,
-       int max,
+       T* value,
+       T min,
+       T max,
        const SDL_Point& p = {0},
        const SliderStyle& style = themeFor<Slider>())
 {
@@ -46,13 +47,13 @@ slider(Target target,
   g.end();
   return changed;
 }
-
+template<class T>
 inline bool
 slider(Target target,
        std::string_view id,
-       int* value,
-       int min,
-       int max,
+       T* value,
+       T min,
+       T max,
        const SDL_Point& p = {0},
        const SliderStyle& style = themeFor<Slider>())
 {
