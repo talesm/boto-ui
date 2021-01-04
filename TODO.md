@@ -1,13 +1,19 @@
 TODO
 ====
 
-Freestyle (0.2)
+scRollers (0.3)
 ---------------
 
-- [ ] Scrollbar (derived from slider)
-- [ ] ScrollPanel
-- [ ] textArea
-- [ ] Section
+- [ ] Auto ending groups;
+- [ ] Organize source files into src and demo;
+- [ ] Scrollbar (derived from slider);
+- [ ] Vertical scrollbar;
+- [ ] ScrollPanel;
+- [ ] textArea;
+- [ ] Section;
+- [ ] Sized Buttons;
+- [ ] generic numberField;
+- [ ] Update removing manual ending;
 
 Wishlist
 --------
