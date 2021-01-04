@@ -126,8 +126,12 @@ DisplayList::render(SDL_Renderer* renderer) const
     }
     if (it->type == PUSH_CLIP) {
       SDL_assert(stackSz < STACK_MAX_SIZE);
-      stack[stackSz++] = it->rect;
-      SDL_RenderSetClipRect(renderer, &it->rect);
+      SDL_Rect rect = it->rect;
+      if (stackSz > 0) {
+        SDL_IntersectRect(&it->rect, &stack[stackSz - 1], &rect);
+      }
+      stack[stackSz++] = rect;
+      SDL_RenderSetClipRect(renderer, &rect);
       continue;
     }
     auto& shape = it->shape;
