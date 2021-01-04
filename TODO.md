@@ -4,7 +4,7 @@ TODO
 scRollers (0.3)
 ---------------
 
-- [ ] Auto ending groups;
+- [x] Auto ending groups;
 - [x] Organize source files into src;
 - [ ] Scrollbar (derived from slider);
 - [ ] Vertical scrollbar;
