@@ -176,6 +176,10 @@ public:
 
   bool isLocked() const { return *locked; }
 
+  Layout getLayout() const { return layout; }
+
+  SDL_Point size() const { return {width(), height()}; }
+
   int width() const { return makeWidth(*rect, *topLeft, *bottomRight, layout); }
 
   int contentWidth() const { return bottomRight->x - topLeft->x; }

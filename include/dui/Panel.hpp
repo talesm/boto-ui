@@ -49,6 +49,25 @@ public:
   operator bool() const { return wrapper; }
 };
 
+inline SDL_Point
+makePanelSize(SDL_Point defaultSize, Target target)
+{
+  if (defaultSize.x == 0 && target.getLayout() == Layout::VERTICAL) {
+    defaultSize.x = target.width();
+  }
+  if (defaultSize.y == 0 && target.getLayout() == Layout::HORIZONTAL) {
+    defaultSize.y = target.height();
+  }
+  return defaultSize;
+}
+
+inline SDL_Rect
+makePanelRect(const SDL_Rect& r, Target target)
+{
+  auto sz = makePanelSize({r.w, r.h}, target);
+  return {r.x, r.y, sz.x, sz.y};
+}
+
 /**
  * @brief adds a panel element
  *
@@ -66,11 +85,13 @@ panel(Target target,
       Layout layout = Layout::VERTICAL,
       const PanelStyle& style = themeFor<Panel>())
 {
-  return {target,
-          id,
-          r,
-          [&](auto& t, auto r) { return group(t, "client", r, layout); },
-          style};
+  return {
+    target,
+    id,
+    makePanelRect(r, target),
+    [&](auto& t, auto r) { return group(t, "client", r, layout); },
+    style,
+  };
 }
 } // namespace dui
 

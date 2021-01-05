@@ -103,22 +103,43 @@ struct Scrollable
   int height() const { return wrapper.height(); }
 };
 
+inline SDL_Point
+makeScrollableSize(const SDL_Point& defaultSize, Target target)
+{
+  auto size = makePanelSize(defaultSize, target);
+  if (size.x == 0) {
+    size.x = 100;
+  }
+  if (size.y == 0) {
+    size.y = 80;
+  }
+  return size;
+}
+
+inline SDL_Rect
+makeScrollableRect(const SDL_Rect& r, Target target)
+{
+  auto sz = makeScrollableSize({r.w, r.h}, target);
+  return {r.x, r.y, sz.x, sz.y};
+}
+
 inline Scrollable
-scrollable(Target parent,
+scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
-           const SDL_Rect& r,
+           const SDL_Rect& r = {0},
            Layout layout = Layout::VERTICAL,
            const ScrollableStyle& style = themeFor<Scrollable>())
 {
-  return {parent, id, scrollOffset, r, layout, style};
+  return {
+    target, id, scrollOffset, makeScrollableRect(r, target), layout, style};
 }
 
 inline PanelT<Scrollable>
 scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,
-                const SDL_Rect& r,
+                const SDL_Rect& r = {0},
                 Layout layout = Layout::VERTICAL,
                 const ScrollablePanelStyle& style = themeFor<ScrollablePanel>())
 {
@@ -126,8 +147,12 @@ scrollablePanel(Target target,
           id,
           r,
           [&](auto& t, auto r) {
-            return scrollable(
-              t, "client", scrollOffset, r, layout, style.scrollable);
+            return scrollable(t,
+                              "client",
+                              scrollOffset,
+                              makeScrollableRect(r, target),
+                              layout,
+                              style.scrollable);
           },
           style.panel};
 }
