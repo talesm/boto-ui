@@ -22,7 +22,7 @@ public:
         Layout layout,
         const PanelStyle& style)
     : style(style)
-    , wrapper(parent, id, r, layout, style.padding + style.border)
+    , wrapper(parent, id, {0}, r, layout, style.padding + style.border)
   {}
   Panel(Panel&&) = default;
   Panel& operator=(Panel&&) = default;

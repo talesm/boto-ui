@@ -36,11 +36,9 @@ struct Scrollable
              Layout layout,
              const ScrollableStyle& style)
     : style(style)
-    , wrapper(parent, id, r, layout, evalPadding(style))
+    , wrapper(parent, id, *scrollOffset, r, layout, evalPadding(style))
     , scrollOffset(scrollOffset)
-  {
-    wrapper.scroll(*scrollOffset);
-  }
+  {}
 
   Scrollable(Scrollable&&) = default;
   Scrollable& operator=(Scrollable&&) = default;

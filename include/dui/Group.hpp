@@ -45,6 +45,7 @@ public:
    */
   Group(Target parent,
         std::string_view id,
+        const SDL_Point& scroll,
         const SDL_Rect& rect,
         Layout layout);
 
@@ -75,14 +76,6 @@ public:
   }
 
   void end();
-
-  void scroll(const SDL_Point& offset)
-  {
-    topLeft.x -= offset.x;
-    topLeft.y -= offset.y;
-    bottomRight.x -= offset.x;
-    bottomRight.y -= offset.y;
-  }
 };
 
 /**
@@ -96,10 +89,10 @@ public:
 inline Group
 group(Target target,
       std::string_view id,
-      const SDL_Rect& rect,
+      const SDL_Rect& rect = {0},
       Layout layout = Layout::VERTICAL)
 {
-  return {target, id, rect, layout};
+  return {target, id, {0, 0}, rect, layout};
 }
 
 /**
@@ -117,19 +110,18 @@ offsetGroup(Target target,
             const SDL_Rect& r,
             Layout layout = Layout::VERTICAL)
 {
-  Group g{target, id, r, layout};
-  g.scroll(offset);
-  return g;
+  return {target, id, offset, r, layout};
 }
 
 inline Group::Group(Target parent,
                     std::string_view id,
+                    const SDL_Point& scroll,
                     const SDL_Rect& rect,
                     Layout layout)
   : parent(parent)
   , id(id)
   , rect(rect)
-  , topLeft(makeCaret(parent.getCaret(), rect.x, rect.y))
+  , topLeft(makeCaret(parent.getCaret(), rect.x - scroll.x, rect.y - scroll.y))
   , bottomRight(topLeft)
   , layout(layout)
 {

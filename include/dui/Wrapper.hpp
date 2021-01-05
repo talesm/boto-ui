@@ -28,12 +28,13 @@ class Wrapper
 public:
   Wrapper(Target parent,
           std::string_view id,
+          const SDL_Point& scrollOffset,
           const SDL_Rect& rect,
           Layout layout,
           const EdgeSize& padding)
-    : wrapper(parent, id, rect, Layout::NONE)
+    : wrapper(parent, id, {0}, rect, Layout::NONE)
     , padding(padding)
-    , client(wrapper, {}, paddedSize(rect, padding), layout)
+    , client(wrapper, "client", scrollOffset, paddedSize(rect, padding), layout)
     , autoW(rect.w == 0)
     , autoH(rect.h == 0)
   {
@@ -59,15 +60,6 @@ public:
   {
     SDL_assert(!onClient);
     wrapper.end();
-  }
-
-  void scroll(const SDL_Point& offset)
-  {
-    if (onClient) {
-      client.scroll(offset);
-    } else {
-      wrapper.scroll(offset);
-    }
   }
 };
 
