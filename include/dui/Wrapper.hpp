@@ -6,11 +6,12 @@
 namespace dui {
 
 /// A class to make wrapper elements
+template<class CLIENT>
 class Wrapper
 {
-  Group wrapper;
   EdgeSize padding;
-  Group client;
+  Group wrapper;
+  CLIENT client;
   bool onClient = false;
   bool autoW;
   bool autoH;
@@ -26,15 +27,15 @@ class Wrapper
   }
 
 public:
+  template<class FUNC>
   Wrapper(Target parent,
           std::string_view id,
-          const SDL_Point& scrollOffset,
           const SDL_Rect& rect,
-          Layout layout,
-          const EdgeSize& padding)
-    : wrapper(parent, id, {0}, rect, Layout::NONE)
-    , padding(padding)
-    , client(wrapper, "client", scrollOffset, paddedSize(rect, padding), layout)
+          const EdgeSize& padding,
+          FUNC initializer)
+    : padding(padding)
+    , wrapper(parent, id, {0}, rect, Layout::NONE)
+    , client(initializer(wrapper, paddedSize(rect, padding)))
     , autoW(rect.w == 0)
     , autoH(rect.h == 0)
   {
@@ -63,8 +64,9 @@ public:
   }
 };
 
+template<class CLIENT>
 inline SDL_Point
-Wrapper::endClient()
+Wrapper<CLIENT>::endClient()
 {
   SDL_assert(onClient);
   if (autoW) {

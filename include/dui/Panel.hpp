@@ -13,7 +13,7 @@ namespace dui {
 class Panel
 {
   PanelStyle style;
-  Wrapper wrapper;
+  Wrapper<Group> wrapper;
 
 public:
   Panel(Target parent,
@@ -22,7 +22,11 @@ public:
         Layout layout,
         const PanelStyle& style)
     : style(style)
-    , wrapper(parent, id, {0}, r, layout, style.padding + style.border)
+    , wrapper(parent,
+              id,
+              r,
+              style.padding + style.border,
+              [&](auto& t, auto r) { return group(t, "client", r, layout); })
   {}
   Panel(Panel&&) = default;
   Panel& operator=(Panel&&) = default;

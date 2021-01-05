@@ -26,7 +26,7 @@ evalPadding(const ScrollableStyle& style)
 struct Scrollable
 {
   ScrollableStyle style;
-  Wrapper wrapper;
+  Wrapper<Group> wrapper;
   SDL_Point* scrollOffset;
 
   Scrollable(Target parent,
@@ -36,7 +36,13 @@ struct Scrollable
              Layout layout,
              const ScrollableStyle& style)
     : style(style)
-    , wrapper(parent, id, *scrollOffset, r, layout, evalPadding(style))
+    , wrapper(parent,
+              id,
+              r,
+              evalPadding(style),
+              [&](auto& t, auto r) {
+                return offsetGroup(t, "client", *scrollOffset, r, layout);
+              })
     , scrollOffset(scrollOffset)
   {}
 
