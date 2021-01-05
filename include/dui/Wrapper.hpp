@@ -55,7 +55,11 @@ public:
 
   SDL_Point endClient();
 
-  void end();
+  void end()
+  {
+    SDL_assert(!onClient);
+    wrapper.end();
+  }
 
   void scroll(const SDL_Point& offset)
   {
@@ -80,13 +84,6 @@ Wrapper::endClient()
   client.end();
   onClient = false;
   return {wrapper.width(), wrapper.height()};
-}
-
-inline void
-Wrapper::end()
-{
-  SDL_assert(!onClient);
-  wrapper.end();
 }
 
 } // namespace dui
