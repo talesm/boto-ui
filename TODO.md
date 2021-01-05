@@ -13,7 +13,9 @@ scRollers (0.3)
 - [ ] Section;
 - [ ] Sized Buttons;
 - [ ] generic numberField;
-- [ ] Update removing manual ending;
+- [ ] Update README removing manual ending;
+- [ ] Test for numberFields and boxes
+- [ ] Test for sliders
 
 Wishlist
 --------
