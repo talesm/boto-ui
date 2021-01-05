@@ -62,6 +62,8 @@ public:
     SDL_assert(!onClient);
     wrapper.end();
   }
+  int width() const { return wrapper.width(); }
+  int height() const { return wrapper.height(); }
 };
 
 template<class CLIENT>

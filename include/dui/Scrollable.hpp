@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string_view>
+#include "Panel.hpp"
 #include "ScrollableStyle.hpp"
 #include "SliderBox.hpp"
 #include "Wrapper.hpp"
@@ -75,7 +76,7 @@ struct Scrollable
                    wrapperSize.x - padding.right,
                    0,
                    padding.right,
-                   wrapperSize.y - padding.bottom,
+                   wrapperSize.y,
                  });
     }
     if (padding.bottom > 0) {
@@ -97,6 +98,9 @@ struct Scrollable
   operator bool() const { return wrapper; }
 
   operator Target() { return wrapper; }
+
+  int width() const { return wrapper.width(); }
+  int height() const { return wrapper.height(); }
 };
 
 inline Scrollable
@@ -108,5 +112,23 @@ scrollable(Target parent,
            const ScrollableStyle& style = themeFor<Scrollable>())
 {
   return {parent, id, scrollOffset, r, layout, style};
+}
+
+inline PanelT<Scrollable>
+scrollablePanel(Target target,
+                std::string_view id,
+                SDL_Point* scrollOffset,
+                const SDL_Rect& r,
+                Layout layout = Layout::VERTICAL,
+                const ScrollablePanelStyle& style = themeFor<ScrollablePanel>())
+{
+  return {target,
+          id,
+          r,
+          [&](auto& t, auto r) {
+            return scrollable(
+              t, "client", scrollOffset, r, layout, style.scrollable);
+          },
+          style.panel};
 }
 } // namespace dui

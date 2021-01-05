@@ -48,7 +48,8 @@ main(int argc, char** argv)
     dui::sliderBox(g, "intScroll1", &var1.y, 0, 100);
     dui::sliderBox(g, "intScroll2", &var1.y, 0, 10);
     dui::sliderBoxV(g, "intScroll3", &var1.y, 0, 100);
-    if (auto sg = dui::scrollable(g, "scrollGroup", &var1, {0, 0, 100, 80})) {
+    if (auto sg =
+          dui::scrollablePanel(g, "scrollGroup", &var1, {0, 0, 100, 80})) {
       for (int i = 0; i < 5; ++i) {
         dui::label(sg, "Label");
       }
