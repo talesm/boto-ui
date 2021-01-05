@@ -128,11 +128,11 @@ scrollBar(Target target,
   bool action = false;
   Group g = group(target, id, r, Layout::NONE);
   if (button(g, "prev", "<")) {
-    *value = *value > min ? *value - 1 : min;
+    *value = std::clamp(*value - 1, min, max);
     action = true;
   }
   if (button(g, "next", ">", {r.w - buttonWidth, 0})) {
-    *value = *value < max ? *value + 1 : max;
+    *value = std::clamp(*value + 1, min, max);
     action = true;
   }
   action |= scrollBarSlider(
