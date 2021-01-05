@@ -9,7 +9,7 @@ scRollers (0.3)
 - [x] sliderBox (derived from slider);
 - [x] Vertical sliderBox;
 - [x] offsetGroup;
-- [ ] Scrollable;
+- [x] Scrollable;
 - [ ] Template WrapperGroup;
 - [ ] ScrollPanel;
 - [ ] textArea;
