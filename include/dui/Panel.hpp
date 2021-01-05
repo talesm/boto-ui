@@ -10,28 +10,26 @@
 namespace dui {
 
 /// A panel class @see panel()
-class Panel
+template<class CLIENT>
+class PanelT
 {
   PanelStyle style;
-  Wrapper<Group> wrapper;
+  Wrapper<CLIENT> wrapper;
 
 public:
-  Panel(Target parent,
-        std::string_view id,
-        const SDL_Rect& r,
-        Layout layout,
-        const PanelStyle& style)
+  template<class FUNC>
+  PanelT(Target parent,
+         std::string_view id,
+         const SDL_Rect& r,
+         FUNC initializer,
+         const PanelStyle& style)
     : style(style)
-    , wrapper(parent,
-              id,
-              r,
-              style.padding + style.border,
-              [&](auto& t, auto r) { return group(t, "client", r, layout); })
+    , wrapper(parent, id, r, style.padding + style.border, initializer)
   {}
-  Panel(Panel&&) = default;
-  Panel& operator=(Panel&&) = default;
+  PanelT(PanelT&&) = default;
+  PanelT& operator=(PanelT&&) = default;
 
-  ~Panel()
+  ~PanelT()
   {
     if (wrapper) {
       end();
@@ -59,18 +57,21 @@ public:
  * @param r the panel relative postion and size
  * @param layout the layout
  * @param style the style
- * @return Panel
+ * @return PanelT
  */
-inline Panel
+inline PanelT<Group>
 panel(Target target,
       std::string_view id,
       const SDL_Rect& r = {0},
       Layout layout = Layout::VERTICAL,
       const PanelStyle& style = themeFor<Panel>())
 {
-  return {target, id, r, layout, style};
+  return {target,
+          id,
+          r,
+          [&](auto& t, auto r) { return group(t, "client", r, layout); },
+          style};
 }
-
 } // namespace dui
 
 #endif // DUI_PANEL_HPP_
