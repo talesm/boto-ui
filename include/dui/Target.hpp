@@ -54,13 +54,17 @@ class Target
 {
   State* state;
   std::string_view id;
-  SDL_Rect& rect;
-  SDL_Point& topLeft;
-  SDL_Point& bottomRight;
+  SDL_Rect* rect = nullptr;
+  SDL_Point* topLeft = nullptr;
+  SDL_Point* bottomRight = nullptr;
   Layout layout;
-  bool& locked;
+  bool* locked = nullptr;
 
 public:
+  Target()
+    : state(nullptr)
+  {}
+
   Target(State* state,
          std::string_view id,
          SDL_Rect& rect,
@@ -70,36 +74,11 @@ public:
          bool& locked)
     : state(state)
     , id(id)
-    , rect(rect)
-    , topLeft(topLeft)
-    , bottomRight(bottomRight)
+    , rect(&rect)
+    , topLeft(&topLeft)
+    , bottomRight(&bottomRight)
     , layout(layout)
-    , locked(locked)
-  {}
-
-  // Move ctor
-  Target(Target&& rhs)
-    : state(rhs.state)
-    , id(rhs.id)
-    , rect(rhs.rect)
-    , topLeft(rhs.topLeft)
-    , bottomRight(rhs.bottomRight)
-    , layout(rhs.layout)
-    , locked(rhs.locked)
-  {
-    rhs.state = nullptr;
-  }
-  Target(const Target&) = delete;
-
-  // Not a Copy ctor, a borrow actually
-  Target(Target& rhs)
-    : Target(rhs.state,
-             rhs.id,
-             rhs.rect,
-             rhs.topLeft,
-             rhs.bottomRight,
-             rhs.layout,
-             rhs.locked)
+    , locked(&locked)
   {}
 
   /**
@@ -158,8 +137,8 @@ public:
   SDL_Point lastMousePos() const
   {
     auto pos = state->lastMousePos();
-    pos.x -= topLeft.x;
-    pos.y -= topLeft.y;
+    pos.x -= topLeft->x;
+    pos.y -= topLeft->y;
     return pos;
   }
 
@@ -186,29 +165,32 @@ public:
 
   SDL_Point getCaret() const
   {
-    auto caret = topLeft;
+    auto caret = *topLeft;
     if (layout == Layout::VERTICAL) {
-      caret.y = bottomRight.y;
+      caret.y = bottomRight->y;
     } else if (layout == Layout::HORIZONTAL) {
-      caret.x = bottomRight.x;
+      caret.x = bottomRight->x;
     }
     return caret;
   }
 
-  bool isLocked() const { return locked; }
+  bool isLocked() const { return *locked; }
 
-  int width() const { return makeWidth(rect, topLeft, bottomRight, layout); }
+  int width() const { return makeWidth(*rect, *topLeft, *bottomRight, layout); }
 
-  int contentWidth() const { return bottomRight.x - topLeft.x; }
+  int contentWidth() const { return bottomRight->x - topLeft->x; }
 
-  int height() const { return makeHeight(rect, topLeft, bottomRight, layout); }
+  int height() const
+  {
+    return makeHeight(*rect, *topLeft, *bottomRight, layout);
+  }
 
-  int contentHeight() const { return bottomRight.y - topLeft.y; }
+  int contentHeight() const { return bottomRight->y - topLeft->y; }
 
   void lock(std::string_view id, SDL_Rect r)
   {
-    SDL_assert(!locked);
-    locked = true;
+    SDL_assert(!*locked);
+    *locked = true;
     auto caret = getCaret();
     r.x += caret.x;
     r.y += caret.y;
@@ -217,21 +199,21 @@ public:
 
   void unlock(std::string_view id, SDL_Rect r)
   {
-    SDL_assert(locked);
+    SDL_assert(*locked);
     auto caret = getCaret();
     r.x += caret.x;
     r.y += caret.y;
     state->endGroup(id, r);
-    locked = false;
+    *locked = false;
   }
 
-  operator bool() const { return locked; }
+  operator bool() const { return state; }
 };
 
 inline MouseAction
 Target::checkMouse(std::string_view id, SDL_Rect r)
 {
-  SDL_assert(!locked);
+  SDL_assert(!*locked);
   SDL_Point caret = getCaret();
   r.x += caret.x;
   r.y += caret.y;
@@ -241,16 +223,16 @@ Target::checkMouse(std::string_view id, SDL_Rect r)
 inline void
 Target::advance(const SDL_Point& p)
 {
-  SDL_assert(!locked);
+  SDL_assert(!*locked);
   if (layout == Layout::VERTICAL) {
-    bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
-    bottomRight.y += p.y + 2;
+    bottomRight->x = std::max(p.x + topLeft->x, bottomRight->x);
+    bottomRight->y += p.y + 2;
   } else if (layout == Layout::HORIZONTAL) {
-    bottomRight.x += p.x + 2;
-    bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
+    bottomRight->x += p.x + 2;
+    bottomRight->y = std::max(p.y + topLeft->y, bottomRight->y);
   } else {
-    bottomRight.x = std::max(p.x + topLeft.x, bottomRight.x);
-    bottomRight.y = std::max(p.y + topLeft.y, bottomRight.y);
+    bottomRight->x = std::max(p.x + topLeft->x, bottomRight->x);
+    bottomRight->y = std::max(p.y + topLeft->y, bottomRight->y);
   }
 }
 } // namespace dui
