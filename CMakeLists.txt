@@ -20,6 +20,8 @@ add_executable(focus_demo examples/focus_demo.cpp)
 target_link_libraries(focus_demo PRIVATE dui)
 add_executable(hello_demo examples/hello_demo.cpp)
 target_link_libraries(hello_demo PRIVATE dui)
+add_executable(scrolling_demo examples/scrolling_demo.cpp)
+target_link_libraries(scrolling_demo PRIVATE dui)
 
 add_custom_target(single_header ALL
   node ${CMAKE_CURRENT_SOURCE_DIR}/makeSingleHeader.js ${CMAKE_CURRENT_BINARY_DIR}/dui.hpp
