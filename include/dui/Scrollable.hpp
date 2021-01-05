@@ -24,6 +24,7 @@ evalPadding(const ScrollableStyle& style)
   return padding;
 }
 
+/// Scrollable class. @see scrollable() and scrollablePanel()
 struct Scrollable
 {
   ScrollableStyle style;
@@ -123,6 +124,18 @@ makeScrollableRect(const SDL_Rect& r, Target target)
   return {r.x, r.y, sz.x, sz.y};
 }
 
+/**
+ * @brief add a scrollable group
+ *
+ * @param target the parent group or frame
+ * @param id the id
+ * @param scrollOffset the scrolling control variable
+ * @param r the relative position and the size. If size is 0 it will use a
+ * default size. Notice that this is different from group() and panel() behavior
+ * @param layout
+ * @param style
+ * @return group
+ */
 inline Scrollable
 scrollable(Target target,
            std::string_view id,
@@ -135,6 +148,20 @@ scrollable(Target target,
     target, id, scrollOffset, makeScrollableRect(r, target), layout, style};
 }
 
+/**
+ * @brief add a scrollable panel
+ *
+ * This is mostly the same than scrollable(), except it accepts more styling
+ * options, like border and background color.
+ * @param target the parent group or frame
+ * @param id the id
+ * @param scrollOffset the scrolling control variable
+ * @param r the relative position and the size. If size is 0 it will use a
+ * default size. Notice that this is different from group() and panel() behavior
+ * @param layout
+ * @param style
+ * @return group
+ */
 inline PanelT<Scrollable>
 scrollablePanel(Target target,
                 std::string_view id,
