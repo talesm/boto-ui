@@ -10,7 +10,7 @@ pkg_search_module(SDL2 REQUIRED IMPORTED_TARGET SDL2>=2.0.8 sdl2>=2.0.8)
 # pkg_search_module(SDL2_image REQUIRED IMPORTED_TARGET SDL2_image>=2.0.0 SDL2_Image>=2.0.0)
 
 add_library(dui INTERFACE)
-target_include_directories(dui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(dui INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/dui/)
 target_link_libraries(dui INTERFACE PkgConfig::SDL2)
 target_compile_features(dui INTERFACE cxx_std_17)
 
@@ -23,7 +23,7 @@ target_link_libraries(hello_demo PRIVATE dui)
 
 add_custom_target(single_header ALL
   node ${CMAKE_CURRENT_SOURCE_DIR}/makeSingleHeader.js ${CMAKE_CURRENT_BINARY_DIR}/dui.hpp
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/dui/
   COMMENT "Generating single header file" 
   VERBATIM
 )

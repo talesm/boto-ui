@@ -5,7 +5,7 @@ const fileQueue = makeQueue('dui.hpp')
 
 const output = fs.openSync(process.argv[2], 'w')
 fs.writeSync(output, "/*\n * ", undefined)
-const copywrite = fs.readFileSync('../LICENSE', 'utf-8')
+const copywrite = fs.readFileSync('../../LICENSE', 'utf-8')
 fs.writeSync(output, copywrite.replace(/\n/g, '\n * '))
 fs.writeSync(output, "\n */\n", undefined)
 fs.writeSync(output, "#ifndef DUI_SINGLE_HPP\n", undefined)

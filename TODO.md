@@ -5,7 +5,7 @@ scRollers (0.3)
 ---------------
 
 - [x] Auto ending groups;
-- [x] Organize source files into src;
+- [x] Organize source files into include;
 - [x] Scrollbar (derived from slider);
 - [ ] Vertical scrollbar;
 - [ ] ScrollPanel;
