@@ -5,7 +5,7 @@
 #include "Element.hpp"
 #include "Group.hpp"
 #include "PanelStyle.hpp"
-#include "WrapperGroup.hpp"
+#include "Wrapper.hpp"
 
 namespace dui {
 

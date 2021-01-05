@@ -1,5 +1,4 @@
-#ifndef DUI_WRAPPERGROUP_HPP
-#define DUI_WRAPPERGROUP_HPP
+#pragma once
 
 #include "EdgeSize.hpp"
 #include "Group.hpp"
@@ -91,5 +90,3 @@ Wrapper::end()
 }
 
 } // namespace dui
-
-#endif // DUI_WRAPPERGROUP_HPP

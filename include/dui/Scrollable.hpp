@@ -3,7 +3,7 @@
 #include <string_view>
 #include "ScrollableStyle.hpp"
 #include "SliderBox.hpp"
-#include "WrapperGroup.hpp"
+#include "Wrapper.hpp"
 
 namespace dui {
 
