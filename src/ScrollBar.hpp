@@ -2,6 +2,7 @@
 #define DUI_SCROLLBAR_HPP_
 
 #include <algorithm>
+#include <optional>
 #include <SDL.h>
 #include "Button.hpp"
 #include "Group.hpp"
@@ -9,6 +10,32 @@
 #include "Target.hpp"
 
 namespace dui {
+
+/// Returns delta
+inline std::optional<int>
+scrollBarSliderCaret(Target target,
+                     std::string_view id,
+                     const SDL_Rect& r,
+                     const BoxStyle& style = themeFor<Box>())
+{
+  box(target, r, style);
+  static int lastPos;
+  auto action = target.checkMouse(id, r);
+  if (action == MouseAction::GRAB || action == MouseAction::HOLD) {
+    lastPos = r.x;
+    return {0};
+  }
+  if (action != MouseAction::DRAG) {
+    return {};
+  }
+  auto pos = target.lastMousePos().x;
+  int delta = pos - lastPos;
+  lastPos += delta;
+  if (delta > 0 ? pos < r.x : pos > r.x) {
+    return {0};
+  }
+  return delta;
+}
 
 inline bool
 scrollBarSlider(Target target,
@@ -29,7 +56,14 @@ scrollBarSlider(Target target,
   int cursorPos =
     std::clamp((*value - min) * cursorMax / distance, 0, cursorMax);
   SDL_Rect boxRect{cursorPos - 1, -1, cursorWidth, r.h};
-  box(g, boxRect, style.cursor);
+  if (auto result = scrollBarSliderCaret(g, "caret", boxRect, style.cursor)) {
+    int delta = *result * distance / cursorMax;
+    if (delta == 0) {
+      return false;
+    }
+    *value = std::clamp(*value + delta, min, max);
+    return true;
+  }
   g.end();
   auto action = target.checkMouse(id, r);
   if (action != MouseAction::ACTION) {
