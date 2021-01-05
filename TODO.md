@@ -9,6 +9,7 @@ scRollers (0.3)
 - [x] sliderBox (derived from slider);
 - [x] Vertical sliderBox;
 - [x] offsetGroup;
+- [ ] Scrollable;
 - [ ] Template WrapperGroup;
 - [ ] ScrollPanel;
 - [ ] textArea;
@@ -22,6 +23,7 @@ scRollers (0.3)
 Wishlist
 --------
 
+- [ ] Group content margin should be customizable;
 - [ ] Allow using the SDL_gfx font
 - [ ] Generate doxygen
 - [ ] TTF Fonts
