@@ -11,6 +11,7 @@
 #include "InputField.hpp"
 #include "Label.hpp"
 #include "Panel.hpp"
+#include "Scrollable.hpp"
 #include "SliderBox.hpp"
 #include "SliderField.hpp"
 #include "State.hpp"

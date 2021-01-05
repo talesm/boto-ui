@@ -47,6 +47,15 @@ public:
   SDL_Point endClient();
 
   void endWrapper();
+
+  void scroll(const SDL_Point& offset)
+  {
+    if (onClient) {
+      client.scroll(offset);
+    } else {
+      wrapper.scroll(offset);
+    }
+  }
 };
 
 inline SDL_Point

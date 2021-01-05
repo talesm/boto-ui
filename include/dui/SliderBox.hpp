@@ -139,8 +139,8 @@ sliderBox(Target target,
   auto& buttonStyle = style.buttons;
   int buttonWidth = buttonStyle.padding.left + buttonStyle.padding.right +
                     buttonStyle.border.left + buttonStyle.border.right + 8;
-  if (r.w < buttonWidth * 4) {
-    r.w = buttonWidth * 4;
+  if (r.w < buttonWidth * 2) {
+    r.w = buttonWidth * 2;
   }
   int buttonHeight = buttonStyle.padding.top + buttonStyle.padding.bottom +
                      buttonStyle.border.top + buttonStyle.border.bottom + 8;
@@ -195,8 +195,8 @@ sliderBoxV(Target target,
   }
   int buttonHeight = buttonStyle.padding.top + buttonStyle.padding.bottom +
                      buttonStyle.border.top + buttonStyle.border.bottom + 8;
-  if (buttonHeight * 4 > r.h) {
-    r.h = buttonHeight * 4;
+  if (buttonHeight * 2 > r.h) {
+    r.h = buttonHeight * 2;
   }
   bool action = false;
   Group g = group(target, id, r, Layout::NONE);

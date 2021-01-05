@@ -199,7 +199,11 @@ public:
 
   int width() const { return makeWidth(rect, topLeft, bottomRight, layout); }
 
+  int contentWidth() const { return bottomRight.x - topLeft.x; }
+
   int height() const { return makeHeight(rect, topLeft, bottomRight, layout); }
+
+  int contentHeight() const { return bottomRight.y - topLeft.y; }
 
   void lock(std::string_view id, SDL_Rect r)
   {
@@ -220,6 +224,8 @@ public:
     state->endGroup(id, r);
     locked = false;
   }
+
+  operator bool() const { return locked; }
 };
 
 inline MouseAction
