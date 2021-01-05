@@ -47,6 +47,7 @@ main(int argc, char** argv)
     dui::numberField(g, "intVar1", &intVar);
     dui::sliderBox(g, "intScroll1", &intVar, 0, 100);
     dui::sliderBox(g, "intScroll2", &intVar, 0, 10);
+    dui::sliderBoxV(g, "intScroll3", &intVar, 0, 100);
     g.end();
 
     // Clear screen
