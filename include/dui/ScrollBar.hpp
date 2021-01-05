@@ -19,18 +19,21 @@ scrollBarSliderCaret(Target target,
                      const BoxStyle& style = themeFor<Box>())
 {
   box(target, r, style);
-  static int lastPos;
+  static int mouseOffset;
   auto action = target.checkMouse(id, r);
-  if (action == MouseAction::GRAB || action == MouseAction::HOLD) {
-    lastPos = r.x;
+  if (action == MouseAction::HOLD) {
+    return {0};
+  }
+  if (action == MouseAction::GRAB) {
+    auto pos = target.lastMousePos().x;
+    mouseOffset = pos - r.x;
     return {0};
   }
   if (action != MouseAction::DRAG) {
     return {};
   }
   auto pos = target.lastMousePos().x;
-  int delta = pos - lastPos;
-  lastPos += delta;
+  int delta = pos - r.x - mouseOffset;
   if (delta > 0 ? pos < r.x : pos > r.x) {
     return {0};
   }

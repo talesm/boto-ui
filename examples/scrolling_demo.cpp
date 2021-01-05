@@ -46,6 +46,7 @@ main(int argc, char** argv)
     auto g = dui::group(f, "main", {0});
     dui::numberField(g, "intVar1", &intVar);
     dui::scrollBar(g, "intScroll1", &intVar, 0, 100);
+    dui::scrollBar(g, "intScroll2", &intVar, 0, 10);
     g.end();
 
     // Clear screen
