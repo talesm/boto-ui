@@ -1,5 +1,5 @@
-#ifndef DUI_SCROLLBARSTYLE_HPP_
-#define DUI_SCROLLBARSTYLE_HPP_
+#ifndef DUI_SLIDERBOXSTYLE_HPP_
+#define DUI_SLIDERBOXSTYLE_HPP_
 
 #include <SDL.h>
 #include "BoxStyle.hpp"
@@ -11,28 +11,28 @@
 namespace dui {
 
 // Style for button
-struct ScrollBarSliderStyle
+struct SliderBoxBarStyle
 {
   PanelStyle panel;
   BoxStyle cursor;
   int minCursor;
 };
 
-struct ScrollBarStyle
+struct SliderBoxStyle
 {
   ButtonStyle buttons;
-  ScrollBarSliderStyle bar;
+  SliderBoxBarStyle bar;
 };
 
-struct ScrollBarSlider;
-struct ScrollBar;
+struct SliderBoxBar;
+struct SliderBox;
 
 namespace style {
 
 template<class Theme>
-struct FromTheme<ScrollBarSlider, Theme>
+struct FromTheme<SliderBoxBar, Theme>
 {
-  constexpr static ScrollBarSliderStyle get()
+  constexpr static SliderBoxBarStyle get()
   {
     auto buttonStyle = themeFor<Button, Theme>();
     return {
@@ -46,15 +46,15 @@ struct FromTheme<ScrollBarSlider, Theme>
   }
 };
 template<class Theme>
-struct FromTheme<ScrollBar, Theme>
+struct FromTheme<SliderBox, Theme>
 {
-  constexpr static ScrollBarStyle get()
+  constexpr static SliderBoxStyle get()
   {
-    return {themeFor<Button, Theme>(), themeFor<ScrollBarSlider, Theme>()};
+    return {themeFor<Button, Theme>(), themeFor<SliderBoxBar, Theme>()};
   }
 };
 } // namespace style
 
 } // namespace dui
 
-#endif // DUI_SCROLLBARSTYLE_HPP_
+#endif // DUI_SLIDERBOXSTYLE_HPP_

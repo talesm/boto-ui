@@ -1,22 +1,22 @@
-#ifndef DUI_SCROLLBAR_HPP_
-#define DUI_SCROLLBAR_HPP_
+#ifndef DUI_SLIDERBOX_HPP_
+#define DUI_SLIDERBOX_HPP_
 
 #include <algorithm>
 #include <optional>
 #include <SDL.h>
 #include "Button.hpp"
 #include "Group.hpp"
-#include "ScrollBarStyle.hpp"
+#include "SliderBoxStyle.hpp"
 #include "Target.hpp"
 
 namespace dui {
 
 /// Returns delta
 inline std::optional<int>
-scrollBarSliderCaret(Target target,
-                     std::string_view id,
-                     const SDL_Rect& r,
-                     const BoxStyle& style = themeFor<Box>())
+sliderBoxBarCaret(Target target,
+                  std::string_view id,
+                  const SDL_Rect& r,
+                  const BoxStyle& style = themeFor<Box>())
 {
   box(target, r, style);
   static int mouseOffset;
@@ -41,13 +41,13 @@ scrollBarSliderCaret(Target target,
 }
 
 inline bool
-scrollBarSlider(Target target,
-                std::string_view id,
-                int* value,
-                int min,
-                int max,
-                const SDL_Rect& r,
-                const ScrollBarSliderStyle& style = themeFor<ScrollBarSlider>())
+sliderBoxBar(Target target,
+             std::string_view id,
+             int* value,
+             int min,
+             int max,
+             const SDL_Rect& r,
+             const SliderBoxBarStyle& style = themeFor<SliderBoxBar>())
 {
   SDL_assert(value != nullptr);
   auto g = panel(target, id, r, Layout::NONE, style.panel);
@@ -59,7 +59,7 @@ scrollBarSlider(Target target,
   int cursorPos =
     std::clamp((*value - min) * cursorMax / distance, 0, cursorMax);
   SDL_Rect boxRect{cursorPos - 1, -1, cursorWidth, r.h};
-  if (auto result = scrollBarSliderCaret(g, "caret", boxRect, style.cursor)) {
+  if (auto result = sliderBoxBarCaret(g, "caret", boxRect, style.cursor)) {
     int delta = *result * distance / cursorMax;
     if (delta == 0) {
       return false;
@@ -97,13 +97,13 @@ scrollBarSlider(Target target,
 }
 
 inline bool
-scrollBar(Target target,
+sliderBox(Target target,
           std::string_view id,
           int* value,
           int min,
           int max,
           SDL_Rect r = {0},
-          const ScrollBarStyle& style = themeFor<ScrollBar>())
+          const SliderBoxStyle& style = themeFor<SliderBox>())
 {
   if (r.w == 0) {
     r.w = makeInputSize({r.w, r.h},
@@ -135,17 +135,17 @@ scrollBar(Target target,
     *value = std::clamp(*value + 1, min, max);
     action = true;
   }
-  action |= scrollBarSlider(
-    g,
-    "bar",
-    value,
-    min,
-    max,
-    {buttonWidth - 1, 0, r.w - buttonWidth * 2 + 2, buttonHeight},
-    style.bar);
+  action |=
+    sliderBoxBar(g,
+                 "bar",
+                 value,
+                 min,
+                 max,
+                 {buttonWidth - 1, 0, r.w - buttonWidth * 2 + 2, buttonHeight},
+                 style.bar);
   return action;
 }
 
 } // namespace dui
 
-#endif // DUI_SCROLLBAR_HPP_
+#endif // DUI_SLIDERBOX_HPP_
