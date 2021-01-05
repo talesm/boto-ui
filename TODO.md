@@ -10,19 +10,20 @@ scRollers (0.3)
 - [x] Vertical sliderBox;
 - [x] offsetGroup;
 - [x] Scrollable;
-- [ ] Template WrapperGroup;
-- [ ] ScrollPanel;
+- [x] Template WrapperGroup;
+- [x] ScrollablePanel;
+- [ ] Make Scrollable and Panel fill all available space
 - [ ] textArea;
 - [ ] Section;
-- [ ] Sized Buttons;
-- [ ] generic numberField;
 - [ ] Update README removing manual ending;
-- [ ] Test for numberFields and boxes
-- [ ] Test for sliders
 
 Wishlist
 --------
 
+- [ ] generic numberField;
+- [ ] Sized Buttons;
+- [ ] Test for numberFields and boxes
+- [ ] Test for sliders
 - [ ] Group content margin should be customizable;
 - [ ] Allow using the SDL_gfx font
 - [ ] Generate doxygen
