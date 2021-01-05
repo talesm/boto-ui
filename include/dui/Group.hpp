@@ -75,6 +75,14 @@ public:
   }
 
   void end();
+
+  void scroll(const SDL_Point& offset)
+  {
+    topLeft.x -= offset.x;
+    topLeft.y -= offset.y;
+    bottomRight.x -= offset.x;
+    bottomRight.y -= offset.y;
+  }
 };
 
 /**
@@ -92,6 +100,26 @@ group(Target target,
       Layout layout = Layout::VERTICAL)
 {
   return {target, id, rect, layout};
+}
+
+/**
+ * @brief Create group
+ *
+ * @param target the parent group or frame
+ * @param id the group id
+ * @param rect the group dimensions
+ * @return Group
+ */
+inline Group
+offsetGroup(Target target,
+            std::string_view id,
+            const SDL_Point& offset,
+            const SDL_Rect& r,
+            Layout layout = Layout::VERTICAL)
+{
+  Group g{target, id, r, layout};
+  g.scroll(offset);
+  return g;
 }
 
 inline Group::Group(Target parent,

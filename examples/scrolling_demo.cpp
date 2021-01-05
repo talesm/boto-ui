@@ -23,7 +23,7 @@ main(int argc, char** argv)
   dui::State state{renderer};
 
   // variables
-  int intVar = 10;
+  SDL_Point var1 = {0, 10};
 
   // Main loop
   for (;;) {
@@ -44,10 +44,16 @@ main(int argc, char** argv)
 
     // UI
     auto g = dui::group(f, "main", {0});
-    dui::numberField(g, "intVar1", &intVar);
-    dui::sliderBox(g, "intScroll1", &intVar, 0, 100);
-    dui::sliderBox(g, "intScroll2", &intVar, 0, 10);
-    dui::sliderBoxV(g, "intScroll3", &intVar, 0, 100);
+    dui::numberField(g, "intVar1", &var1.y);
+    dui::sliderBox(g, "intScroll1", &var1.y, 0, 100);
+    dui::sliderBox(g, "intScroll2", &var1.y, 0, 10);
+    dui::sliderBoxV(g, "intScroll3", &var1.y, 0, 100);
+    if (auto sg = dui::offsetGroup(g, "scrollGroup", var1, {0, 0, 100, 60})) {
+      for (int i = 0; i < 5; ++i) {
+        dui::label(sg, "Label");
+      }
+    }
+    dui::label(g, "End");
     g.end();
 
     // Clear screen

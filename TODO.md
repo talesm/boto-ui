@@ -8,6 +8,8 @@ scRollers (0.3)
 - [x] Organize source files into include;
 - [x] sliderBox (derived from slider);
 - [x] Vertical sliderBox;
+- [x] offsetGroup;
+- [ ] Template WrapperGroup;
 - [ ] ScrollPanel;
 - [ ] textArea;
 - [ ] Section;
