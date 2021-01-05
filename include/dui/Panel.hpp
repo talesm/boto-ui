@@ -13,7 +13,7 @@ namespace dui {
 class Panel
 {
   PanelStyle style;
-  WrapperGroup wrapper;
+  Wrapper wrapper;
 
 public:
   Panel(Target parent,
@@ -39,7 +39,7 @@ public:
     SDL_assert(wrapper);
     auto sz = wrapper.endClient();
     box(*this, {0, 0, sz.x, sz.y}, style);
-    wrapper.endWrapper();
+    wrapper.end();
   }
 
   operator Target() & { return wrapper; }

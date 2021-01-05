@@ -7,7 +7,7 @@
 namespace dui {
 
 /// A class to make wrapper elements
-class WrapperGroup
+class Wrapper
 {
   Group wrapper;
   EdgeSize padding;
@@ -27,11 +27,11 @@ class WrapperGroup
   }
 
 public:
-  WrapperGroup(Target parent,
-               std::string_view id,
-               const SDL_Rect& rect,
-               Layout layout,
-               const EdgeSize& padding)
+  Wrapper(Target parent,
+          std::string_view id,
+          const SDL_Rect& rect,
+          Layout layout,
+          const EdgeSize& padding)
     : wrapper(parent, id, rect, Layout::NONE)
     , padding(padding)
     , client(wrapper, {}, paddedSize(rect, padding), layout)
@@ -40,13 +40,23 @@ public:
   {
     onClient = true;
   }
+  Wrapper(Wrapper&&) = default;
+  Wrapper& operator=(Wrapper&&) = default;
+
+  ~Wrapper()
+  {
+    SDL_assert(!onClient);
+    if (wrapper) {
+      end();
+    }
+  }
 
   operator Target() & { return onClient ? Target{client} : Target{wrapper}; }
   operator bool() const { return onClient || bool(wrapper); }
 
   SDL_Point endClient();
 
-  void endWrapper();
+  void end();
 
   void scroll(const SDL_Point& offset)
   {
@@ -59,7 +69,7 @@ public:
 };
 
 inline SDL_Point
-WrapperGroup::endClient()
+Wrapper::endClient()
 {
   SDL_assert(onClient);
   if (autoW) {
@@ -74,7 +84,7 @@ WrapperGroup::endClient()
 }
 
 inline void
-WrapperGroup::endWrapper()
+Wrapper::end()
 {
   SDL_assert(!onClient);
   wrapper.end();

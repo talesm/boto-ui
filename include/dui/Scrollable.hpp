@@ -26,7 +26,7 @@ evalPadding(const ScrollableStyle& style)
 struct Scrollable
 {
   ScrollableStyle style;
-  WrapperGroup wrapper;
+  Wrapper wrapper;
   SDL_Point* scrollOffset;
 
   Scrollable(Target parent,
@@ -87,7 +87,7 @@ struct Scrollable
                   padding.bottom,
                 });
     }
-    wrapper.endWrapper();
+    wrapper.end();
   }
 
   operator bool() const { return wrapper; }
