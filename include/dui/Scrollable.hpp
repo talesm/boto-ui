@@ -172,14 +172,10 @@ scrollablePanel(Target target,
 {
   return {target,
           id,
-          r,
+          makeScrollableRect(r, target),
           [&](auto& t, auto r) {
-            return scrollable(t,
-                              "client",
-                              scrollOffset,
-                              makeScrollableRect(r, target),
-                              layout,
-                              style.scrollable);
+            return scrollable(
+              t, "client", scrollOffset, r, layout, style.scrollable);
           },
           style.panel};
 }
