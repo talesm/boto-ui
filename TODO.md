@@ -12,9 +12,10 @@ scRollers (0.3)
 - [x] Scrollable;
 - [x] Template WrapperGroup;
 - [x] ScrollablePanel;
-- [ ] Make Scrollable and Panel fill all available space
+- [x] Make Scrollable and Panel fill all available space
 - [ ] textArea;
 - [ ] Section;
+- [ ] Group content margin should be customizable;
 - [ ] Update README removing manual ending;
 
 Wishlist
@@ -24,7 +25,6 @@ Wishlist
 - [ ] Sized Buttons;
 - [ ] Test for numberFields and boxes
 - [ ] Test for sliders
-- [ ] Group content margin should be customizable;
 - [ ] Allow using the SDL_gfx font
 - [ ] Generate doxygen
 - [ ] TTF Fonts
