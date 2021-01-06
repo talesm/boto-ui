@@ -7,7 +7,7 @@ namespace dui {
 
 /// A class to make wrapper elements
 template<class CLIENT>
-class Wrapper
+class Wrapper : public Targetable<Wrapper<CLIENT>>
 {
   EdgeSize padding;
   Group wrapper;
@@ -62,8 +62,6 @@ public:
     SDL_assert(!onClient);
     wrapper.end();
   }
-  int width() const { return wrapper.width(); }
-  int height() const { return wrapper.height(); }
 };
 
 template<class CLIENT>
@@ -72,10 +70,10 @@ Wrapper<CLIENT>::endClient()
 {
   SDL_assert(onClient);
   if (autoW) {
-    wrapper.width(client.width() + padding.left + padding.right);
+    wrapper.setWidth(client.width() + padding.left + padding.right);
   }
   if (autoH) {
-    wrapper.height(client.height() + padding.top + padding.bottom);
+    wrapper.setHeight(client.height() + padding.top + padding.bottom);
   }
   client.end();
   onClient = false;

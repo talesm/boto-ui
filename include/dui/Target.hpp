@@ -28,24 +28,6 @@ makeLen(int len, int delta, bool autoPos)
   return len;
 }
 
-constexpr int
-makeWidth(const SDL_Rect& r,
-          const SDL_Point& topLeft,
-          const SDL_Point& bottomRight,
-          Layout layout)
-{
-  return makeLen(r.w, bottomRight.x - topLeft.x, layout == Layout::HORIZONTAL);
-}
-
-constexpr int
-makeHeight(const SDL_Rect& r,
-           const SDL_Point& topLeft,
-           const SDL_Point& bottomRight,
-           Layout layout)
-{
-  return makeLen(r.h, bottomRight.y - topLeft.y, layout == Layout::VERTICAL);
-}
-
 /**
  * @brief
  *
@@ -180,13 +162,18 @@ public:
 
   SDL_Point size() const { return {width(), height()}; }
 
-  int width() const { return makeWidth(*rect, *topLeft, *bottomRight, layout); }
+  int width() const
+  {
+    return makeLen(
+      rect->w, bottomRight->x - topLeft->x, layout == Layout::HORIZONTAL);
+  }
 
   int contentWidth() const { return bottomRight->x - topLeft->x; }
 
   int height() const
   {
-    return makeHeight(*rect, *topLeft, *bottomRight, layout);
+    return makeLen(
+      rect->h, bottomRight->y - topLeft->y, layout == Layout::VERTICAL);
   }
 
   int contentHeight() const { return bottomRight->y - topLeft->y; }
@@ -239,6 +226,23 @@ Target::advance(const SDL_Point& p)
     bottomRight->y = std::max(p.y + topLeft->y, bottomRight->y);
   }
 }
+
+template<class T>
+struct Targetable
+{
+  Layout getLayout() const { return target().getLayout(); }
+
+  SDL_Point size() const { return {source().width(), source().height()}; }
+
+  int width() const { return target().width(); }
+
+  int height() const { return target().height(); }
+
+private:
+  const T& source() const { return static_cast<const T&>(*this); }
+  const Target target() const { return const_cast<T&>(source()); }
+};
+
 } // namespace dui
 
 #endif // DUI_TARGET_HPP_

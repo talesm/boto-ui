@@ -11,7 +11,7 @@ namespace dui {
 
 /// A panel class @see panel()
 template<class CLIENT>
-class PanelT
+class PanelT : public Targetable<PanelT<CLIENT>>
 {
   PanelStyle style;
   Wrapper<CLIENT> wrapper;

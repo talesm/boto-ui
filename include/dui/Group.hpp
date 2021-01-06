@@ -21,7 +21,7 @@ makeCaret(const SDL_Point& caret, int x, int y)
  * composed elements
  *
  */
-class Group
+class Group : public Targetable<Group>
 {
   Target parent;
   std::string_view id;
@@ -62,13 +62,9 @@ public:
 
   operator bool() const { return !ended; }
 
-  int width() const { return makeWidth(rect, topLeft, bottomRight, layout); }
+  void setWidth(int v) { rect.w = v; }
 
-  void width(int v) { rect.w = v; }
-
-  int height() const { return makeHeight(rect, topLeft, bottomRight, layout); }
-
-  void height(int v) { rect.h = v; }
+  void setHeight(int v) { rect.h = v; }
 
   operator Target() &
   {

@@ -25,12 +25,13 @@ evalPadding(const ScrollableStyle& style)
 }
 
 /// Scrollable class. @see scrollable() and scrollablePanel()
-struct Scrollable
+class Scrollable : public Targetable<Scrollable>
 {
   ScrollableStyle style;
   Wrapper<Group> wrapper;
   SDL_Point* scrollOffset;
 
+public:
   Scrollable(Target parent,
              std::string_view id,
              SDL_Point* scrollOffset,
@@ -99,9 +100,6 @@ struct Scrollable
   operator bool() const { return wrapper; }
 
   operator Target() { return wrapper; }
-
-  int width() const { return wrapper.width(); }
-  int height() const { return wrapper.height(); }
 };
 
 inline SDL_Point
