@@ -38,7 +38,7 @@ public:
 
   operator Target() &
   {
-    return {state, {}, rect, topLeft, bottomRight, Layout::NONE, locked};
+    return {state, {}, rect, topLeft, bottomRight, locked, {0, Layout::NONE}};
   }
 };
 

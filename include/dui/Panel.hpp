@@ -13,7 +13,7 @@ namespace dui {
 template<class CLIENT>
 class PanelT : public Targetable<PanelT<CLIENT>>
 {
-  PanelStyle style;
+  PanelDecorationStyle style;
   Wrapper<CLIENT> wrapper;
 
 public:
@@ -22,7 +22,7 @@ public:
          std::string_view id,
          const SDL_Rect& r,
          FUNC initializer,
-         const PanelStyle& style)
+         const PanelDecorationStyle& style)
     : style(style)
     , wrapper(parent, id, r, style.padding + style.border, initializer)
   {}
@@ -69,6 +69,7 @@ makePanelRect(const SDL_Rect& r, Target target)
 }
 
 /**
+ * @[
  * @brief adds a panel element
  *
  * @param target the parent group or frame
@@ -82,17 +83,26 @@ inline PanelT<Group>
 panel(Target target,
       std::string_view id,
       const SDL_Rect& r = {0},
-      Layout layout = Layout::VERTICAL,
       const PanelStyle& style = themeFor<Panel>())
 {
   return {
     target,
     id,
     makePanelRect(r, target),
-    [&](auto& t, auto r) { return group(t, "client", r, layout); },
+    [&](auto& t, auto r) { return group(t, "client", r, style); },
     style,
   };
 }
+inline PanelT<Group>
+panel(Target target,
+      std::string_view id,
+      const SDL_Rect& r,
+      Layout layout,
+      const PanelStyle& style = themeFor<Panel>())
+{
+  return panel(target, id, r, style.withLayout(layout));
+}
+/// @]
 } // namespace dui
 
 #endif // DUI_PANEL_HPP_

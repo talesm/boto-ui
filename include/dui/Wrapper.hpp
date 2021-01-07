@@ -34,7 +34,7 @@ public:
           const EdgeSize& padding,
           FUNC initializer)
     : padding(padding)
-    , wrapper(parent, id, {0}, rect, Layout::NONE)
+    , wrapper(parent, id, {0}, rect, {0, Layout::NONE})
     , client(initializer(wrapper, paddedSize(rect, padding)))
     , autoW(rect.w == 0)
     , autoH(rect.h == 0)

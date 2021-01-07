@@ -1,8 +1,8 @@
-#ifndef DUI_GROUP_HPP_
-#define DUI_GROUP_HPP_
+#pragma once
 
 #include <string_view>
 #include <SDL_rect.h>
+#include "GroupStyle.hpp"
 #include "State.hpp"
 #include "Target.hpp"
 
@@ -30,7 +30,7 @@ class Group : public Targetable<Group>
   SDL_Rect rect;
   SDL_Point topLeft;
   SDL_Point bottomRight;
-  Layout layout;
+  GroupStyle style;
 
 public:
   /**
@@ -47,7 +47,7 @@ public:
         std::string_view id,
         const SDL_Point& scroll,
         const SDL_Rect& rect,
-        Layout layout);
+        const GroupStyle& style);
 
   ~Group()
   {
@@ -68,58 +68,81 @@ public:
 
   operator Target() &
   {
-    return {&parent.getState(), id, rect, topLeft, bottomRight, layout, locked};
+    return {
+      &parent.getState(),
+      id,
+      rect,
+      topLeft,
+      bottomRight,
+      locked,
+      style,
+    };
   }
 
   void end();
 };
 
 /**
+ * @[
  * @brief Create group
  *
  * @param target the parent group or frame
  * @param id the group id
+ * @param offset the scroll offset
  * @param rect the group dimensions
+ * @param layout the layout
+ * @param style the group style
  * @return Group
  */
 inline Group
 group(Target target,
       std::string_view id,
-      const SDL_Rect& rect = {0},
-      Layout layout = Layout::VERTICAL)
+      const SDL_Rect& r = {0},
+      const GroupStyle& style = themeFor<Group>())
 {
-  return {target, id, {0, 0}, rect, layout};
+  return {target, id, {0, 0}, r, style};
 }
-
-/**
- * @brief Create group
- *
- * @param target the parent group or frame
- * @param id the group id
- * @param rect the group dimensions
- * @return Group
- */
+inline Group
+group(Target target,
+      std::string_view id,
+      const SDL_Rect& r,
+      Layout layout,
+      const GroupStyle& style = themeFor<Group>())
+{
+  return group(target, id, r, style.withLayout(layout));
+}
 inline Group
 offsetGroup(Target target,
             std::string_view id,
             const SDL_Point& offset,
             const SDL_Rect& r,
-            Layout layout = Layout::VERTICAL)
+            const GroupStyle& style = themeFor<Group>())
 {
-  return {target, id, offset, r, layout};
+  return {target, id, offset, r, style};
 }
+inline Group
+offsetGroup(Target target,
+            std::string_view id,
+            const SDL_Point& offset,
+            const SDL_Rect& r,
+            Layout layout,
+            const GroupStyle& style = themeFor<Group>())
+{
+  return offsetGroup(target, id, offset, r, style.withLayout(layout));
+}
+///@]
 
 inline Group::Group(Target parent,
                     std::string_view id,
                     const SDL_Point& scroll,
                     const SDL_Rect& rect,
-                    Layout layout)
+                    const GroupStyle& style)
   : parent(parent)
   , id(id)
   , rect(rect)
   , topLeft(makeCaret(parent.getCaret(), rect.x - scroll.x, rect.y - scroll.y))
   , bottomRight(topLeft)
-  , layout(layout)
+  , style(style)
 {
   parent.lock(id, rect);
 }
@@ -146,11 +169,8 @@ inline Group::Group(Group&& rhs)
   , rect(rhs.rect)
   , topLeft(rhs.topLeft)
   , bottomRight(rhs.bottomRight)
-  , layout(rhs.layout)
 {
   rhs.ended = true;
 }
 
 } // namespace dui
-
-#endif // DUI_GROUP_HPP_

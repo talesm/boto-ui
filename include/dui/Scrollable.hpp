@@ -36,7 +36,6 @@ public:
              std::string_view id,
              SDL_Point* scrollOffset,
              const SDL_Rect& r,
-             Layout layout,
              const ScrollableStyle& style)
     : style(style)
     , wrapper(parent,
@@ -44,7 +43,7 @@ public:
               r,
               evalPadding(style),
               [&](auto& t, auto r) {
-                return offsetGroup(t, "client", *scrollOffset, r, layout);
+                return offsetGroup(t, "client", *scrollOffset, r, style);
               })
     , scrollOffset(scrollOffset)
   {}
@@ -123,6 +122,7 @@ makeScrollableRect(const SDL_Rect& r, Target target)
 }
 
 /**
+ * @[
  * @brief add a scrollable group
  *
  * @param target the parent group or frame
@@ -139,14 +139,24 @@ scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
            const SDL_Rect& r = {0},
+           const ScrollableStyle& style = themeFor<Scrollable>())
+{
+  return {target, id, scrollOffset, makeScrollableRect(r, target), style};
+}
+inline Scrollable
+scrollable(Target target,
+           std::string_view id,
+           SDL_Point* scrollOffset,
+           const SDL_Rect& r = {0},
            Layout layout = Layout::VERTICAL,
            const ScrollableStyle& style = themeFor<Scrollable>())
 {
-  return {
-    target, id, scrollOffset, makeScrollableRect(r, target), layout, style};
+  return {target, id, scrollOffset, makeScrollableRect(r, target), style};
 }
+///@]
 
 /**
+ * @[
  * @brief add a scrollable panel
  *
  * This is mostly the same than scrollable(), except it accepts more styling
@@ -165,16 +175,25 @@ scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,
                 const SDL_Rect& r = {0},
-                Layout layout = Layout::VERTICAL,
                 const ScrollablePanelStyle& style = themeFor<ScrollablePanel>())
 {
   return {target,
           id,
           makeScrollableRect(r, target),
           [&](auto& t, auto r) {
-            return scrollable(
-              t, "client", scrollOffset, r, layout, style.scrollable);
+            return scrollable(t, "client", scrollOffset, r, style);
           },
-          style.panel};
+          style};
 }
+inline PanelT<Scrollable>
+scrollablePanel(Target target,
+                std::string_view id,
+                SDL_Point* scrollOffset,
+                const SDL_Rect& r,
+                Layout layout,
+                const ScrollablePanelStyle& style = themeFor<ScrollablePanel>())
+{
+  return scrollablePanel(target, id, scrollOffset, r, style.withLayout(layout));
+}
+///@]
 } // namespace dui

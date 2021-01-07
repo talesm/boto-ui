@@ -3,26 +3,17 @@
 
 #include <SDL.h>
 #include "State.hpp"
+#include "TargetStyle.hpp"
 
 namespace dui {
-namespace style {
-constexpr int elementSpacing = 2;
-} // namespace style
-
-enum class Layout : Uint8
-{
-  NONE,
-  VERTICAL,
-  HORIZONTAL,
-};
 
 constexpr int
-makeLen(int len, int delta, bool autoPos)
+makeLen(int len, int delta, bool autoPos, int elementSpacing)
 {
   if (len == 0) {
     len = delta;
-    if (autoPos && len >= style::elementSpacing) {
-      len -= style::elementSpacing;
+    if (autoPos && len >= elementSpacing) {
+      len -= elementSpacing;
     }
   }
   return len;
@@ -39,8 +30,8 @@ class Target
   SDL_Rect* rect = nullptr;
   SDL_Point* topLeft = nullptr;
   SDL_Point* bottomRight = nullptr;
-  Layout layout;
   bool* locked = nullptr;
+  TargetStyle style;
 
 public:
   Target()
@@ -52,15 +43,15 @@ public:
          SDL_Rect& rect,
          SDL_Point& topLeft,
          SDL_Point& bottomRight,
-         Layout layout,
-         bool& locked)
+         bool& locked,
+         TargetStyle style)
     : state(state)
     , id(id)
     , rect(&rect)
     , topLeft(&topLeft)
     , bottomRight(&bottomRight)
-    , layout(layout)
     , locked(&locked)
+    , style(style)
   {}
 
   /**
@@ -148,9 +139,9 @@ public:
   SDL_Point getCaret() const
   {
     auto caret = *topLeft;
-    if (layout == Layout::VERTICAL) {
+    if (style.layout == Layout::VERTICAL) {
       caret.y = bottomRight->y;
-    } else if (layout == Layout::HORIZONTAL) {
+    } else if (style.layout == Layout::HORIZONTAL) {
       caret.x = bottomRight->x;
     }
     return caret;
@@ -158,22 +149,26 @@ public:
 
   bool isLocked() const { return *locked; }
 
-  Layout getLayout() const { return layout; }
+  Layout getLayout() const { return style.layout; }
 
   SDL_Point size() const { return {width(), height()}; }
 
   int width() const
   {
-    return makeLen(
-      rect->w, bottomRight->x - topLeft->x, layout == Layout::HORIZONTAL);
+    return makeLen(rect->w,
+                   bottomRight->x - topLeft->x,
+                   style.layout == Layout::HORIZONTAL,
+                   style.elementSpacing);
   }
 
   int contentWidth() const { return bottomRight->x - topLeft->x; }
 
   int height() const
   {
-    return makeLen(
-      rect->h, bottomRight->y - topLeft->y, layout == Layout::VERTICAL);
+    return makeLen(rect->h,
+                   bottomRight->y - topLeft->y,
+                   style.layout == Layout::VERTICAL,
+                   style.elementSpacing);
   }
 
   int contentHeight() const { return bottomRight->y - topLeft->y; }
@@ -215,11 +210,11 @@ inline void
 Target::advance(const SDL_Point& p)
 {
   SDL_assert(!*locked);
-  if (layout == Layout::VERTICAL) {
+  if (style.layout == Layout::VERTICAL) {
     bottomRight->x = std::max(p.x + topLeft->x, bottomRight->x);
-    bottomRight->y += p.y + 2;
-  } else if (layout == Layout::HORIZONTAL) {
-    bottomRight->x += p.x + 2;
+    bottomRight->y += p.y + style.elementSpacing;
+  } else if (style.layout == Layout::HORIZONTAL) {
+    bottomRight->x += p.x + style.elementSpacing;
     bottomRight->y = std::max(p.y + topLeft->y, bottomRight->y);
   } else {
     bottomRight->x = std::max(p.x + topLeft->x, bottomRight->x);
