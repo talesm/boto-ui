@@ -15,7 +15,7 @@ scRollers (0.3)
 - [x] Make Scrollable and Panel fill all available space
 - [ ] textArea;
 - [ ] Section;
-- [ ] Group content margin should be customizable;
+- [x] Group element spacing should be customizable;
 - [ ] Update README removing manual ending;
 
 Wishlist
