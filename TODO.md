@@ -13,7 +13,7 @@ scRollers (0.3)
 - [x] Template WrapperGroup;
 - [x] ScrollablePanel;
 - [x] Make Scrollable and Panel fill all available space
-- [ ] textArea;
+- [ ] Window;
 - [ ] Section;
 - [x] Group element spacing should be customizable;
 - [ ] Update README removing manual ending;
@@ -21,6 +21,7 @@ scRollers (0.3)
 Wishlist
 --------
 
+- [ ] textArea;
 - [ ] generic numberField;
 - [ ] Sized Buttons;
 - [ ] Test for numberFields and boxes
