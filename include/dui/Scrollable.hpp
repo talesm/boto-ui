@@ -42,7 +42,7 @@ public:
               id,
               r,
               evalPadding(style),
-              [&](auto& t, auto r) {
+              [=](auto t, auto r) {
                 return offsetGroup(t, "client", *scrollOffset, r, style);
               })
     , scrollOffset(scrollOffset)
@@ -180,7 +180,7 @@ scrollablePanel(Target target,
   return {target,
           id,
           makeScrollableRect(r, target),
-          [&](auto& t, auto r) {
+          [=](auto t, auto r) {
             return scrollable(t, "client", scrollOffset, r, style);
           },
           style};

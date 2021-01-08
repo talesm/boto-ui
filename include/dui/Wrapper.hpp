@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include "EdgeSize.hpp"
 #include "Group.hpp"
 
@@ -9,8 +10,10 @@ namespace dui {
 template<class CLIENT>
 class Wrapper : public Targetable<Wrapper<CLIENT>>
 {
+  using ClientInitializer = std::function<CLIENT(Target, const SDL_Rect&)>;
   EdgeSize padding;
-  Group wrapper;
+  ClientInitializer initializer;
+  Group decoration;
   CLIENT client;
   bool onClient = false;
   bool autoW;
@@ -27,40 +30,57 @@ class Wrapper : public Targetable<Wrapper<CLIENT>>
   }
 
 public:
-  template<class FUNC>
   Wrapper(Target parent,
           std::string_view id,
           const SDL_Rect& rect,
           const EdgeSize& padding,
-          FUNC initializer)
+          ClientInitializer initializer)
     : padding(padding)
-    , wrapper(parent, id, {0}, rect, {0, Layout::NONE})
-    , client(initializer(wrapper, paddedSize(rect, padding)))
+    , initializer(initializer)
+    , decoration(parent, id, {0}, rect, {0, Layout::NONE})
+    , client(this->initializer(decoration, paddedSize(rect, padding)))
     , autoW(rect.w == 0)
     , autoH(rect.h == 0)
   {
     onClient = true;
   }
-  Wrapper(Wrapper&&) = default;
-  Wrapper& operator=(Wrapper&&) = default;
+  Wrapper(const Wrapper&) = delete;
+  Wrapper(Wrapper&& rhs)
+    : padding(rhs.padding)
+    , initializer(rhs.initializer)
+    , decoration(std::move(rhs.decoration))
+    , client(initializer(decoration, paddedSize(decoration.getRect(), padding)))
+    , onClient(rhs.onClient)
+    , autoW(rhs.autoW)
+    , autoH(rhs.autoH)
+  {
+    rhs.onClient = false;
+  }
+  Wrapper& operator=(const Wrapper& rhs) = delete;
+  Wrapper& operator=(Wrapper&& rhs)
+  {
+    this->~Wrapper();
+    new (this) Wrapper(std::move(rhs));
+    return *this;
+  }
 
   ~Wrapper()
   {
     SDL_assert(!onClient);
-    if (wrapper) {
+    if (decoration) {
       end();
     }
   }
 
-  operator Target() & { return onClient ? Target{client} : Target{wrapper}; }
-  operator bool() const { return onClient || bool(wrapper); }
+  operator Target() & { return onClient ? Target{client} : Target{decoration}; }
+  operator bool() const { return onClient || bool(decoration); }
 
   SDL_Point endClient();
 
   void end()
   {
     SDL_assert(!onClient);
-    wrapper.end();
+    decoration.end();
   }
 };
 
@@ -70,14 +90,14 @@ Wrapper<CLIENT>::endClient()
 {
   SDL_assert(onClient);
   if (autoW) {
-    wrapper.setWidth(client.width() + padding.left + padding.right);
+    decoration.setWidth(client.width() + padding.left + padding.right);
   }
   if (autoH) {
-    wrapper.setHeight(client.height() + padding.top + padding.bottom);
+    decoration.setHeight(client.height() + padding.top + padding.bottom);
   }
   client.end();
   onClient = false;
-  return {wrapper.width(), wrapper.height()};
+  return {decoration.width(), decoration.height()};
 }
 
 } // namespace dui

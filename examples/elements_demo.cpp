@@ -61,7 +61,7 @@ main(int argc, char** argv)
     auto f = dui::frame(state);
 
     // Free label
-    dui::label(f, "Hello world", {400, 150});
+    dui::label(f, "Hello world", {400, 10});
 
     // Main panel
     auto p = dui::panel(f, "mainPanel", {10, 10, 300, 580});
@@ -134,6 +134,10 @@ main(int argc, char** argv)
     dui::numberField(p, "value2", &value2);
     dui::sliderField(p, "value1 b", &value1, 0, 100);
 
+    // New panel for images
+    p.end();
+    p = dui::panel(f, "Textures", {500, 10});
+    dui::label(p, "Textures");
     // images
     dui::textureBox(p, texture, {0, 0, 8, 8});
     dui::textureBox(p, texture, {0, 1, 64, 64});
@@ -144,7 +148,7 @@ main(int argc, char** argv)
     p.end();
 
     // For example, we can add this big texture
-    dui::textureBox(f, texture, {400, 150, 256, 256});
+    dui::textureBox(f, texture, {400, 300, 256, 256});
 
     // Render
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

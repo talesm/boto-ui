@@ -57,7 +57,7 @@ public:
   }
   Group(const Group&) = delete;
   Group(Group&& rhs);
-  Group& operator=(Group&& rhs) = default;
+  Group& operator=(Group&& rhs);
   Group& operator=(const Group& rhs) = delete;
 
   operator bool() const { return !ended; }
@@ -160,17 +160,26 @@ Group::end()
   parent.unlock(id, rect);
   parent.advance({rect.x + rect.w, rect.y + rect.h});
   ended = true;
+  parent = {};
 }
 
 inline Group::Group(Group&& rhs)
   : parent(rhs.parent)
   , id(std::move(rhs.id))
-  , locked(rhs.locked)
   , rect(rhs.rect)
   , topLeft(rhs.topLeft)
   , bottomRight(rhs.bottomRight)
 {
   rhs.ended = true;
+}
+
+inline Group&
+Group::operator=(Group&& rhs)
+{
+  SDL_assert(ended);
+  this->~Group();
+  new (this) Group(std::move(rhs));
+  return *this;
 }
 
 } // namespace dui

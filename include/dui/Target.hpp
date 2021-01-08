@@ -151,6 +151,8 @@ public:
 
   Layout getLayout() const { return style.layout; }
 
+  const SDL_Rect& getRect() const { return *rect; }
+
   SDL_Point size() const { return {width(), height()}; }
 
   int width() const
@@ -226,6 +228,8 @@ template<class T>
 struct Targetable
 {
   Layout getLayout() const { return target().getLayout(); }
+
+  SDL_Rect getRect() const { return target().getRect(); }
 
   SDL_Point size() const { return {source().width(), source().height()}; }
 

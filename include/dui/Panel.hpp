@@ -26,8 +26,17 @@ public:
     : style(style)
     , wrapper(parent, id, r, style.padding + style.border, initializer)
   {}
-  PanelT(PanelT&&) = default;
-  PanelT& operator=(PanelT&&) = default;
+  PanelT(PanelT&& rhs)
+    : style(rhs.style)
+    , wrapper(std::move(rhs.wrapper))
+  {}
+
+  PanelT& operator=(PanelT&& rhs)
+  {
+    this->~PanelT();
+    new (this) PanelT(std::move(rhs));
+    return *this;
+  }
 
   ~PanelT()
   {
@@ -89,7 +98,7 @@ panel(Target target,
     target,
     id,
     makePanelRect(r, target),
-    [&](auto& t, auto r) { return group(t, "client", r, style); },
+    [style](auto t, auto r) { return group(t, "client", r, style); },
     style,
   };
 }
