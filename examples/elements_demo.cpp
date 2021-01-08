@@ -122,6 +122,13 @@ main(int argc, char** argv)
       dui::label(g, "Grouped Label");
       dui::button(g, "Grouped button");
     }
+    static SDL_Point scrollOffset{0};
+    if (auto g = dui::scrollablePanel(p, "group3", &scrollOffset)) {
+      dui::label(g, "Grouped Label1");
+      dui::button(g, "Grouped button1");
+      dui::label(g, "Grouped Label2");
+      dui::button(g, "Grouped button2");
+    }
 
     // Text input examples
     dui::label(p, "Text input", {0, 10});
