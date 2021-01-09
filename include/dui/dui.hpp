@@ -15,6 +15,7 @@
 #include "SliderBox.hpp"
 #include "SliderField.hpp"
 #include "State.hpp"
+#include "Window.hpp"
 #include "Wrapper.hpp"
 
 #endif // DUI_HPP_H

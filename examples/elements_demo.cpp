@@ -64,7 +64,7 @@ main(int argc, char** argv)
     dui::label(f, "Hello world", {400, 10});
 
     // Main panel
-    auto p = dui::panel(f, "mainPanel", {10, 10, 300, 580});
+    auto p = dui::window(f, "elements", {10, 10, 300, 580});
     // dui::label(f, "Error"); // You can not add anything to the frame until
     // you call p.end()
 
@@ -143,8 +143,7 @@ main(int argc, char** argv)
 
     // New panel for images
     p.end();
-    p = dui::panel(f, "Textures", {500, 10});
-    dui::label(p, "Textures");
+    p = dui::window(f, "Textures", {500, 10});
     // images
     dui::textureBox(p, texture, {0, 0, 8, 8});
     dui::textureBox(p, texture, {0, 1, 64, 64});

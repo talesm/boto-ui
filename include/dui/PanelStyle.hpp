@@ -27,10 +27,6 @@ struct PanelDecorationStyle
   {
     return {padding, border, paint};
   }
-  constexpr PanelDecorationStyle withGroup(const GroupStyle& group) const
-  {
-    return {padding, border, paint};
-  }
   constexpr PanelDecorationStyle withBackgroundColor(SDL_Color background) const
   {
     return withPaint(paint.withBackground(background));
