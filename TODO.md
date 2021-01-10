@@ -16,7 +16,7 @@ scRollers (0.3)
 - [x] Window;
 - [x] Group element spacing should be customizable;
 - [ ] Update README removing manual ending;
-- [ ] Generate doxygen
+- [x] Generate doxygen
 
 Wishlist
 --------
