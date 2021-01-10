@@ -59,8 +59,8 @@ buttonBase(Target target,
 }
 
 /**
- * @{
  * @brief A push button
+ * @ingroup elements
  *
  * It can be used to make an action every time it is pushed
  *
@@ -82,6 +82,8 @@ button(Target target,
 {
   return buttonBase(target, id, str, false, p, style);
 }
+/// @copydoc button()
+/// @ingroup elements
 inline bool
 button(Target target,
        std::string_view id,
@@ -90,11 +92,10 @@ button(Target target,
 {
   return button(target, id, id, p, style);
 }
-/// @}
 
 /**
- * @{
  * @brief A button that toggle a boolean variable
+ * @ingroup elements
  *
  * Every time it is pushed the value is negated. The button reflects this state
  * by being pushed or pulled if the variable is true of false, respectively.
@@ -123,6 +124,8 @@ toggleButton(Target target,
   }
   return false;
 }
+/// @copydoc toggleButton
+/// @ingroup elements
 inline bool
 toggleButton(Target target,
              std::string_view id,
@@ -132,11 +135,10 @@ toggleButton(Target target,
 {
   return toggleButton(target, id, id, value, p, style);
 }
-/// @}
 
 /**
- * @{
  * @brief A button part of multiple choice question
+ * @ingroup elements
  *
  * If this button is actionned the value is changed to the given option
  *
@@ -170,6 +172,8 @@ choiceButton(Target target,
   }
   return false;
 }
+/// @copydoc choiceButton
+/// @ingroup elements
 template<class T, class U>
 inline bool
 choiceButton(Target target,
@@ -181,7 +185,6 @@ choiceButton(Target target,
 {
   return choiceButton(target, id, id, value, option, p, style);
 }
-/// @}
 
 } // namespace dui
 

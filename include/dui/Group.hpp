@@ -85,6 +85,7 @@ public:
 /**
  * @{
  * @brief Create group
+ * @ingroup groups
  *
  * @param target the parent group or frame
  * @param id the group id

@@ -29,6 +29,15 @@ computeSize(std::string_view str,
   return elementSz;
 }
 
+/**
+ * @brief Adds a generic element
+ * @ingroup elements
+ *
+ * @param target the parent group or frame
+ * @param str the text inside the element
+ * @param r the element dimensions
+ * @param style
+ */
 inline void
 element(Target target,
         std::string_view str,

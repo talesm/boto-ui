@@ -11,6 +11,7 @@ namespace dui {
 
 /**
  * @brief adds a colorBox element to target
+ * @ingroup elements
  *
  * @param target the parent group or frame
  * @param rect the colorBox local position and size
@@ -31,6 +32,7 @@ colorBox(Target target, SDL_Rect rect, SDL_Color c)
 
 /**
  * @brief adds an texturedBox element to target
+ * @ingroup elements
  *
  * @param target the parent group or frame
  * @param texture the texture
@@ -49,7 +51,14 @@ textureBox(Target target, SDL_Texture* texture, SDL_Rect rect)
   state.display(Shape::Texture(rect, texture));
 }
 
-// A box with colored border
+/**
+ * @brief A stylizable box
+ * @ingroup elements
+ *
+ * @param target the parent group or frame
+ * @param r the box local position and size
+ * @param style
+ */
 inline void
 box(Target target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
 {
