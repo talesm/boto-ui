@@ -27,14 +27,13 @@ namespace dui {
  * @return true
  * @return false
  */
-template<class T>
 inline bool
 sliderField(Target target,
             std::string_view id,
             std::string_view labelText,
-            T* value,
-            T min,
-            T max,
+            int* value,
+            int min,
+            int max,
             const SDL_Point& p = {0},
             const SliderFieldStyle& style = themeFor<SliderField>())
 {
@@ -45,13 +44,12 @@ sliderField(Target target,
   auto g = labeledGroup(target, labelText, box, style.label);
   return sliderBox(g, id, value, min, max, box, style.scroll);
 }
-template<class T>
 inline bool
 sliderField(Target target,
             std::string_view id,
-            T* value,
-            T min,
-            T max,
+            int* value,
+            int min,
+            int max,
             const SDL_Point& p = {0},
             const SliderFieldStyle& style = themeFor<SliderField>())
 {
