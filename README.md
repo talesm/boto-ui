@@ -13,7 +13,7 @@ checking out the current version. Be aware though that it might have some
 breakage and bugs as it still a very early stage project;
 
 [SDL2]: https://www.libsdl.org/
-[dui_single]: https://github.com/talesm/dui/releases/download/v0.2.2/dui_single.hpp
+[dui_single]: https://github.com/talesm/dui/releases/download/v0.3/dui_single.hpp
 
 Introduction
 ------------
