@@ -4,10 +4,6 @@ DUI CHANGELOG
 Version 0.3 - scRollers
 -----------------------
 
-- Groups now call end() on destruction, if needed;
-- Fix Bug on Wrapper move operations;
-  - It was accessing invalid memory
-- Organize source files into include;
 - sliderBox();
 - Renamed slider() to sliderField()
 - Vertical sliderBox (sliderBoxV());
@@ -18,6 +14,10 @@ Version 0.3 - scRollers
 - scrollableWindow() element;
 - Group element spacing now is customizable through styles;
 - Improvements on documentation
+- Groups now call end() on destruction, if needed;
+- Fix Bug on Wrapper move operations;
+  - It was accessing invalid memory
+- Organize source files into include;
 
 Version 0.2 - Freestyle
 -----------------------
