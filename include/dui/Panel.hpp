@@ -17,6 +17,7 @@ class PanelImpl : public Targetable<PanelImpl<CLIENT>>
   Wrapper<CLIENT> wrapper;
 
 public:
+  /// Ctor
   template<class FUNC>
   PanelImpl(Target parent,
             std::string_view id,
@@ -26,11 +27,13 @@ public:
     : style(style)
     , wrapper(parent, id, r, style.padding + style.border, initializer)
   {}
+  /// Move ctor
   PanelImpl(PanelImpl&& rhs)
     : style(rhs.style)
     , wrapper(std::move(rhs.wrapper))
   {}
 
+  /// Move copy operator
   PanelImpl& operator=(PanelImpl&& rhs)
   {
     this->~PanelImpl();
@@ -45,6 +48,7 @@ public:
     }
   }
 
+  /// Finished the group
   void end()
   {
     SDL_assert(wrapper);
@@ -53,11 +57,14 @@ public:
     wrapper.end();
   }
 
+  /// Return a target element for this
   operator Target() & { return wrapper; }
 
+  /// return true if it can accept elements
   operator bool() const { return wrapper; }
 };
 
+/// Return the adjusted size for a given panel
 inline SDL_Point
 makePanelSize(SDL_Point defaultSize, Target target)
 {
@@ -70,6 +77,7 @@ makePanelSize(SDL_Point defaultSize, Target target)
   return defaultSize;
 }
 
+/// Return the adjusted rect for a given panel
 inline SDL_Rect
 makePanelRect(const SDL_Rect& r, Target target)
 {
@@ -78,8 +86,8 @@ makePanelRect(const SDL_Rect& r, Target target)
 }
 
 /**
- * @{
  * @brief adds a panel element
+ * @ingroup groups
  *
  * @param target the parent group or frame
  * @param id the panel id
@@ -102,6 +110,8 @@ panel(Target target,
     style,
   };
 }
+/// @copydoc panel
+/// @ingroup groups
 inline PanelImpl<Group>
 panel(Target target,
       std::string_view id,
@@ -111,7 +121,6 @@ panel(Target target,
 {
   return panel(target, id, r, style.withLayout(layout));
 }
-/// @}
 } // namespace dui
 
 #endif // DUI_PANEL_HPP_

@@ -25,6 +25,16 @@ struct Button;
 struct ToggleButton;
 struct ChoiceButton;
 
+constexpr const ElementPaintStyle&
+decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
+{
+  if (grabbing == pushed) {
+    return (grabbing) ? style.grabbed : style.normal;
+  } else {
+    return (grabbing) ? style.pressedGrabbed : style.pressed;
+  }
+}
+
 namespace style {
 
 template<class Theme>

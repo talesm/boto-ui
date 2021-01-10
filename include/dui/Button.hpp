@@ -8,16 +8,6 @@
 
 namespace dui {
 
-constexpr const ElementPaintStyle&
-decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
-{
-  if (grabbing == pushed) {
-    return (grabbing) ? style.grabbed : style.normal;
-  } else {
-    return (grabbing) ? style.pressedGrabbed : style.pressed;
-  }
-}
-
 /**
  * @brief Common button behavior
  *

@@ -96,7 +96,7 @@ struct FromTheme<Box, SteelBlue>
     };
   }
 };
-}
+} // namespace style
 } // namespace dui
 
 #endif // DUI_BOXSTYLE_HPP_

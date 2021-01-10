@@ -9,6 +9,7 @@
 
 namespace dui {
 
+/// Eval the input size, accordingly to parameters
 inline SDL_Point
 makeInputSize(SDL_Point defaultSz,
               const Font& font,
@@ -33,6 +34,7 @@ makeInputSize(SDL_Point defaultSz,
   return defaultSz;
 }
 
+/// Eval the input rec, accordingly to parameters
 inline SDL_Rect
 makeInputRect(SDL_Rect r, const InputBoxStyle& style)
 {
@@ -41,13 +43,15 @@ makeInputRect(SDL_Rect r, const InputBoxStyle& style)
   return {r.x, r.y, sz.x, sz.y};
 }
 
+/// Represents the changes over the input text to an input box
 struct TextChange
 {
-  std::string_view insert;
-  size_t index;
-  size_t erase;
+  std::string_view insert; ///< Text to be inserted
+  size_t index;            ///< start position
+  size_t erase;            ///< number of bytes to dele before inserting
 };
 
+/// Base for input boxes
 inline TextChange
 textBoxBase(Target target,
             std::string_view id,
@@ -127,6 +131,8 @@ textBoxBase(Target target,
   return {};
 }
 
+/// A text box
+/// @ingroup elements
 inline bool
 textBox(Target target,
         std::string_view id,
@@ -162,6 +168,8 @@ textBox(Target target,
   return true;
 }
 
+/// A text box
+/// @ingroup elements
 inline bool
 textBox(Target target,
         std::string_view id,
@@ -177,7 +185,7 @@ textBox(Target target,
   return true;
 }
 
-// TODO delete copy ctor, other safety nets
+/// Base class for input boxes not backed by strings
 class BufferedInputBox
 {
   Target target;
@@ -189,10 +197,12 @@ class BufferedInputBox
   bool refillBuffer;
 
 public:
+  /// Amount to increment the backing value by
   int incAmount = 0;
-  static constexpr int BUF_SZ = 256;
-  char buffer[BUF_SZ];
+  static constexpr int BUF_SZ = 256; ///< Buffer size
+  char buffer[BUF_SZ];               ///< Buffer
 
+  /// Ctor
   BufferedInputBox(Target target,
                    std::string_view id,
                    SDL_Rect r,
@@ -217,8 +227,15 @@ public:
     }
   }
 
+  /// If true you must convert the backing value to string and fill this' buffer
   bool wantsRefill() const { return refillBuffer; }
 
+  /**
+   * @brief Finished processing and return if content changed
+   *
+   * @return true content changed
+   * @return false content not changed
+   */
   bool end()
   {
     if (!active) {
@@ -237,7 +254,8 @@ public:
   }
 };
 
-// An int Box
+/// An int Box
+/// @ingroup elements
 inline bool
 numberBox(Target target,
           std::string_view id,
@@ -263,7 +281,8 @@ numberBox(Target target,
   return false;
 }
 
-// A double box
+/// A double box
+/// @ingroup elements
 inline bool
 numberBox(Target target,
           std::string_view id,
@@ -295,7 +314,8 @@ numberBox(Target target,
   }
   return false;
 }
-// A float box
+/// A float box
+/// @ingroup elements
 inline bool
 numberBox(Target target,
           std::string_view id,

@@ -7,23 +7,6 @@
 #include "Wrapper.hpp"
 
 namespace dui {
-
-constexpr EdgeSize
-evalPadding(const ScrollableStyle& style)
-{
-  EdgeSize padding{0, 0};
-  auto buttonStyle = style.slider.buttons;
-  if (!style.fixHorizontal) {
-    padding.right = buttonStyle.padding.left + buttonStyle.padding.right +
-                    buttonStyle.border.left + buttonStyle.border.right + 8;
-  }
-  if (!style.fixVertical) {
-    padding.bottom = buttonStyle.padding.top + buttonStyle.padding.bottom +
-                     buttonStyle.border.top + buttonStyle.border.bottom + 8;
-  }
-  return padding;
-}
-
 /// Scrollable class. @see scrollable() and scrollablePanel()
 class Scrollable : public Targetable<Scrollable>
 {
@@ -32,6 +15,7 @@ class Scrollable : public Targetable<Scrollable>
   SDL_Point* scrollOffset;
 
 public:
+  /// Ctor
   Scrollable(Target parent,
              std::string_view id,
              SDL_Point* scrollOffset,
@@ -47,8 +31,10 @@ public:
               })
     , scrollOffset(scrollOffset)
   {}
-
+  /// Move ctor
   Scrollable(Scrollable&&) = default;
+
+  /// Move assign operator
   Scrollable& operator=(Scrollable&&) = default;
 
   ~Scrollable()
@@ -58,6 +44,7 @@ public:
     }
   }
 
+  /// Finished the group
   void end()
   {
     SDL_Point clientSize{0}; //{wrapper.width(), wrapper.height()};
@@ -96,11 +83,14 @@ public:
     wrapper.end();
   }
 
+  /// Return true if it can accept elements
   operator bool() const { return wrapper; }
 
+  /// Returns target object
   operator Target() { return wrapper; }
 };
 
+/// Eval the scrollable size according with parameters
 inline SDL_Point
 makeScrollableSize(const SDL_Point& defaultSize, Target target)
 {
@@ -114,6 +104,7 @@ makeScrollableSize(const SDL_Point& defaultSize, Target target)
   return size;
 }
 
+/// Eval the scrollable rect according with parameters
 inline SDL_Rect
 makeScrollableRect(const SDL_Rect& r, Target target)
 {
@@ -122,8 +113,8 @@ makeScrollableRect(const SDL_Rect& r, Target target)
 }
 
 /**
- * @{
  * @brief add a scrollable group
+ * @ingroup groups
  *
  * @param target the parent group or frame
  * @param id the id
@@ -143,6 +134,8 @@ scrollable(Target target,
 {
   return {target, id, scrollOffset, makeScrollableRect(r, target), style};
 }
+/// @copydoc scrollable()
+/// @ingroup groups
 inline Scrollable
 scrollable(Target target,
            std::string_view id,
@@ -153,7 +146,6 @@ scrollable(Target target,
 {
   return {target, id, scrollOffset, makeScrollableRect(r, target), style};
 }
-///@}
 
 /**
  * @{
@@ -185,6 +177,8 @@ scrollablePanel(Target target,
           },
           style};
 }
+/// @copydoc scrollablePanel()
+/// @ingroup groups
 inline PanelImpl<Scrollable>
 scrollablePanel(Target target,
                 std::string_view id,

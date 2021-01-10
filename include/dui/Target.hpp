@@ -7,20 +7,8 @@
 
 namespace dui {
 
-constexpr int
-makeLen(int len, int delta, bool autoPos, int elementSpacing)
-{
-  if (len == 0) {
-    len = delta;
-    if (autoPos && len >= elementSpacing) {
-      len -= elementSpacing;
-    }
-  }
-  return len;
-}
-
 /**
- * @brief
+ * @brief A target where elements can be added to
  *
  */
 class Target
@@ -33,11 +21,26 @@ class Target
   bool* locked = nullptr;
   TargetStyle style;
 
+  static constexpr int makeLen(int len,
+                               int delta,
+                               bool autoPos,
+                               int elementSpacing)
+  {
+    if (len == 0) {
+      len = delta;
+      if (autoPos && len >= elementSpacing) {
+        len -= elementSpacing;
+      }
+    }
+    return len;
+  }
+
 public:
   Target()
     : state(nullptr)
   {}
 
+  /// Ctor
   Target(State* state,
          std::string_view id,
          SDL_Rect& rect,
@@ -134,8 +137,10 @@ public:
    */
   void advance(const SDL_Point& p);
 
+  /// Get the target's state
   State& getState() const { return *state; }
 
+  /// Get the position where the next element can be added
   SDL_Point getCaret() const
   {
     auto caret = *topLeft;
@@ -147,14 +152,28 @@ public:
     return caret;
   }
 
+  /// Return true if there is a subtarget active.
+  /// You can not add an element to target if until that subtarget is
+  /// finished.
   bool isLocked() const { return *locked; }
 
+  /// Return the layout
   Layout getLayout() const { return style.layout; }
 
+  /**
+   * @brief Return the initially given dimensions
+   *
+   * The x and y are relative to its parent, if any.
+   *
+   * The w and h are its size. A 0 value in either of these means the group will
+   * change it to what it considers good values for them, respectively.
+   */
   const SDL_Rect& getRect() const { return *rect; }
 
+  /// Get the current size
   SDL_Point size() const { return {width(), height()}; }
 
+  /// Get current width. This might be different than the returned by getRect()
   int width() const
   {
     return makeLen(rect->w,
@@ -163,8 +182,10 @@ public:
                    style.elementSpacing);
   }
 
+  /// Get the width currently occupied by elements contained in this group
   int contentWidth() const { return bottomRight->x - topLeft->x; }
 
+  /// Get current height. This might be different than the returned by getRect()
   int height() const
   {
     return makeLen(rect->h,
@@ -173,8 +194,10 @@ public:
                    style.elementSpacing);
   }
 
+  /// Get the height currently occupied by elements contained in this group
   int contentHeight() const { return bottomRight->y - topLeft->y; }
 
+  /// To be used internally
   void lock(std::string_view id, SDL_Rect r)
   {
     SDL_assert(!*locked);
@@ -185,6 +208,7 @@ public:
     state->beginGroup(id, r);
   }
 
+  /// To be used internally
   void unlock(std::string_view id, SDL_Rect r)
   {
     SDL_assert(*locked);
@@ -195,6 +219,7 @@ public:
     *locked = false;
   }
 
+  /// Returns true if this is valid
   operator bool() const { return state; }
 };
 
@@ -224,6 +249,8 @@ Target::advance(const SDL_Point& p)
   }
 }
 
+/// Helper class to generate the accessors you get on Target on a Group class
+/// The group class must at least have a convert operator to Target
 template<class T>
 struct Targetable
 {

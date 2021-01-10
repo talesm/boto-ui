@@ -24,11 +24,12 @@ measure(std::string_view text, const Font& font, int scale)
 
 /**
  * @brief Adds a character element
+ * @ingroup elements
  *
  * @param target the parent group or frame
  * @param ch the character
  * @param p the position
- * @param c the color (style::TEXT by default)
+ * @param style
  */
 inline void
 character(Target target,
@@ -57,11 +58,12 @@ character(Target target,
 
 /**
  * @brief Adds a text element
+ * @ingroup elements
  *
  * @param target the parent group or frame
  * @param str the text
  * @param p the position
- * @param c the color (style::TEXT by default)
+ * @param style
  */
 inline void
 text(Target target,

@@ -11,6 +11,7 @@
 
 namespace dui {
 
+/// Compute element size based on its style
 inline SDL_Point
 computeSize(std::string_view str,
             const ElementStyle& style,

@@ -106,4 +106,21 @@ struct FromTheme<ScrollablePanel, Theme>
   }
 };
 } // namespace style
+
+constexpr EdgeSize
+evalPadding(const ScrollableStyle& style)
+{
+  EdgeSize padding{0, 0};
+  auto buttonStyle = style.slider.buttons;
+  if (!style.fixHorizontal) {
+    padding.right = buttonStyle.padding.left + buttonStyle.padding.right +
+                    buttonStyle.border.left + buttonStyle.border.right + 8;
+  }
+  if (!style.fixVertical) {
+    padding.bottom = buttonStyle.padding.top + buttonStyle.padding.bottom +
+                     buttonStyle.border.top + buttonStyle.border.bottom + 8;
+  }
+  return padding;
+}
+
 } // namespace dui

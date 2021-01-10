@@ -8,12 +8,6 @@
 
 namespace dui {
 
-constexpr SDL_Point
-makeCaret(const SDL_Point& caret, int x, int y)
-{
-  return {caret.x + x, caret.y + y};
-}
-
 /**
  * @brief A grouping of widgets
  *
@@ -32,6 +26,11 @@ class Group : public Targetable<Group>
   SDL_Point bottomRight;
   GroupStyle style;
 
+  static constexpr SDL_Point makeCaret(const SDL_Point& caret, int x, int y)
+  {
+    return {caret.x + x, caret.y + y};
+  }
+
 public:
   /**
    * @brief Construct a new branch Group object
@@ -39,13 +38,14 @@ public:
    * You probably want to use group() instead of this.
    *
    * @param parent the parent group. MUST NOT BE NULL
+   * @param scrollOffset the scrolling offset for the elements inside the group
    * @param id the group id
    * @param rect the rect. Either w or h being 0 means it will auto size
-   * @param layout the layout
+   * @param style
    */
   Group(Target parent,
         std::string_view id,
-        const SDL_Point& scroll,
+        const SDL_Point& scrollOffset,
         const SDL_Rect& rect,
         const GroupStyle& style);
 
@@ -56,16 +56,22 @@ public:
     }
   }
   Group(const Group&) = delete;
+  /// Move ctor
   Group(Group&& rhs);
-  Group& operator=(Group&& rhs);
   Group& operator=(const Group& rhs) = delete;
+  /// Move assignment op
+  Group& operator=(Group&& rhs);
 
+  /// Returns true if this can accept more elements
   operator bool() const { return !ended; }
 
+  /// Set width
   void setWidth(int v) { rect.w = v; }
 
+  /// Set height
   void setHeight(int v) { rect.h = v; }
 
+  /// Convert to target object
   operator Target() &
   {
     return {
@@ -79,18 +85,18 @@ public:
     };
   }
 
+  /// Finished group and stop accepting new elements
   void end();
 };
 
 /**
- * @{
  * @brief Create group
  * @ingroup groups
  *
  * @param target the parent group or frame
  * @param id the group id
- * @param offset the scroll offset
- * @param rect the group dimensions
+ * @param scrollOffset the scroll offset
+ * @param r the group dimensions
  * @param layout the layout
  * @param style the group style
  * @return Group
@@ -103,6 +109,9 @@ group(Target target,
 {
   return {target, id, {0, 0}, r, style};
 }
+
+/// @copydoc group
+/// @ingroup groups
 inline Group
 group(Target target,
       std::string_view id,
@@ -112,26 +121,31 @@ group(Target target,
 {
   return group(target, id, r, style.withLayout(layout));
 }
+
+/// @copydoc group
+/// @ingroup groups
 inline Group
 offsetGroup(Target target,
             std::string_view id,
-            const SDL_Point& offset,
+            const SDL_Point& scrollOffset,
             const SDL_Rect& r,
             const GroupStyle& style = themeFor<Group>())
 {
-  return {target, id, offset, r, style};
+  return {target, id, scrollOffset, r, style};
 }
+
+/// @copydoc group
+/// @ingroup groups
 inline Group
 offsetGroup(Target target,
             std::string_view id,
-            const SDL_Point& offset,
+            const SDL_Point& scrollOffset,
             const SDL_Rect& r,
             Layout layout,
             const GroupStyle& style = themeFor<Group>())
 {
-  return offsetGroup(target, id, offset, r, style.withLayout(layout));
+  return offsetGroup(target, id, scrollOffset, r, style.withLayout(layout));
 }
-///@}
 
 inline Group::Group(Target parent,
                     std::string_view id,

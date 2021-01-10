@@ -27,6 +27,7 @@ class WindowImpl : public Targetable<WindowImpl<CLIENT>>
   }
 
 public:
+  /// Window ctor
   template<class FUNC>
   WindowImpl(Target parent,
              std::string_view id,
@@ -38,12 +39,14 @@ public:
     , title(title)
     , wrapper(parent, id, r, makeWrapperPadding(), initializer)
   {}
+  /// Move ctor
   WindowImpl(WindowImpl&& rhs)
     : style(rhs.style)
     , title(rhs.title)
     , wrapper(std::move(rhs.wrapper))
   {}
 
+  /// Move assignment operator
   WindowImpl& operator=(WindowImpl&& rhs)
   {
     this->~WindowImpl();
@@ -58,6 +61,7 @@ public:
     }
   }
 
+  /// Finishes the window
   void end()
   {
     SDL_assert(wrapper);
@@ -67,11 +71,14 @@ public:
     wrapper.end();
   }
 
+  /// Returns a target object to this
   operator Target() & { return wrapper; }
 
+  /// Returns true if it can accept elements
   operator bool() const { return wrapper; }
 };
 
+/// Makes window size accordingly to parameters
 inline SDL_Point
 makeWindowSize(SDL_Point defaultSize, Target target)
 {
@@ -84,6 +91,7 @@ makeWindowSize(SDL_Point defaultSize, Target target)
   return defaultSize;
 }
 
+/// Makes window rect accordingly to parameters
 inline SDL_Rect
 makeWindowRect(const SDL_Rect& r, Target target)
 {
@@ -92,8 +100,8 @@ makeWindowRect(const SDL_Rect& r, Target target)
 }
 
 /**
- * @{
  * @brief adds an window element
+ * @ingroup groups
  *
  * @param target the parent group or frame
  * @param id the window id
@@ -120,6 +128,8 @@ window(Target target,
   };
 }
 
+/// @copydoc window()
+/// @ingroup groups
 inline WindowImpl<Group>
 window(Target target,
        std::string_view id,
@@ -129,6 +139,8 @@ window(Target target,
   return window(target, id, id, r, style);
 }
 
+/// @copydoc window()
+/// @ingroup groups
 inline WindowImpl<Group>
 window(Target target,
        std::string_view id,
@@ -140,6 +152,8 @@ window(Target target,
   return window(target, id, title, r, style.withLayout(layout));
 }
 
+/// @copydoc window()
+/// @ingroup groups
 inline WindowImpl<Group>
 window(Target target,
        std::string_view id,
@@ -149,11 +163,10 @@ window(Target target,
 {
   return window(target, id, id, r, layout);
 }
-/// @}
 
 /**
- * @{
  * @brief adds a scrollable window
+ * @ingroup groups
  *
  * This is mostly the same than scrollable(), except it accepts more styling
  * options, like border and background color and has a title
@@ -185,6 +198,8 @@ scrollableWindow(
           style};
 }
 
+/// @copydoc scrollableWindow()
+/// @ingroup groups
 inline WindowImpl<Scrollable>
 scrollableWindow(
   Target target,
@@ -196,6 +211,8 @@ scrollableWindow(
   return scrollableWindow(target, id, id, scrollOffset, r, style);
 }
 
+/// @copydoc scrollableWindow()
+/// @ingroup groups
 inline WindowImpl<Scrollable>
 scrollableWindow(
   Target target,
@@ -210,6 +227,8 @@ scrollableWindow(
     target, id, title, scrollOffset, r, style.withLayout(layout));
 }
 
+/// @copydoc scrollableWindow()
+/// @ingroup groups
 inline WindowImpl<Scrollable>
 scrollableWindow(
   Target target,
@@ -221,5 +240,4 @@ scrollableWindow(
 {
   return scrollableWindow(target, id, id, scrollOffset, r, layout);
 }
-///@}
 } // namespace dui

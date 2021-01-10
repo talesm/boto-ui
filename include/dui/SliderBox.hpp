@@ -43,12 +43,14 @@ sliderBoxBarCaret(Target target,
   return delta;
 }
 
+/// SliderBoxBar's orientation
 enum Orientation : bool
 {
   HORIZONTAL,
   VERTICAL,
 };
 
+/// The draggable bar part of a slider box
 inline bool
 sliderBoxBar(Target target,
              std::string_view id,
@@ -120,6 +122,8 @@ sliderBoxBar(Target target,
   return true;
 }
 
+/// An horizontal slider box
+/// @ingroup elements
 inline bool
 sliderBox(Target target,
           std::string_view id,
@@ -171,6 +175,8 @@ sliderBox(Target target,
   return action;
 }
 
+/// A vertical slider box
+/// @ingroup elements
 inline bool
 sliderBoxV(Target target,
            std::string_view id,

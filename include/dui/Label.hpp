@@ -9,7 +9,8 @@
 namespace dui {
 
 /**
- * @brief
+ * @brief A simple label
+ * @ingroup elements
  *
  * @param target the parent group or frame
  * @param str the text to show
@@ -25,6 +26,15 @@ label(Target target,
 {
   element(target, str, {p.x, p.y, 0, 0}, style);
 }
+/**
+ * @brief A centered label
+ * @ingroup elements
+ *
+ * @param target the parent group or frame
+ * @param str the text to show
+ * @param r the local relative rect to add the label.
+ * @param style
+ */
 inline void
 centeredLabel(Target target,
               std::string_view str,

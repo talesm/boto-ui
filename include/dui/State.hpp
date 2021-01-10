@@ -35,6 +35,13 @@ enum class TextAction
   KEYDOWN, ///< erased last character
 };
 
+/**
+ * @brief Stores the ui state
+ *
+ * This should be the only state that needs to be preserved between the program
+ * loops.
+ *
+ */
 class State
 {
   bool inFrame = false;
@@ -62,6 +69,7 @@ class State
   Font font;
 
 public:
+  /// Ctor
   State(SDL_Renderer* renderer)
     : renderer(renderer)
     , font(loadDefaultFont(renderer))

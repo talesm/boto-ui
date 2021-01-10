@@ -9,6 +9,8 @@
 
 namespace dui {
 
+/// Create a group that labels its items
+/// @ingroup groups
 inline Group
 labeledGroup(Target target,
              std::string_view labelText,
@@ -24,6 +26,8 @@ labeledGroup(Target target,
   return g;
 }
 
+/// A text field element
+/// @ingroup elements
 inline bool
 textField(Target target,
           std::string_view id,
@@ -38,6 +42,8 @@ textField(Target target,
   return textBox(g, id, value, maxSize, box, style.box);
 }
 
+/// A text field element
+/// @ingroup elements
 inline bool
 textField(Target target,
           std::string_view id,
@@ -49,6 +55,8 @@ textField(Target target,
   return textField(target, id, id, value, maxSize, p, style);
 }
 
+/// A text field element
+/// @ingroup elements
 inline bool
 textField(Target target,
           std::string_view id,
@@ -62,6 +70,8 @@ textField(Target target,
   return textBox(g, id, value, box, style.box);
 }
 
+/// A text field element
+/// @ingroup elements
 inline bool
 textField(Target target,
           std::string_view id,
@@ -72,6 +82,8 @@ textField(Target target,
   return textField(target, id, id, value, p, style);
 }
 
+/// An integer field element
+/// @ingroup elements
 inline bool
 numberField(Target target,
             std::string_view id,
@@ -85,6 +97,8 @@ numberField(Target target,
   return numberBox(g, id, value, box, style.box);
 }
 
+/// An integer field element
+/// @ingroup elements
 inline bool
 numberField(Target target,
             std::string_view id,
@@ -95,6 +109,8 @@ numberField(Target target,
   return numberField(target, id, id, value, p, style);
 }
 
+/// A double field element
+/// @ingroup elements
 inline bool
 numberField(Target target,
             std::string_view id,
@@ -108,6 +124,8 @@ numberField(Target target,
   return numberBox(g, id, value, box, style.box);
 }
 
+/// A double field element
+/// @ingroup elements
 inline bool
 numberField(Target target,
             std::string_view id,
@@ -118,6 +136,8 @@ numberField(Target target,
   return numberField(target, id, id, value, p, style);
 }
 
+/// A float field element
+/// @ingroup elements
 inline bool
 numberField(Target target,
             std::string_view id,
@@ -131,6 +151,8 @@ numberField(Target target,
   return numberBox(g, id, value, box, style.box);
 }
 
+/// A float field element
+/// @ingroup elements
 inline bool
 numberField(Target target,
             std::string_view id,

@@ -13,8 +13,8 @@
 namespace dui {
 
 /**
- * @{
  * @brief A sliderField that allows the user to choose a value in a interval
+ * @ingroup elements
  *
  * @param target
  * @param id
@@ -44,6 +44,8 @@ sliderField(Target target,
   auto g = labeledGroup(target, labelText, box, style.label);
   return sliderBox(g, id, value, min, max, box, style.scroll);
 }
+/// @copydoc sliderField()
+/// @ingroup elements
 inline bool
 sliderField(Target target,
             std::string_view id,
@@ -55,7 +57,6 @@ sliderField(Target target,
 {
   return sliderField(target, id, id, value, min, max, p, style);
 }
-/// @}
 } // namespace dui
 
 #endif // DUI_SLIDERFIELD_HPP_
