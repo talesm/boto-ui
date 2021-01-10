@@ -93,30 +93,53 @@ makeWindowRect(const SDL_Rect& r, Target target)
 
 /**
  * @[
- * @brief adds a panel element
+ * @brief adds an window element
  *
  * @param target the parent group or frame
- * @param id the panel id
- * @param r the panel relative postion and size
+ * @param id the window id
+ * @param title the window id
+ * @param r the window relative postion and size
  * @param layout the layout
  * @param style the style
- * @return WindowImpl
+ * @return group
  */
 inline WindowImpl<Group>
 window(Target target,
        std::string_view id,
+       std::string_view title,
        const SDL_Rect& r = {0},
        const WindowStyle& style = themeFor<Window>())
 {
   return {
     target,
     id,
-    id,
+    title,
     makeWindowRect(r, target),
     [style](auto t, auto r) { return group(t, "client", r, style); },
     style,
   };
 }
+
+inline WindowImpl<Group>
+window(Target target,
+       std::string_view id,
+       const SDL_Rect& r = {0},
+       const WindowStyle& style = themeFor<Window>())
+{
+  return window(target, id, id, r, style);
+}
+
+inline WindowImpl<Group>
+window(Target target,
+       std::string_view id,
+       std::string_view title,
+       const SDL_Rect& r,
+       Layout layout,
+       const WindowStyle& style = themeFor<Window>())
+{
+  return window(target, id, title, r, style.withLayout(layout));
+}
+
 inline WindowImpl<Group>
 window(Target target,
        std::string_view id,
@@ -124,7 +147,7 @@ window(Target target,
        Layout layout,
        const WindowStyle& style = themeFor<Window>())
 {
-  return window(target, id, r, style.withLayout(layout));
+  return window(target, id, id, r, layout);
 }
 /// @]
 
@@ -146,19 +169,46 @@ inline WindowImpl<Scrollable>
 scrollableWindow(
   Target target,
   std::string_view id,
+  std::string_view title,
   SDL_Point* scrollOffset,
   const SDL_Rect& r = {0},
   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
 {
   return {target,
           id,
-          id,
+          title,
           makeScrollableRect(r, target),
           [=](auto t, auto r) {
             return scrollable(t, "client", scrollOffset, r, style);
           },
           style};
 }
+
+inline WindowImpl<Scrollable>
+scrollableWindow(
+  Target target,
+  std::string_view id,
+  SDL_Point* scrollOffset,
+  const SDL_Rect& r = {0},
+  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+{
+  return scrollableWindow(target, id, id, scrollOffset, r, style);
+}
+
+inline WindowImpl<Scrollable>
+scrollableWindow(
+  Target target,
+  std::string_view id,
+  std::string_view title,
+  SDL_Point* scrollOffset,
+  const SDL_Rect& r,
+  Layout layout,
+  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+{
+  return scrollableWindow(
+    target, id, title, scrollOffset, r, style.withLayout(layout));
+}
+
 inline WindowImpl<Scrollable>
 scrollableWindow(
   Target target,
@@ -168,8 +218,7 @@ scrollableWindow(
   Layout layout,
   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
 {
-  return scrollableWindow(
-    target, id, scrollOffset, r, style.withLayout(layout));
+  return scrollableWindow(target, id, id, scrollOffset, r, layout);
 }
 ///@]
 } // namespace dui
