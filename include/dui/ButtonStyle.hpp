@@ -57,7 +57,7 @@ struct FromTheme<ButtonBase, Theme>
       buttonBox.withBackground({147, 173, 210, 255});
     return {
       EdgeSize::all(3),
-      EdgeSize::all(2),
+      EdgeSize::all(1),
       element.font,
       element.scale,
       buttonBox,
