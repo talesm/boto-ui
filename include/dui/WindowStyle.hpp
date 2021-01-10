@@ -3,6 +3,7 @@
 #include "ButtonStyle.hpp"
 #include "ElementStyle.hpp"
 #include "PanelStyle.hpp"
+#include "ScrollableStyle.hpp"
 #include "Theme.hpp"
 
 namespace dui {
@@ -101,8 +102,39 @@ struct WindowStyle
   }
 };
 
+struct ScrollableWindowStyle
+{
+  WindowDecorationStyle decoration;
+  ScrollableStyle scrollable;
+  constexpr operator WindowDecorationStyle() const { return decoration; }
+  constexpr operator ScrollableStyle() const { return scrollable; }
+
+  constexpr ScrollableWindowStyle withDecoration(
+    const WindowDecorationStyle& decoration) const
+  {
+    return {decoration, scrollable};
+  }
+
+  constexpr ScrollableWindowStyle withScrollable(
+    const ScrollableStyle& scrollable) const
+  {
+    return {decoration, scrollable};
+  }
+
+  constexpr ScrollableWindowStyle withClient(const GroupStyle& client) const
+  {
+    return withScrollable(scrollable.withClient(client));
+  }
+
+  constexpr ScrollableWindowStyle withLayout(Layout layout) const
+  {
+    return withScrollable(scrollable.withLayout(layout));
+  }
+};
+
 struct WindowDecoration;
 struct Window;
+struct ScrollableWindow;
 
 namespace style {
 
@@ -129,6 +161,18 @@ struct FromTheme<Window, Theme>
   constexpr static WindowStyle get()
   {
     return {themeFor<WindowDecoration, Theme>(), themeFor<Group, Theme>()};
+  }
+};
+
+template<class Theme>
+struct FromTheme<ScrollableWindow, Theme>
+{
+  constexpr static ScrollableWindowStyle get()
+  {
+    return {
+      themeFor<WindowDecoration, Theme>().withPadding({0, 0, 255, 255}),
+      themeFor<Scrollable, Theme>(),
+    };
   }
 };
 

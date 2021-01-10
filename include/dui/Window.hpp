@@ -127,4 +127,49 @@ window(Target target,
   return window(target, id, r, style.withLayout(layout));
 }
 /// @]
+
+/**
+ * @brief adds a scrollable window
+ *
+ * This is mostly the same than scrollable(), except it accepts more styling
+ * options, like border and background color and has a title
+ * @param target the parent group or frame
+ * @param id the id
+ * @param scrollOffset the scrolling control variable
+ * @param r the relative position and the size. If size is 0 it will use a
+ * default size. Notice that this is different from group() and panel() behavior
+ * @param layout
+ * @param style
+ * @return group
+ */
+inline WindowImpl<Scrollable>
+scrollableWindow(
+  Target target,
+  std::string_view id,
+  SDL_Point* scrollOffset,
+  const SDL_Rect& r = {0},
+  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+{
+  return {target,
+          id,
+          id,
+          makeScrollableRect(r, target),
+          [=](auto t, auto r) {
+            return scrollable(t, "client", scrollOffset, r, style);
+          },
+          style};
+}
+inline WindowImpl<Scrollable>
+scrollableWindow(
+  Target target,
+  std::string_view id,
+  SDL_Point* scrollOffset,
+  const SDL_Rect& r,
+  Layout layout,
+  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+{
+  return scrollableWindow(
+    target, id, scrollOffset, r, style.withLayout(layout));
+}
+///@]
 } // namespace dui

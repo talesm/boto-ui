@@ -61,10 +61,10 @@ main(int argc, char** argv)
     auto f = dui::frame(state);
 
     // Free label
-    dui::label(f, "Hello world", {400, 10});
+    dui::label(f, "Hello world", {320, 10});
 
     // Main panel
-    auto p = dui::window(f, "elements", {10, 10, 300, 580});
+    auto p = dui::window(f, "Elements", {10, 10, 300, 580});
     // dui::label(f, "Error"); // You can not add anything to the frame until
     // you call p.end()
 
@@ -143,7 +143,7 @@ main(int argc, char** argv)
 
     // New panel for images
     p.end();
-    p = dui::window(f, "Textures", {500, 10});
+    p = dui::window(f, "Textures", {480, 10});
     // images
     dui::textureBox(p, texture, {0, 0, 8, 8});
     dui::textureBox(p, texture, {0, 1, 64, 64});
@@ -152,6 +152,15 @@ main(int argc, char** argv)
     // Here we explicitly end the panel p, so we can add elements to the frame
     // directly again after that.
     p.end();
+
+    static SDL_Point scrollOffset2{0};
+    if (auto w = dui::scrollableWindow(
+          f, "Scroll Window", &scrollOffset2, {320, 30, 150, 0})) {
+      for (int i = 0; i < 10; ++i) {
+        dui::label(w, "Some label");
+      }
+      dui::button(w, "button");
+    }
 
     // For example, we can add this big texture
     dui::textureBox(f, texture, {400, 300, 256, 256});

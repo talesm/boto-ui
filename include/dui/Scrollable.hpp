@@ -106,7 +106,7 @@ makeScrollableSize(const SDL_Point& defaultSize, Target target)
 {
   auto size = makePanelSize(defaultSize, target);
   if (size.x == 0) {
-    size.x = 100;
+    size.x = 150;
   }
   if (size.y == 0) {
     size.y = 80;
