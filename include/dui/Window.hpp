@@ -9,7 +9,7 @@
 
 namespace dui {
 
-/// A panel class @see panel()
+/// An window class @see window()
 template<class CLIENT>
 class WindowImpl : public Targetable<WindowImpl<CLIENT>>
 {

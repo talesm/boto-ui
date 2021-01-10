@@ -81,7 +81,7 @@ struct BoxStyle
 struct Box;
 
 namespace style {
-/// Default panel style
+/// Default box style
 template<>
 struct FromTheme<Box, SteelBlue>
 {

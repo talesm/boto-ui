@@ -11,34 +11,34 @@ namespace dui {
 
 /// A panel class @see panel()
 template<class CLIENT>
-class PanelT : public Targetable<PanelT<CLIENT>>
+class PanelImpl : public Targetable<PanelImpl<CLIENT>>
 {
   PanelDecorationStyle style;
   Wrapper<CLIENT> wrapper;
 
 public:
   template<class FUNC>
-  PanelT(Target parent,
-         std::string_view id,
-         const SDL_Rect& r,
-         FUNC initializer,
-         const PanelDecorationStyle& style)
+  PanelImpl(Target parent,
+            std::string_view id,
+            const SDL_Rect& r,
+            FUNC initializer,
+            const PanelDecorationStyle& style)
     : style(style)
     , wrapper(parent, id, r, style.padding + style.border, initializer)
   {}
-  PanelT(PanelT&& rhs)
+  PanelImpl(PanelImpl&& rhs)
     : style(rhs.style)
     , wrapper(std::move(rhs.wrapper))
   {}
 
-  PanelT& operator=(PanelT&& rhs)
+  PanelImpl& operator=(PanelImpl&& rhs)
   {
-    this->~PanelT();
-    new (this) PanelT(std::move(rhs));
+    this->~PanelImpl();
+    new (this) PanelImpl(std::move(rhs));
     return *this;
   }
 
-  ~PanelT()
+  ~PanelImpl()
   {
     if (wrapper) {
       end();
@@ -88,7 +88,7 @@ makePanelRect(const SDL_Rect& r, Target target)
  * @param style the style
  * @return PanelT
  */
-inline PanelT<Group>
+inline PanelImpl<Group>
 panel(Target target,
       std::string_view id,
       const SDL_Rect& r = {0},
@@ -102,7 +102,7 @@ panel(Target target,
     style,
   };
 }
-inline PanelT<Group>
+inline PanelImpl<Group>
 panel(Target target,
       std::string_view id,
       const SDL_Rect& r,

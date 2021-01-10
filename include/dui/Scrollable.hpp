@@ -170,7 +170,7 @@ scrollable(Target target,
  * @param style
  * @return group
  */
-inline PanelT<Scrollable>
+inline PanelImpl<Scrollable>
 scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,
@@ -185,7 +185,7 @@ scrollablePanel(Target target,
           },
           style};
 }
-inline PanelT<Scrollable>
+inline PanelImpl<Scrollable>
 scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,
