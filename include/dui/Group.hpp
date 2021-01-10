@@ -83,7 +83,7 @@ public:
 };
 
 /**
- * @[
+ * @{
  * @brief Create group
  *
  * @param target the parent group or frame
@@ -130,7 +130,7 @@ offsetGroup(Target target,
 {
   return offsetGroup(target, id, offset, r, style.withLayout(layout));
 }
-///@]
+///@}
 
 inline Group::Group(Target parent,
                     std::string_view id,

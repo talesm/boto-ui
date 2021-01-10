@@ -13,7 +13,7 @@
 namespace dui {
 
 /**
- * @[
+ * @{
  * @brief A sliderField that allows the user to choose a value in a interval
  *
  * @param target
@@ -55,7 +55,7 @@ sliderField(Target target,
 {
   return sliderField(target, id, id, value, min, max, p, style);
 }
-/// @]
+/// @}
 } // namespace dui
 
 #endif // DUI_SLIDERFIELD_HPP_

@@ -122,7 +122,7 @@ makeScrollableRect(const SDL_Rect& r, Target target)
 }
 
 /**
- * @[
+ * @{
  * @brief add a scrollable group
  *
  * @param target the parent group or frame
@@ -153,10 +153,10 @@ scrollable(Target target,
 {
   return {target, id, scrollOffset, makeScrollableRect(r, target), style};
 }
-///@]
+///@}
 
 /**
- * @[
+ * @{
  * @brief add a scrollable panel
  *
  * This is mostly the same than scrollable(), except it accepts more styling
@@ -195,5 +195,5 @@ scrollablePanel(Target target,
 {
   return scrollablePanel(target, id, scrollOffset, r, style.withLayout(layout));
 }
-///@]
+///@}
 } // namespace dui

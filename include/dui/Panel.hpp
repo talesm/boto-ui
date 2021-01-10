@@ -78,7 +78,7 @@ makePanelRect(const SDL_Rect& r, Target target)
 }
 
 /**
- * @[
+ * @{
  * @brief adds a panel element
  *
  * @param target the parent group or frame
@@ -111,7 +111,7 @@ panel(Target target,
 {
   return panel(target, id, r, style.withLayout(layout));
 }
-/// @]
+/// @}
 } // namespace dui
 
 #endif // DUI_PANEL_HPP_

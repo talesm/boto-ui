@@ -92,7 +92,7 @@ makeWindowRect(const SDL_Rect& r, Target target)
 }
 
 /**
- * @[
+ * @{
  * @brief adds an window element
  *
  * @param target the parent group or frame
@@ -149,9 +149,10 @@ window(Target target,
 {
   return window(target, id, id, r, layout);
 }
-/// @]
+/// @}
 
 /**
+ * @{
  * @brief adds a scrollable window
  *
  * This is mostly the same than scrollable(), except it accepts more styling
@@ -220,5 +221,5 @@ scrollableWindow(
 {
   return scrollableWindow(target, id, id, scrollOffset, r, layout);
 }
-///@]
+///@}
 } // namespace dui
