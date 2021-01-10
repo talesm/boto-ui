@@ -147,7 +147,7 @@ inline Scrollable
 scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
-           const SDL_Rect& r = {0},
+           const SDL_Rect& r,
            Layout layout = Layout::VERTICAL,
            const ScrollableStyle& style = themeFor<Scrollable>())
 {
