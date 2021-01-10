@@ -15,7 +15,6 @@ scRollers (0.3)
 - [x] Make Scrollable and Panel fill all available space
 - [x] Window;
 - [x] Group element spacing should be customizable;
-- [ ] Update README removing manual ending;
 - [x] Generate doxygen
 
 Wishlist
