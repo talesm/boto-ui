@@ -15,6 +15,7 @@ class WindowImpl : public Targetable<WindowImpl<CLIENT>>
 {
   WindowDecorationStyle style;
   std::string_view title;
+  Group decoration;
   Wrapper<CLIENT> wrapper;
 
   constexpr EdgeSize makeWrapperPadding()
@@ -37,16 +38,19 @@ public:
              const WindowDecorationStyle& style)
     : style(style)
     , title(title)
-    , wrapper(parent, id, r, makeWrapperPadding(), initializer)
+    , decoration(group(parent, id, r, Layout::NONE))
+    , wrapper(decoration, makeWrapperPadding(), initializer)
   {}
   /// Move ctor
   WindowImpl(WindowImpl&& rhs)
     : style(rhs.style)
     , title(rhs.title)
-    , wrapper(std::move(rhs.wrapper))
+    , decoration(std::move(rhs.decoration))
+    , wrapper(std::move(rhs.wrapper), decoration)
   {}
 
   /// Move assignment operator
+  WindowImpl& operator=(const WindowImpl& rhs) = delete;
   WindowImpl& operator=(WindowImpl&& rhs)
   {
     this->~WindowImpl();
@@ -65,10 +69,17 @@ public:
   void end()
   {
     SDL_assert(wrapper);
-    auto sz = wrapper.endClient();
-    centeredLabel(wrapper, title, {0, 0, sz.x, 0}, style);
-    box(wrapper, {0, 0, sz.x, sz.y}, style);
-    wrapper.end();
+    auto sz = wrapper.end();
+    auto rect = decoration.getRect();
+    if (rect.w > 0) {
+      sz.x = rect.w;
+    }
+    if (rect.h > 0) {
+      sz.y = rect.h;
+    }
+    centeredLabel(decoration, title, {0, 0, sz.x, 0}, style);
+    box(decoration, {0, 0, sz.x, sz.y}, style);
+    decoration.end();
   }
 
   /// Returns a target object to this

@@ -14,6 +14,7 @@ template<class CLIENT>
 class PanelImpl : public Targetable<PanelImpl<CLIENT>>
 {
   PanelDecorationStyle style;
+  Group decoration;
   Wrapper<CLIENT> wrapper;
 
 public:
@@ -25,12 +26,14 @@ public:
             FUNC initializer,
             const PanelDecorationStyle& style)
     : style(style)
-    , wrapper(parent, id, r, style.padding + style.border, initializer)
+    , decoration(group(parent, id, r, Layout::NONE))
+    , wrapper(decoration, style.padding + style.border, initializer)
   {}
   /// Move ctor
   PanelImpl(PanelImpl&& rhs)
     : style(rhs.style)
-    , wrapper(std::move(rhs.wrapper))
+    , decoration(std::move(rhs.decoration))
+    , wrapper(std::move(rhs.wrapper), decoration)
   {}
 
   /// Move copy operator
@@ -52,9 +55,20 @@ public:
   void end()
   {
     SDL_assert(wrapper);
-    auto sz = wrapper.endClient();
-    box(*this, {0, 0, sz.x, sz.y}, style);
-    wrapper.end();
+    auto sz = wrapper.end();
+    auto rect = decoration.getRect();
+    auto w = rect.w;
+    auto h = rect.h;
+    if (w == 0) {
+      w = sz.x;
+      decoration.setWidth(w);
+    }
+    if (h == 0) {
+      h = sz.y;
+      decoration.setHeight(h);
+    }
+    box(decoration, {0, 0, w, h}, style);
+    decoration.end();
   }
 
   /// Return a target element for this
