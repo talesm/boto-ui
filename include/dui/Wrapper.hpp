@@ -19,16 +19,6 @@ class Wrapper : public Targetable<Wrapper<CLIENT>>
   bool autoW;
   bool autoH;
 
-  static constexpr SDL_Rect paddedSize(const SDL_Rect& rect,
-                                       const EdgeSize& padding)
-  {
-    int pw = padding.left + padding.right;
-    int dw = rect.w > pw ? pw : 0;
-    int ph = padding.top + padding.bottom;
-    int dh = rect.h > ph ? ph : 0;
-    return {padding.left, padding.top, rect.w - dw, rect.h - dh};
-  }
-
 public:
   Wrapper(Target parent,
           std::string_view id,
@@ -38,7 +28,7 @@ public:
     : padding(padding)
     , initializer(initializer)
     , decoration(parent, id, {0}, rect, {0, Layout::NONE})
-    , client(this->initializer(decoration, paddedSize(rect, padding)))
+    , client(this->initializer(decoration, clientRect(padding, rect)))
     , autoW(rect.w == 0)
     , autoH(rect.h == 0)
   {
@@ -49,7 +39,7 @@ public:
     : padding(rhs.padding)
     , initializer(rhs.initializer)
     , decoration(std::move(rhs.decoration))
-    , client(initializer(decoration, paddedSize(decoration.getRect(), padding)))
+    , client(initializer(decoration, clientRect(padding, decoration.getRect())))
     , onClient(rhs.onClient)
     , autoW(rhs.autoW)
     , autoH(rhs.autoH)
