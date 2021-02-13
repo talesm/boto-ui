@@ -40,3 +40,5 @@ if(DOXYGEN_FOUND)
     VERBATIM
   )
 endif()
+
+add_subdirectory(scratch)

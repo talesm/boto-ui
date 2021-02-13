@@ -264,6 +264,8 @@ struct Targetable
 
   int height() const { return target().height(); }
 
+  State& getState() const { return target().getState(); }
+
 private:
   const T& source() const { return static_cast<const T&>(*this); }
   const Target target() const { return const_cast<T&>(source()); }

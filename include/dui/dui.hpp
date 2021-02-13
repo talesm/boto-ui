@@ -10,6 +10,7 @@
 #include "InputBox.hpp"
 #include "InputField.hpp"
 #include "Label.hpp"
+#include "Layer.hpp"
 #include "Panel.hpp"
 #include "Scrollable.hpp"
 #include "SliderBox.hpp"

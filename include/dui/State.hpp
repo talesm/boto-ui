@@ -47,6 +47,7 @@ class State
   bool inFrame = false;
   SDL_Renderer* renderer;
   DisplayList dList;
+  int lastMaxZIndex = 0;
 
   SDL_Point mPos;
   bool mLeftPressed = false;
@@ -199,12 +200,15 @@ public:
   void endGroup(std::string_view id, const SDL_Rect& r);
   const Font& getFont() const { return font; }
   void setFont(const Font& f) { font = f; }
+  void pushLayer() { dList.incZ(); }
+  void popLayer() { dList.decZ(); }
 
 private:
   void beginFrame()
   {
     SDL_assert(inFrame == false);
     inFrame = true;
+    lastMaxZIndex = dList.getMaxZIndex();
     dList.clear();
     mHovering = false;
     ticksCount = SDL_GetTicks();
@@ -247,7 +251,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
 {
   SDL_assert(inFrame);
   if (eGrabbed.empty()) {
-    if (!mLeftPressed) {
+    if (!mLeftPressed || dList.getZIndex() < lastMaxZIndex) {
       return MouseAction::NONE;
     }
     if (SDL_PointInRect(&mPos, &r) && !mGrabbing) {

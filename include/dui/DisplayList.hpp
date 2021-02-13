@@ -75,17 +75,24 @@ class DisplayList
       , type(PUSH_CLIP)
     {}
   };
-  std::vector<Command> items;
+  static constexpr int MAX_LAYERS = 8;
+  std::vector<Command> items[MAX_LAYERS];
+  int zIndex = 0;
+  int maxZIndex = 0;
 
 public:
-  void clear() { items.clear(); }
-
-  size_t size() { return items.size(); }
+  void clear()
+  {
+    for (int i = 0; i <= maxZIndex; ++i) {
+      items[i].clear();
+    }
+    maxZIndex = 0;
+  }
 
   void insert(const Shape& item)
   {
     if (item.color.a > 0) {
-      items.push_back(item);
+      items[zIndex].push_back({item});
     }
   }
 
@@ -93,15 +100,29 @@ public:
   {
     // TODO coalesce multiple clips
     if (rect.w > 0 && rect.h > 0) {
-      items.push_back(rect);
+      items[zIndex].push_back({rect});
     } else {
-      items.push_back(SDL_Rect{rect.x, rect.y, 1, 1});
+      items[zIndex].push_back({{rect.x, rect.y, 1, 1}});
     }
   }
 
-  void popClip() { items.push_back({}); }
+  void popClip() { items[zIndex].push_back({}); }
 
   void render(SDL_Renderer* renderer) const;
+
+  void incZ()
+  {
+    zIndex++;
+    if (zIndex > maxZIndex) {
+      maxZIndex = zIndex;
+      SDL_assert(maxZIndex < MAX_LAYERS);
+    }
+  }
+  void decZ() { zIndex--; }
+
+  int getZIndex() const { return zIndex; }
+
+  int getMaxZIndex() const { return maxZIndex; }
 };
 
 inline void
@@ -115,40 +136,42 @@ DisplayList::render(SDL_Renderer* renderer) const
   // Stack
   constexpr int STACK_MAX_SIZE = 32;
   SDL_Rect stack[STACK_MAX_SIZE]; // TODO make this configurable
-  int stackSz = 0;
-  for (auto it = items.rbegin(); it != items.rend(); it++) {
-    if (it->type == POP_CLIP) {
-      SDL_assert(stackSz > 0);
-      --stackSz;
-      SDL_RenderSetClipRect(renderer,
-                            stackSz > 0 ? &stack[stackSz - 1] : nullptr);
-      continue;
-    }
-    if (it->type == PUSH_CLIP) {
-      SDL_assert(stackSz < STACK_MAX_SIZE);
-      SDL_Rect rect = it->rect;
-      if (stackSz > 0) {
-        SDL_IntersectRect(&it->rect, &stack[stackSz - 1], &rect);
+  for (int zIndex = 0; zIndex <= maxZIndex; ++zIndex) {
+    int stackSz = 0;
+    for (auto it = items[zIndex].rbegin(); it != items[zIndex].rend(); it++) {
+      if (it->type == POP_CLIP) {
+        SDL_assert(stackSz > 0);
+        --stackSz;
+        SDL_RenderSetClipRect(renderer,
+                              stackSz > 0 ? &stack[stackSz - 1] : nullptr);
+        continue;
       }
-      stack[stackSz++] = rect;
-      SDL_RenderSetClipRect(renderer, &rect);
-      continue;
+      if (it->type == PUSH_CLIP) {
+        SDL_assert(stackSz < STACK_MAX_SIZE);
+        SDL_Rect rect = it->rect;
+        if (stackSz > 0) {
+          SDL_IntersectRect(&it->rect, &stack[stackSz - 1], &rect);
+        }
+        stack[stackSz++] = rect;
+        SDL_RenderSetClipRect(renderer, &rect);
+        continue;
+      }
+      auto& shape = it->shape;
+      auto c = shape.color;
+      if (shape.texture == nullptr) {
+        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+        SDL_RenderFillRect(renderer, &shape.rect);
+      }
+      SDL_SetTextureColorMod(shape.texture, c.r, c.g, c.b);
+      if (shape.srcRect.w) {
+        SDL_RenderCopy(renderer, shape.texture, &shape.srcRect, &shape.rect);
+      } else {
+        SDL_RenderCopy(renderer, shape.texture, nullptr, &shape.rect);
+      }
     }
-    auto& shape = it->shape;
-    auto c = shape.color;
-    if (shape.texture == nullptr) {
-      SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-      SDL_RenderFillRect(renderer, &shape.rect);
-    }
-    SDL_SetTextureColorMod(shape.texture, c.r, c.g, c.b);
-    if (shape.srcRect.w) {
-      SDL_RenderCopy(renderer, shape.texture, &shape.srcRect, &shape.rect);
-    } else {
-      SDL_RenderCopy(renderer, shape.texture, nullptr, &shape.rect);
-    }
+    SDL_assert(stackSz == 0);
   }
   SDL_SetRenderDrawBlendMode(renderer, blendMode);
-  SDL_assert(stackSz == 0);
 }
 
 } // namespace dui
