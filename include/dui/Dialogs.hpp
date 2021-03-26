@@ -7,13 +7,16 @@
 
 namespace dui {
 
-inline bool
-messageBox(Target target,
-           std::string_view id,
-           std::string_view str,
-           bool* open,
-           WindowStyle style = dui::themeFor<Window>())
+template<class T>
+inline int
+choiceDialog(Target target,
+             std::string_view id,
+             std::string_view str,
+             std::initializer_list<T> options,
+             bool* open,
+             WindowStyle style = dui::themeFor<Window>())
 {
+  int selOption = 0;
   if (*open) {
     auto& state = target.getState();
     int wW = state.getWidth();
@@ -27,23 +30,50 @@ messageBox(Target target,
                                       style.decoration.title.font,
                                       0));
     auto w = window(l, {}, title, {(wW - textSz.x) / 2, wH / 8}, style);
-    label(w, str);
-    if (button(w, "Ok")) {
-      *open = false;
-      return true;
+    if (!str.empty()) {
+      label(w, str);
+    }
+    int i = 0;
+    for (auto option : options) {
+      ++i;
+      if (button(w, option)) {
+        selOption = i;
+        *open = false;
+      }
     }
     w.end();
     colorBox(l, {0, 0, wW, wH}, {0, 0, 0, 127});
   }
-  return false;
+  return selOption;
+}
+
+template<class T>
+inline int
+choiceDialog(Target target,
+             std::string_view id,
+             std::initializer_list<T> options,
+             bool* open,
+             WindowStyle style = dui::themeFor<Window>())
+{
+  return choiceDialog(target, id, id, options, open, style);
+}
+
+inline bool
+messageDialog(Target target,
+              std::string_view id,
+              std::string_view str,
+              bool* open,
+              WindowStyle style = dui::themeFor<Window>())
+{
+  return choiceDialog(target, id, str, {"Ok"}, open, style) == 1;
 }
 inline bool
-messageBox(Target target,
-           std::string_view id,
-           bool* open,
-           WindowStyle style = dui::themeFor<Window>())
+messageDialog(Target target,
+              std::string_view id,
+              bool* open,
+              WindowStyle style = dui::themeFor<Window>())
 {
-  return messageBox(target, id, id, open, style);
+  return messageDialog(target, id, id, open, style);
 }
 
 } // namespace dui

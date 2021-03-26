@@ -25,6 +25,7 @@ main(int argc, char** argv)
   // Other state
   bool modalOpen = true;
   bool messageOpen = false;
+  bool choiceOpen = false;
 
   // Main loop
   for (;;) {
@@ -64,8 +65,17 @@ main(int argc, char** argv)
         }
       }
     }
-    if (dui::messageBox(f, "Some message!", &messageOpen)) {
+    if (dui::messageDialog(f, "Some message!", &messageOpen)) {
       modalOpen = true;
+    }
+
+    if (dui::button(f, "open choice", {350, 260})) {
+      choiceOpen = true;
+    }
+
+    if (auto v = dui::choiceDialog(
+          f, "Some message!", {"option 1", "option 2"}, &choiceOpen)) {
+      SDL_Log("Answer %d", v);
     }
 
     // Clear screen
