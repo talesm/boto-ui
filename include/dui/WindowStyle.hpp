@@ -2,6 +2,7 @@
 
 #include "ButtonStyle.hpp"
 #include "ElementStyle.hpp"
+#include "LabelStyle.hpp"
 #include "PanelStyle.hpp"
 #include "ScrollableStyle.hpp"
 #include "Theme.hpp"

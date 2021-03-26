@@ -24,6 +24,7 @@ main(int argc, char** argv)
 
   // Other state
   bool modalOpen = true;
+  bool messageOpen = false;
 
   // Main loop
   for (;;) {
@@ -47,6 +48,9 @@ main(int argc, char** argv)
     if (dui::button(f, "open modal", {350, 220})) {
       modalOpen = true;
     }
+    if (dui::button(f, "open message", {350, 240})) {
+      messageOpen = true;
+    }
     if (modalOpen) {
       if (auto m = dui::layer(f, "modal", {350, 198})) {
         auto g = dui::group(m, "group");
@@ -59,6 +63,9 @@ main(int argc, char** argv)
           modalOpen = false;
         }
       }
+    }
+    if (dui::messageBox(f, "Some message!", &messageOpen)) {
+      modalOpen = true;
     }
 
     // Clear screen

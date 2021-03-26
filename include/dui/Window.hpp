@@ -3,7 +3,9 @@
 #include <string_view>
 #include "Element.hpp"
 #include "Group.hpp"
+#include "InputBox.hpp"
 #include "Panel.hpp"
+#include "Scrollable.hpp"
 #include "WindowStyle.hpp"
 #include "Wrapper.hpp"
 

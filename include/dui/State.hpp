@@ -68,13 +68,17 @@ class State
   Uint32 ticksCount;
 
   Font font;
+  int width = 0;
+  int height = 0;
 
 public:
   /// Ctor
   State(SDL_Renderer* renderer)
     : renderer(renderer)
     , font(loadDefaultFont(renderer))
-  {}
+  {
+    SDL_GetRendererOutputSize(renderer, &width, &height);
+  }
 
   /**
    * @brief Render the ui
@@ -202,6 +206,9 @@ public:
   void setFont(const Font& f) { font = f; }
   void pushLayer() { dList.incZ(); }
   void popLayer() { dList.decZ(); }
+
+  int getWidth() { return width; }
+  int getHeight() { return height; }
 
 private:
   void beginFrame()
