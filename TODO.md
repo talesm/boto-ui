@@ -7,14 +7,14 @@ Simplify! (0.5)
 The goal is review and reorganize the code and make it more consistent with its abstractions
 
 - [x] Rename project
-- [ ] Add unit test configuration
+- [x] Add unit test configuration
 - [ ] Unify DisplayList::Command and Shape into DisplayItem and DisplayCommand
   - [ ] Move to its own file
   - [ ] Instead of SHAPE, we have the options SET_CLIP, COLOR_RECT, TEX_RECT
   - [ ] Resolve PUSH and POP while still receiving commands
 - [ ] Refactor DisplayList so it delegates the rendering to a visitor
 - [ ] Wrap push and pop clip into a Proper guard type
-- [ ] When frame is created it sets a thread_local where the current target resides. 
+- [ ] When frame is created it sets a thread_local where the current target resides.
   - [ ] All new targets are going to be stacked there;
   - [ ] The group targets receive cookies that allow popping them
   - [ ] Remove Target parameter from all elements, use stack instead
