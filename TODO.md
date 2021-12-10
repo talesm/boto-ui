@@ -8,9 +8,8 @@ The goal is review and reorganize the code and make it more consistent with its 
 
 - [x] Rename project
 - [x] Add unit test configuration
-- [ ] Unify DisplayList::Command and Shape into DisplayItem and DisplayCommand
-  - [ ] Move to its own file
-  - [ ] Instead of SHAPE, we have the options SET_CLIP, COLOR_RECT, TEX_RECT
+- [x] Unify DisplayList::Command and Shape into DisplayItem and DisplayAction
+  - [x] Instead of SHAPE, we have the options SET_CLIP, COLOR_RECT, TEX_RECT
   - [ ] Resolve PUSH and POP while still receiving commands
 - [ ] Refactor DisplayList so it delegates the rendering to a visitor
 - [ ] Wrap push and pop clip into a Proper guard type

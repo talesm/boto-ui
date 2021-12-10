@@ -46,8 +46,8 @@ add_library(botoui-tests
   tests/unit/catch.cpp
 )
 target_include_directories(botoui-tests INTERFACE tests/unit/)
-target_link_libraries(botoui-tests PRIVATE botoui)
+target_link_libraries(botoui-tests PUBLIC botoui)
 add_executable(botoui-tests-core
-  tests/unit/core/DisplayListItem.cpp
+  tests/unit/core/DisplayListTest.cpp
 )
 target_link_libraries(botoui-tests-core botoui-tests)
