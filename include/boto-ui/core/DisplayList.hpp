@@ -5,10 +5,9 @@
 #include <SDL_blendmode.h>
 #include <SDL_pixels.h>
 #include <SDL_rect.h>
-#include <SDL_render.h>
 
-// struct SDL_Texture;
-// typedef struct SDL_Texture SDL_Texture;
+struct SDL_Texture;
+typedef struct SDL_Texture SDL_Texture;
 
 namespace boto {
 enum class DisplayListAction
