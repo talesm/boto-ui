@@ -1,4 +1,4 @@
-Direct User Interface
+Boto User Interface
 =====================
 
 [Click here to GET the latest single header file][dui_single]

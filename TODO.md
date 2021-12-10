@@ -6,7 +6,7 @@ Simplify! (0.5)
 
 The goal is review and reorganize the code and make it more consistent with its abstractions
 
-- [ ] Rename project
+- [x] Rename project
 - [ ] Add unit test configuration
 - [ ] Unify DisplayList::Command and Shape into DisplayItem and DisplayCommand
   - [ ] Move to its own file
