@@ -6,7 +6,7 @@
 #include "ScrollableStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 struct WindowDecorationStyle
 {
@@ -178,4 +178,4 @@ struct FromTheme<ScrollableWindow, Theme>
 
 } // namespace style
 
-} // namespace dui
+} // namespace boto

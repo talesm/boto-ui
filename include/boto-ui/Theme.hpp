@@ -1,7 +1,7 @@
 #ifndef DUI_THEME_HPP_
 #define DUI_THEME_HPP_
 
-namespace dui {
+namespace boto {
 
 namespace style {
 
@@ -9,7 +9,7 @@ namespace style {
 struct SteelBlue;
 
 #ifndef DUI_THEME
-#define DUI_THEME dui::style::SteelBlue
+#define DUI_THEME boto::style::SteelBlue
 #endif
 
 template<class Element, class Theme>
@@ -30,6 +30,6 @@ themeFor()
   return style::FromTheme<Element, Theme>::get();
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_THEME_HPP_

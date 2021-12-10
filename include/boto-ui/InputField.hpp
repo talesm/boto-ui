@@ -7,7 +7,7 @@
 #include "InputFieldStyle.hpp"
 #include "Label.hpp"
 
-namespace dui {
+namespace boto {
 
 /// Create a group that labels its items
 /// @ingroup groups
@@ -162,6 +162,6 @@ numberField(Target target,
 {
   return numberField(target, id, id, value, p, style);
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_INPUTFIELD_HPP

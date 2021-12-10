@@ -1,7 +1,7 @@
 const fs = require('fs')
 
 const cwd = process.cwd()
-const fileQueue = makeQueue('dui.hpp')
+const fileQueue = makeQueue('boto.hpp')
 
 const output = fs.openSync(process.argv[2], 'w')
 fs.writeSync(output, "/*\n * ", undefined)
@@ -15,9 +15,9 @@ fs.writeSync(output, "#include <string>\n", undefined)
 fs.writeSync(output, "#include <string_view>\n", undefined)
 fs.writeSync(output, "#include <vector>\n", undefined)
 fs.writeSync(output, "#include <SDL.h>\n\n", undefined)
-fs.writeSync(output, "namespace dui {\n\n", undefined)
+fs.writeSync(output, "namespace boto {\n\n", undefined)
 fs.writeSync(output, "#ifndef DUI_THEME\n", undefined)
-fs.writeSync(output, "#define DUI_THEME dui::style::SteelBlue\n", undefined)
+fs.writeSync(output, "#define DUI_THEME boto::style::SteelBlue\n", undefined)
 fs.writeSync(output, "#endif\n\n", undefined)
 
 for (const fileName of fileQueue) {
@@ -25,15 +25,15 @@ for (const fileName of fileQueue) {
   const content = fs.readFileSync(fileName, 'utf-8')
   fs.writeSync(output, content
     .replace(/^#.*$/gm, '')
-    .replace(/^namespace dui \{$/gm, '')
-    .replace(/^\} \/\/ namespace dui$/gm, '')
+    .replace(/^namespace boto \{$/gm, '')
+    .replace(/^\} \/\/ namespace boto$/gm, '')
     .trim()
   )
   fs.writeSync(output, `\n\n`)
 
 }
 
-fs.writeSync(output, "} // namespace dui\n\n", undefined)
+fs.writeSync(output, "} // namespace boto\n\n", undefined)
 fs.writeSync(output, "#endif // DUI_SINGLE_HPP\n", undefined)
 
 

@@ -10,7 +10,7 @@
 #include "SliderFieldStyle.hpp"
 #include "Target.hpp"
 
-namespace dui {
+namespace boto {
 
 /**
  * @brief A sliderField that allows the user to choose a value in a interval
@@ -57,6 +57,6 @@ sliderField(Target target,
 {
   return sliderField(target, id, id, value, min, max, p, style);
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_SLIDERFIELD_HPP_

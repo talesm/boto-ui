@@ -1,6 +1,6 @@
 #pragma once
 
 /**
- * @namespace dui
+ * @namespace boto
  * @brief Main namespace
  */

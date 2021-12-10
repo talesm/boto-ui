@@ -6,7 +6,7 @@
 #include "SliderBox.hpp"
 #include "Wrapper.hpp"
 
-namespace dui {
+namespace boto {
 /// Scrollable class. @see scrollable() and scrollablePanel()
 class Scrollable : public Targetable<Scrollable>
 {
@@ -190,4 +190,4 @@ scrollablePanel(Target target,
   return scrollablePanel(target, id, scrollOffset, r, style.withLayout(layout));
 }
 ///@}
-} // namespace dui
+} // namespace boto

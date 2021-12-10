@@ -7,7 +7,7 @@
 #include "InputBoxStyle.hpp"
 #include "Panel.hpp"
 
-namespace dui {
+namespace boto {
 
 /// Eval the input size, accordingly to parameters
 inline SDL_Point
@@ -347,6 +347,6 @@ numberBox(Target target,
   }
   return false;
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_INPUTBOX_HPP

@@ -5,7 +5,7 @@
 #include <SDL_rect.h>
 #include <SDL_render.h>
 
-namespace dui {
+namespace boto {
 
 struct Shape
 {
@@ -151,6 +151,6 @@ DisplayList::render(SDL_Renderer* renderer) const
   SDL_assert(stackSz == 0);
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_DISPLAY_LIST_HPP

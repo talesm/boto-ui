@@ -4,7 +4,7 @@
 #include "State.hpp"
 #include "Target.hpp"
 
-namespace dui {
+namespace boto {
 
 /**
  * @brief Represents a single frame on the app
@@ -86,6 +86,6 @@ Frame::end()
   locked = false;
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // _DUI_FRAME_HPP

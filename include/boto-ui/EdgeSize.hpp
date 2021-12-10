@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 
-namespace dui {
+namespace boto {
 
 struct EdgeSize
 {
@@ -60,6 +60,6 @@ clientRect(const EdgeSize& edge, const SDL_Rect& element)
   auto sz = clientSize(edge, {element.w, element.h});
   return {edge.left, edge.top, sz.x, sz.y};
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_EDGESIZE_HPP

@@ -5,7 +5,7 @@
 #include "State.hpp"
 #include "TargetStyle.hpp"
 
-namespace dui {
+namespace boto {
 
 /**
  * @brief A target where elements can be added to
@@ -271,6 +271,6 @@ private:
   const Target target() const { return const_cast<T&>(source()); }
 };
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_TARGET_HPP_

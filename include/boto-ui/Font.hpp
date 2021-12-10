@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 
-namespace dui {
+namespace boto {
 
 struct Font
 {
@@ -25,6 +25,6 @@ loadDefaultFont(SDL_Renderer* renderer)
   return {texture, 8, 8, 16};
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif

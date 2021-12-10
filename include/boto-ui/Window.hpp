@@ -7,7 +7,7 @@
 #include "WindowStyle.hpp"
 #include "Wrapper.hpp"
 
-namespace dui {
+namespace boto {
 
 /// An window class @see window()
 template<class CLIENT>
@@ -240,4 +240,4 @@ scrollableWindow(
 {
   return scrollableWindow(target, id, id, scrollOffset, r, layout);
 }
-} // namespace dui
+} // namespace boto

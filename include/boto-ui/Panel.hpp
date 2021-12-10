@@ -7,7 +7,7 @@
 #include "PanelStyle.hpp"
 #include "Wrapper.hpp"
 
-namespace dui {
+namespace boto {
 
 /// A panel class @see panel()
 template<class CLIENT>
@@ -121,6 +121,6 @@ panel(Target target,
 {
   return panel(target, id, r, style.withLayout(layout));
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_PANEL_HPP_

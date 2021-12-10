@@ -6,7 +6,7 @@
 #include "TextStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 // Style for element state
 struct ElementPaintStyle
@@ -98,6 +98,6 @@ struct FromTheme<Element, Theme>
 };
 } // namespace style
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_ELEMENTSTYLE_HPP_

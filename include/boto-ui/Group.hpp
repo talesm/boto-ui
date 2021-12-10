@@ -6,7 +6,7 @@
 #include "State.hpp"
 #include "Target.hpp"
 
-namespace dui {
+namespace boto {
 
 /**
  * @brief A grouping of widgets
@@ -197,4 +197,4 @@ Group::operator=(Group&& rhs)
   return *this;
 }
 
-} // namespace dui
+} // namespace boto

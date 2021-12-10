@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include "dui.hpp"
+#include "boto.hpp"
 
 int
 main(int argc, char** argv)
@@ -20,7 +20,7 @@ main(int argc, char** argv)
   }
 
   // Create ui state
-  dui::State state{renderer};
+  boto::State state{renderer};
 
   // variables
   SDL_Point var1 = {0, 10};
@@ -40,20 +40,20 @@ main(int argc, char** argv)
     }
 
     // Begin Frame
-    auto f = dui::frame(state);
+    auto f = boto::frame(state);
 
     // UI
-    auto g = dui::group(f, "main", {0});
-    dui::numberField(g, "intVar1", &var1.y);
-    dui::sliderBox(g, "intScroll1", &var1.y, 0, 100);
-    dui::sliderBox(g, "intScroll2", &var1.y, 0, 10);
-    dui::sliderBoxV(g, "intScroll3", &var1.y, 0, 100);
-    if (auto sg = dui::scrollablePanel(g, "scrollGroup", &var1)) {
+    auto g = boto::group(f, "main", {0});
+    boto::numberField(g, "intVar1", &var1.y);
+    boto::sliderBox(g, "intScroll1", &var1.y, 0, 100);
+    boto::sliderBox(g, "intScroll2", &var1.y, 0, 10);
+    boto::sliderBoxV(g, "intScroll3", &var1.y, 0, 100);
+    if (auto sg = boto::scrollablePanel(g, "scrollGroup", &var1)) {
       for (int i = 0; i < 5; ++i) {
-        dui::label(sg, "Label");
+        boto::label(sg, "Label");
       }
     }
-    dui::label(g, "End");
+    boto::label(g, "End");
     g.end();
 
     // Clear screen

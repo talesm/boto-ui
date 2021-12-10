@@ -8,7 +8,7 @@
 #include "PanelStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 // Style for button
 struct SliderBoxBarStyle
@@ -55,6 +55,6 @@ struct FromTheme<SliderBox, Theme>
 };
 } // namespace style
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_SLIDERBOXSTYLE_HPP_

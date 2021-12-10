@@ -1,19 +1,19 @@
 #include <SDL.h>
-#include "dui.hpp"
+#include "boto.hpp"
 
 void
-yesOrNo(dui::Target target, bool value)
+yesOrNo(boto::Target target, bool value)
 {
   if (value) {
-    dui::label(target,
-               "Yes",
-               {5},
-               dui::themeFor<dui::Label>().withText({20, 128, 100, 255}));
+    boto::label(target,
+                "Yes",
+                {5},
+                boto::themeFor<boto::Label>().withText({20, 128, 100, 255}));
   } else {
-    dui::label(target,
-               "No",
-               {5},
-               dui::themeFor<dui::Label>().withText({200, 100, 20, 255}));
+    boto::label(target,
+                "No",
+                {5},
+                boto::themeFor<boto::Label>().withText({200, 100, 20, 255}));
   }
 }
 
@@ -33,7 +33,7 @@ main(int argc, char** argv)
   }
 
   // The ui state
-  dui::State state{renderer};
+  boto::State state{renderer};
 
   for (;;) {
     bool mouseFocus = state.wantsMouse();
@@ -48,18 +48,18 @@ main(int argc, char** argv)
     }
 
     // UI
-    auto f = dui::frame(state);
-    dui::label(f, "This doesn't take focus", {350, 200});
-    dui::button(f, "This takes focus", {350, 220});
-    if (auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500})) {
+    auto f = boto::frame(state);
+    boto::label(f, "This doesn't take focus", {350, 200});
+    boto::button(f, "This takes focus", {350, 220});
+    if (auto p = boto::panel(f, "mainPanel", {10, 10, 300, 500})) {
       ;
-      dui::label(p, "Mouse Focus");
+      boto::label(p, "Mouse Focus");
       yesOrNo(p, mouseFocus);
-      dui::label(p, "Keyboard Focus");
+      boto::label(p, "Keyboard Focus");
       yesOrNo(p, keyboardFocus);
-      dui::button(p, "dummy button");
+      boto::button(p, "dummy button");
       static std::string dummyText{"Ahoy"};
-      dui::textField(p, "dummy text", &dummyText);
+      boto::textField(p, "dummy text", &dummyText);
     }
 
     // Render

@@ -5,7 +5,7 @@
 #include "ElementStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 /// Input box style
 struct InputBoxStyle
@@ -64,6 +64,6 @@ template<class Theme>
 struct FromTheme<FloatBox, Theme> : FromTheme<NumberBox, Theme>
 {};
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_INPUTBOXSTYLE_HPP_

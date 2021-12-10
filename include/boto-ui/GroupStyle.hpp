@@ -3,7 +3,7 @@
 #include "TargetStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 using GroupStyle = TargetStyle;
 
@@ -24,4 +24,4 @@ struct FromTheme<Group, Theme>
 };
 } // namespace style
 
-} // namespace dui
+} // namespace boto

@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include "dui.hpp"
+#include "boto.hpp"
 
 int
 main(int argc, char** argv)
@@ -20,7 +20,7 @@ main(int argc, char** argv)
   }
 
   // Create ui state
-  dui::State state{renderer};
+  boto::State state{renderer};
 
   // Main loop
   for (;;) {
@@ -37,11 +37,11 @@ main(int argc, char** argv)
     }
 
     // Begin Frame
-    auto f = dui::frame(state);
+    auto f = boto::frame(state);
 
     // Add elements
-    dui::label(f, "Hello World", {350, 200});
-    if (dui::button(f, "Close App", {350, 220})) {
+    boto::label(f, "Hello World", {350, 200});
+    if (boto::button(f, "Close App", {350, 220})) {
       // Push a QUIT event so we can see briefly the button released
       SDL_Event ev{0};
       ev.type = SDL_QUIT;

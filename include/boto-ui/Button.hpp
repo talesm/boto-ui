@@ -6,7 +6,7 @@
 #include "Group.hpp"
 #include "Panel.hpp"
 
-namespace dui {
+namespace boto {
 
 /**
  * @brief Common button behavior
@@ -176,6 +176,6 @@ choiceButton(Target target,
   return choiceButton(target, id, id, value, option, p, style);
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_BUTTON_HPP

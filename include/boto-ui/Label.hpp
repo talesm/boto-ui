@@ -7,7 +7,7 @@
 #include "Group.hpp"
 #include "LabelStyle.hpp"
 
-namespace dui {
+namespace boto {
 
 /**
  * @brief A simple label
@@ -59,6 +59,6 @@ centeredLabel(Target target,
        style);
   box(target, r, style);
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_LABEL_HPP_

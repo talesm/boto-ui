@@ -5,7 +5,7 @@
 #include "ElementStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 // Style for button
 struct ButtonStyle
@@ -78,6 +78,6 @@ template<class Theme>
 struct FromTheme<ChoiceButton, Theme> : FromTheme<ButtonBase, Theme>
 {};
 } // namespace style
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_BUTTONSTYLE_HPP

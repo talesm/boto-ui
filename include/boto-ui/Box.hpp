@@ -7,7 +7,7 @@
 #include "Group.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 /**
  * @brief adds a colorBox element to target
@@ -81,6 +81,6 @@ box(Target target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
            {c.r, c.g, c.b, c.a});
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_BOX_HPP_

@@ -6,7 +6,7 @@
 #include "GroupStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 // Style for panels
 struct PanelDecorationStyle
@@ -114,6 +114,6 @@ struct FromTheme<Panel, Theme>
 };
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_PANELSTYLE_HPP_

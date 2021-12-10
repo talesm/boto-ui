@@ -13,7 +13,7 @@ checking out the current version. Be aware though that it might have some
 breakage and bugs as it still a very early stage project;
 
 [SDL2]: https://www.libsdl.org/
-[dui_single]: https://github.com/talesm/dui/releases/download/v0.3/dui_single.hpp
+[dui_single]: https://github.com/talesm/boto/releases/download/v0.3/dui_single.hpp
 
 Introduction
 ------------
@@ -23,7 +23,7 @@ based on rows. The following is a minimal example:
 
 ```cpp
 #include <SDL.h>
-#include "dui.hpp"
+#include "boto.hpp"
 
 int
 main(int argc, char** argv)
@@ -35,7 +35,7 @@ main(int argc, char** argv)
   SDL_CreateWindowAndRenderer(800, 600, SDL_WINDOW_SHOWN, &window, &renderer);
   
   // Create ui state
-  dui::State state{renderer};
+  boto::State state{renderer};
 
   // Main loop
   for (;;) {
@@ -51,11 +51,11 @@ main(int argc, char** argv)
     }
 
     // Begin frame
-    auto f = dui::frame(state);
+    auto f = boto::frame(state);
 
     // Add elements
-    dui::label(f, "Hello World", {350, 200});
-    if (dui::button(f, "Close App", {350, 220})) {
+    boto::label(f, "Hello World", {350, 200});
+    if (boto::button(f, "Close App", {350, 220})) {
       return 0;
     }
 
@@ -72,13 +72,13 @@ main(int argc, char** argv)
 }
 ```
 
-Let's dissect the code. Firstly we have the include. We just use the `dui.hpp`
-that includes all the necessary files. We could also use the dui
+Let's dissect the code. Firstly we have the include. We just use the `boto.hpp`
+that includes all the necessary files. We could also use the boto
 `dui_single.hpp` that is the single file version so it is easier to attach on a
 project.
 
 ```cpp
-#include "dui.hpp"
+#include "boto.hpp"
 ```
 
 Then we create the State just before the main loop. A state holds all persistent
@@ -87,7 +87,7 @@ active element and so on. Think it as the main ui component.
 
 ```cpp
   // Create ui state
-  dui::State state{renderer};
+  boto::State state{renderer};
 
   // Main loop
   for (;;) {
@@ -114,11 +114,11 @@ begin the frame and add elements:
 
 ```cpp
     // Begin frame
-    auto f = dui::frame(state);
+    auto f = boto::frame(state);
 
     // Add elements
-    dui::label(f, "Hello World", {350, 200});
-    if (dui::button(f, "Close App", {350, 220})) {
+    boto::label(f, "Hello World", {350, 200});
+    if (boto::button(f, "Close App", {350, 220})) {
       return 0;
     }
 ```
@@ -148,7 +148,7 @@ You can see this example complete with better error handling at
 
 ### How to know when DUI is using the Mouse and Keyboard
 
-In many situations, you don't want to delegate all interaction for dui, but
+In many situations, you don't want to delegate all interaction for boto, but
 manage some interactions by yourself. There are two methods that help with this,
 wantsMouse() and wantsKeyboard(). You can call these before instantiating the
 Frame to know if the mouse or keyboard are being used. As an example let's
@@ -177,18 +177,18 @@ have either focus. Let's use this moment to introduce a new element too:
 
 ```cpp
     // Frame begin
-    auto f = dui::frame(state);
+    auto f = boto::frame(state);
 
     // Panel begins
-    auto p = dui::panel(f, "mainPanel", {10, 10, 300, 500});
+    auto p = boto::panel(f, "mainPanel", {10, 10, 300, 500});
 
     // Panels are layout vertically by default, so no need add position
     // If you do add the position, it will be used as an offset from the panel
-    dui::label(p, "Mouse Focus");
-    dui::label(p, (mouseFocus ? "Yes" : "No"), {5, 0}); // 5 pixels x-offset
-    dui::label(p, "Keyboard Focus");
-    dui::label(p, (keyboardFocus ? "Yes" : "No"), {5, 0});
-    dui::button(p, "dummy button");
+    boto::label(p, "Mouse Focus");
+    boto::label(p, (mouseFocus ? "Yes" : "No"), {5, 0}); // 5 pixels x-offset
+    boto::label(p, "Keyboard Focus");
+    boto::label(p, (keyboardFocus ? "Yes" : "No"), {5, 0});
+    boto::button(p, "dummy button");
 
     ...
 

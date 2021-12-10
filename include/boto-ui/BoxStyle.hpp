@@ -5,7 +5,7 @@
 #include "EdgeSize.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 struct BorderColorStyle
 {
@@ -97,6 +97,6 @@ struct FromTheme<Box, SteelBlue>
   }
 };
 } // namespace style
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_BOXSTYLE_HPP_

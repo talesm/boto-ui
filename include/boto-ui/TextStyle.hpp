@@ -5,7 +5,7 @@
 #include "Font.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 // Text style
 struct TextStyle
@@ -44,6 +44,6 @@ struct FromTheme<Text, Theme>
   }
 };
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_TEXTSTYLE_HPP_

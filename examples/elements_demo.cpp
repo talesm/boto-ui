@@ -2,7 +2,7 @@
 #include <string>
 #include <SDL.h>
 // #include "DarkTheme.hpp" // enable this to check the dark theme
-#include "dui.hpp"
+#include "boto.hpp"
 
 int
 main(int argc, char** argv)
@@ -21,7 +21,7 @@ main(int argc, char** argv)
   }
 
   // The ui state
-  dui::State state{renderer};
+  boto::State state{renderer};
 
   // Some test variables
   int clickCount = 0;
@@ -58,28 +58,28 @@ main(int argc, char** argv)
     }
 
     // UI
-    auto f = dui::frame(state);
+    auto f = boto::frame(state);
 
     // Free label
-    dui::label(f, "Hello world", {320, 10});
+    boto::label(f, "Hello world", {320, 10});
 
     // Main panel
-    auto p = dui::window(f, "Elements", {10, 10, 300, 580});
-    // dui::label(f, "Error"); // You can not add anything to the frame until
+    auto p = boto::window(f, "Elements", {10, 10, 300, 580});
+    // boto::label(f, "Error"); // You can not add anything to the frame until
     // you call p.end()
 
     // Labels inside the panel
-    dui::label(p, "Hello world");
-    dui::label(p,
-               "Hello Styled World",
-               {5},
-               dui::themeFor<dui::Label>()
-                 .withText({0xf0, 0x80, 0x80, 0xff})
-                 .withScale(1));
+    boto::label(p, "Hello world");
+    boto::label(p,
+                "Hello Styled World",
+                {5},
+                boto::themeFor<boto::Label>()
+                  .withText({0xf0, 0x80, 0x80, 0xff})
+                  .withScale(1));
 
     // Push button example. It returns true only when you click on it (press and
     // release)
-    if (dui::button(p, "Click me!", clickMeStr)) {
+    if (boto::button(p, "Click me!", clickMeStr)) {
       clickCount += 1;
       std::stringstream ss;
       ss << "Click count: " << clickCount;
@@ -88,82 +88,82 @@ main(int argc, char** argv)
 
     // A button that presents the state of boolean, being pressed if true and
     // released if false, inverting its value if clicked.
-    if (dui::toggleButton(p, "Toggle", &toggleOption)) {
+    if (boto::toggleButton(p, "Toggle", &toggleOption)) {
       // Like button(), it also returns true on click, so you can do a special
       // action
       SDL_Log("Toggled options, new value is, %s",
               toggleOption ? "true" : "false");
     }
-    dui::label(p, toggleOption ? "activated" : "not activated", {5});
+    boto::label(p, toggleOption ? "activated" : "not activated", {5});
 
     // Choice buttons: similar to toggle buttons, but for any types
-    if (dui::choiceButton(p, "Option 1", &multiOption, OPTION1, {0, 5})) {
+    if (boto::choiceButton(p, "Option 1", &multiOption, OPTION1, {0, 5})) {
       // Like button(), it also returns true on click, so you can do a special
       // action.
       SDL_Log("Selected Option %d", 1 + multiOption);
       // Pay attention we only log when optin 1 was chose and not when 2 or 3.
     }
-    dui::choiceButton(p, "Option 2", &multiOption, OPTION2);
-    dui::choiceButton(p, "Option 3", &multiOption, OPTION3);
+    boto::choiceButton(p, "Option 2", &multiOption, OPTION2);
+    boto::choiceButton(p, "Option 3", &multiOption, OPTION3);
 
     // Using a panel to group elements. You can replace panel() by group() if
     // you don't want borders/custom color
-    if (auto g = dui::panel(p, "group1")) {
-      dui::label(g, "Grouped Label");
-      dui::button(g, "Grouped button");
+    if (auto g = boto::panel(p, "group1")) {
+      boto::label(g, "Grouped Label");
+      boto::button(g, "Grouped button");
     }
 
     // Example changing background color of the next panel
     auto panelStyle =
-      dui::themeFor<dui::Panel>().withBackgroundColor({224, 255, 224, 255});
+      boto::themeFor<boto::Panel>().withBackgroundColor({224, 255, 224, 255});
     // And also making it grow horizontally
     if (auto g =
-          dui::panel(p, "group2", {0}, dui::Layout::HORIZONTAL, panelStyle)) {
-      dui::label(g, "Grouped Label");
-      dui::button(g, "Grouped button");
+          boto::panel(p, "group2", {0}, boto::Layout::HORIZONTAL, panelStyle)) {
+      boto::label(g, "Grouped Label");
+      boto::button(g, "Grouped button");
     }
     static SDL_Point scrollOffset{0};
-    if (auto g = dui::scrollablePanel(p, "group3", &scrollOffset)) {
-      dui::label(g, "Grouped Label1");
-      dui::button(g, "Grouped button1");
-      dui::label(g, "Grouped Label2");
-      dui::button(g, "Grouped button2");
+    if (auto g = boto::scrollablePanel(p, "group3", &scrollOffset)) {
+      boto::label(g, "Grouped Label1");
+      boto::button(g, "Grouped button1");
+      boto::label(g, "Grouped Label2");
+      boto::button(g, "Grouped button2");
     }
 
     // Text input examples
-    dui::label(p, "Text input", {0, 10});
-    dui::textField(p, "Str1", str1, str1Size);
-    dui::textField(p, "Str2", &str2);
+    boto::label(p, "Text input", {0, 10});
+    boto::textField(p, "Str1", str1, str1Size);
+    boto::textField(p, "Str2", &str2);
 
     // numeric input examples
-    dui::label(p, "Number input", {0, 10});
-    dui::numberField(p, "value1", &value1);
-    dui::numberField(p, "value2", &value2);
-    dui::sliderField(p, "value1 b", &value1, 0, 100);
+    boto::label(p, "Number input", {0, 10});
+    boto::numberField(p, "value1", &value1);
+    boto::numberField(p, "value2", &value2);
+    boto::sliderField(p, "value1 b", &value1, 0, 100);
 
     // New panel for images
     p.end();
-    p = dui::window(f, "Textures", {480, 10});
+    p = boto::window(f, "Textures", {480, 10});
     // images
-    dui::textureBox(p, texture, {0, 0, 8, 8});
-    dui::textureBox(p, texture, {0, 1, 64, 64});
-    dui::textureBox(p, texture, {0, 1, 128, 128});
+    boto::textureBox(p, texture, {0, 0, 8, 8});
+    boto::textureBox(p, texture, {0, 1, 64, 64});
+    boto::textureBox(p, texture, {0, 1, 128, 128});
 
     // Here we explicitly end the panel p, so we can add elements to the frame
     // directly again after that.
     p.end();
 
     static SDL_Point scrollOffset2{0};
-    if (auto w = dui::scrollableWindow(
+    if (auto w = boto::scrollableWindow(
           f, "Scroll Window", &scrollOffset2, {320, 30, 150, 0})) {
       for (int i = 0; i < 10; ++i) {
-        dui::label(w, "Some label");
+        boto::label(w, "Some label");
       }
-      dui::button(w, "button");
+      boto::button(w, "button");
     }
 
     // For example, we can add this big texture
-    dui::textureBox(f, texture, {400, 300, 256, 256});
+    boto::textureBox(f, texture, {400, 300, 256, 256});
 
     // Render
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

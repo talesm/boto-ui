@@ -3,7 +3,7 @@
 #include "SliderBoxStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 struct ScrollableStyle
 {
@@ -123,4 +123,4 @@ evalPadding(const ScrollableStyle& style)
   return padding;
 }
 
-} // namespace dui
+} // namespace boto

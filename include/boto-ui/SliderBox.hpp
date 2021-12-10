@@ -9,7 +9,7 @@
 #include "SliderBoxStyle.hpp"
 #include "Target.hpp"
 
-namespace dui {
+namespace boto {
 
 /// Returns delta
 inline std::optional<SDL_Point>
@@ -226,6 +226,6 @@ sliderBoxV(Target target,
   return action;
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_SLIDERBOX_HPP_

@@ -5,7 +5,7 @@
 #include "LabelStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 struct InputFieldStyle
 {
@@ -49,6 +49,6 @@ struct FromTheme<FloatField, Theme> : FieldFromThemeBase<FloatBox, Theme>
 {};
 } // namespace style
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_INPUTFIELDSTYLE_HPP_

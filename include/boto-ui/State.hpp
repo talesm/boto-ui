@@ -6,7 +6,7 @@
 #include "DisplayList.hpp"
 #include "Font.hpp"
 
-namespace dui {
+namespace boto {
 
 constexpr char groupNameSeparator = '/';
 
@@ -404,6 +404,6 @@ State::event(SDL_Event& ev)
     }
   }
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_STATE_HPP_

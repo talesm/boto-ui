@@ -6,7 +6,7 @@
 #include "TextStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 /// Measure the given character
 constexpr SDL_Point
@@ -92,6 +92,6 @@ text(Target target,
     dstRect.x += dstRect.w;
   }
 }
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_TEXT_HPP_

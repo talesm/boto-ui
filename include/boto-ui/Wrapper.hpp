@@ -4,7 +4,7 @@
 #include "EdgeSize.hpp"
 #include "Group.hpp"
 
-namespace dui {
+namespace boto {
 
 /// A class to make wrapper elements
 template<class CLIENT>
@@ -100,4 +100,4 @@ Wrapper<CLIENT>::endClient()
   return {decoration.width(), decoration.height()};
 }
 
-} // namespace dui
+} // namespace boto

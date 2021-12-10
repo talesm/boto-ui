@@ -7,7 +7,7 @@
  *
  * Example:
  * ```
- * dui::window(frame, "Window Name", {100, 200});
+ * boto::window(frame, "Window Name", {100, 200});
  * ```
  *
  * This adds an window to `frame` at given position.
@@ -20,11 +20,11 @@
  * elements must have unique ids in the context of its current. For example:
  *
  * ```
- * dui::button(f, "id1"); // Ok
- * dui::button(f, "id2"); // Ok
- * dui::button(f, "id1"); // BAD
+ * boto::button(f, "id1"); // Ok
+ * boto::button(f, "id2"); // Ok
+ * boto::button(f, "id1"); // BAD
  *
- * auto p = dui::panel(f, "panel1");
- * dui::button(p, "id1"); // Ok, as it is in a different target.
+ * auto p = boto::panel(f, "panel1");
+ * boto::button(p, "id1"); // Ok, as it is in a different target.
  * ```
  */

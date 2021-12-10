@@ -4,7 +4,7 @@
 #include "ElementStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 struct Label;
 
@@ -14,6 +14,6 @@ struct FromTheme<Label, Theme> : FromTheme<Element, Theme>
 {};
 } // namespace style
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_LABELSTYLE_HPP_

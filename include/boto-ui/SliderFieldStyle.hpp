@@ -6,7 +6,7 @@
 #include "SliderBoxStyle.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 struct SliderFieldStyle
 {
@@ -30,6 +30,6 @@ struct FromTheme<SliderField, Theme>
 };
 } // namespace style
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_SLIDERFIELDSTYLE_HPP_

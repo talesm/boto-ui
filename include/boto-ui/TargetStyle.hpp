@@ -1,6 +1,6 @@
 #pragma once
 
-namespace dui {
+namespace boto {
 
 enum class Layout : Uint8
 {
@@ -24,4 +24,4 @@ struct TargetStyle
   }
 };
 
-} // namespace dui
+} // namespace boto

@@ -9,7 +9,7 @@
 #include "Text.hpp"
 #include "Theme.hpp"
 
-namespace dui {
+namespace boto {
 
 /// Compute element size based on its style
 inline SDL_Point
@@ -52,6 +52,6 @@ element(Target target,
   box(g, {0, 0, sz.x, sz.y}, style);
 }
 
-} // namespace dui
+} // namespace boto
 
 #endif // DUI_BASIC_WIDGETS_HPP_
