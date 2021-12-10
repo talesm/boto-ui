@@ -2,7 +2,6 @@
 #define BOTO_HPP_
 
 #include "Button.hpp"
-#include "DisplayList.hpp"
 #include "Element.hpp"
 #include "Font.hpp"
 #include "Frame.hpp"
@@ -17,5 +16,6 @@
 #include "State.hpp"
 #include "Window.hpp"
 #include "Wrapper.hpp"
+#include "core/DisplayList.hpp"
 
 #endif // BOTO_HPP_H

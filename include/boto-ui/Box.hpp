@@ -71,7 +71,7 @@ box(Target target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
   auto nsz = style.border.top;
   auto wsz = style.border.left;
   auto ssz = style.border.bottom;
-  auto g = group(target, {}, {0}, Layout::NONE);
+  auto g = group(target, {}, r, Layout::NONE);
   colorBox(g, {r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
   colorBox(g, {r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
   colorBox(g, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, {s.r, s.g, s.b, s.a});

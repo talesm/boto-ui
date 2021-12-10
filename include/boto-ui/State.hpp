@@ -3,8 +3,8 @@
 
 #include <string>
 #include <SDL.h>
-#include "DisplayList.hpp"
 #include "Font.hpp"
+#include "core/DisplayList.hpp"
 
 namespace boto {
 
@@ -68,6 +68,8 @@ class State
 
   Font font;
 
+  std::vector<DisplayList::Clip> clips;
+
 public:
   /// Ctor
   State(SDL_Renderer* renderer)
@@ -85,7 +87,28 @@ public:
   void render()
   {
     SDL_assert(!inFrame);
-    dList.render(renderer);
+    dList.visit([&](const DisplayListItem& item) {
+      SDL_Color c = item.color;
+      switch (item.action) {
+      case DisplayListAction::RESET_CLIP:
+        SDL_RenderSetClipRect(renderer, nullptr);
+        break;
+      case DisplayListAction::SET_CLIP:
+        SDL_RenderSetClipRect(renderer, &item.rect);
+        break;
+      case DisplayListAction::COLOR_BOX:
+        SDL_SetRenderDrawBlendMode(renderer, item.mode);
+        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+        SDL_RenderFillRect(renderer, &item.rect);
+        break;
+      case DisplayListAction::TEXTURE_BOX:
+        SDL_SetTextureAlphaMod(item.texture, c.a);
+        SDL_SetTextureBlendMode(item.texture, item.mode);
+        SDL_SetTextureColorMod(item.texture, c.r, c.g, c.b);
+        SDL_RenderCopy(renderer, item.texture, &item.srcRect, &item.rect);
+        break;
+      }
+    });
   }
 
   /**
@@ -191,18 +214,18 @@ public:
    */
   void display(const SDL_Rect& r, SDL_Color c)
   {
-    dList.insert(Shape::Box(r, c));
+    dList.push(r, c, SDL_BLENDMODE_BLEND);
   }
   void display(const SDL_Rect& r, SDL_Texture* texture, const SDL_Rect& srcRect)
   {
-    dList.insert(Shape::Texture(r, texture, srcRect));
+    display(r, texture, srcRect, {255, 255, 255, 255});
   }
   void display(const SDL_Rect& r,
                SDL_Texture* texture,
                const SDL_Rect& srcRect,
                SDL_Color c)
   {
-    dList.insert(Shape::Texture(r, texture, srcRect, c));
+    dList.push(r, c, SDL_BLENDMODE_BLEND, texture, srcRect);
   }
 
   /// Ticks count
@@ -304,7 +327,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
 inline void
 State::beginGroup(std::string_view id, const SDL_Rect& r)
 {
-  dList.popClip();
+  clips.emplace_back(dList.clip(r));
   if (id.empty()) {
     return;
   }
@@ -372,7 +395,7 @@ State::endGroup(std::string_view id, const SDL_Rect& r)
       gActive = true;
     }
   }
-  dList.pushClip(r);
+  clips.pop_back();
 }
 
 inline void

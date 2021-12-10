@@ -82,7 +82,16 @@ public:
 
   public:
     Clip(const Clip&) = delete;
-    ~Clip() { dList->unClip(); }
+    Clip(Clip&& c)
+      : dList(c.dList)
+    {
+      c.dList = nullptr;
+    }
+    ~Clip()
+    {
+      if (dList)
+        dList->unClip();
+    }
 
     operator bool() const { return true; }
 
