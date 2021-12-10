@@ -8,16 +8,16 @@ fs.writeSync(output, "/*\n * ", undefined)
 const copywrite = fs.readFileSync('../../LICENSE', 'utf-8')
 fs.writeSync(output, copywrite.replace(/\n/g, '\n * '))
 fs.writeSync(output, "\n */\n", undefined)
-fs.writeSync(output, "#ifndef DUI_SINGLE_HPP\n", undefined)
-fs.writeSync(output, "#define DUI_SINGLE_HPP\n\n", undefined)
+fs.writeSync(output, "#ifndef BOTO_SINGLE_HPP\n", undefined)
+fs.writeSync(output, "#define BOTO_SINGLE_HPP\n\n", undefined)
 fs.writeSync(output, "#include <algorithm>\n", undefined)
 fs.writeSync(output, "#include <string>\n", undefined)
 fs.writeSync(output, "#include <string_view>\n", undefined)
 fs.writeSync(output, "#include <vector>\n", undefined)
 fs.writeSync(output, "#include <SDL.h>\n\n", undefined)
 fs.writeSync(output, "namespace boto {\n\n", undefined)
-fs.writeSync(output, "#ifndef DUI_THEME\n", undefined)
-fs.writeSync(output, "#define DUI_THEME boto::style::SteelBlue\n", undefined)
+fs.writeSync(output, "#ifndef BOTO_THEME\n", undefined)
+fs.writeSync(output, "#define BOTO_THEME boto::style::SteelBlue\n", undefined)
 fs.writeSync(output, "#endif\n\n", undefined)
 
 for (const fileName of fileQueue) {
@@ -34,7 +34,7 @@ for (const fileName of fileQueue) {
 }
 
 fs.writeSync(output, "} // namespace boto\n\n", undefined)
-fs.writeSync(output, "#endif // DUI_SINGLE_HPP\n", undefined)
+fs.writeSync(output, "#endif // BOTO_SINGLE_HPP\n", undefined)
 
 
 /**

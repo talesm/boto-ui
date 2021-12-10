@@ -1,5 +1,5 @@
-#ifndef DUI_BUTTON_HPP
-#define DUI_BUTTON_HPP
+#ifndef BOTO_BUTTON_HPP
+#define BOTO_BUTTON_HPP
 
 #include <string_view>
 #include "ButtonStyle.hpp"
@@ -178,4 +178,4 @@ choiceButton(Target target,
 
 } // namespace boto
 
-#endif // DUI_BUTTON_HPP
+#endif // BOTO_BUTTON_HPP

@@ -1,5 +1,5 @@
-#ifndef DUI_BASIC_WIDGETS_HPP_
-#define DUI_BASIC_WIDGETS_HPP_
+#ifndef BOTO_BASIC_WIDGETS_HPP_
+#define BOTO_BASIC_WIDGETS_HPP_
 
 #include <string_view>
 #include "Box.hpp"
@@ -54,4 +54,4 @@ element(Target target,
 
 } // namespace boto
 
-#endif // DUI_BASIC_WIDGETS_HPP_
+#endif // BOTO_BASIC_WIDGETS_HPP_

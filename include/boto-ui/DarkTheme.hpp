@@ -1,5 +1,5 @@
-#ifndef DUI_DARKTHEME_HPP_
-#define DUI_DARKTHEME_HPP_
+#ifndef BOTO_DARKTHEME_HPP_
+#define BOTO_DARKTHEME_HPP_
 
 namespace boto {
 namespace style {
@@ -9,7 +9,7 @@ struct DarkTheme;
 } // namespace style
 } // namespace boto
 
-#define DUI_THEME boto::style::DarkTheme
+#define BOTO_THEME boto::style::DarkTheme
 #include "BoxStyle.hpp"
 #include "ButtonStyle.hpp"
 #include "ElementStyle.hpp"
@@ -112,4 +112,4 @@ struct FromTheme<InputBoxBase, DarkTheme>
 
 } // namespace boto
 
-#endif // DUI_DARKTHEME_HPP_
+#endif // BOTO_DARKTHEME_HPP_

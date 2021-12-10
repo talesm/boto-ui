@@ -1,5 +1,5 @@
-#ifndef DUI_FONT_HPP
-#define DUI_FONT_HPP
+#ifndef BOTO_FONT_HPP
+#define BOTO_FONT_HPP
 
 #include <SDL.h>
 

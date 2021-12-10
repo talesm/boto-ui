@@ -1,5 +1,5 @@
-#ifndef DUI_EDGESIZE_HPP
-#define DUI_EDGESIZE_HPP
+#ifndef BOTO_EDGESIZE_HPP
+#define BOTO_EDGESIZE_HPP
 
 #include <SDL.h>
 
@@ -62,4 +62,4 @@ clientRect(const EdgeSize& edge, const SDL_Rect& element)
 }
 } // namespace boto
 
-#endif // DUI_EDGESIZE_HPP
+#endif // BOTO_EDGESIZE_HPP

@@ -1,5 +1,5 @@
-#ifndef DUI_INPUTBOX_HPP
-#define DUI_INPUTBOX_HPP
+#ifndef BOTO_INPUTBOX_HPP
+#define BOTO_INPUTBOX_HPP
 
 #include <string_view>
 #include "Element.hpp"
@@ -349,4 +349,4 @@ numberBox(Target target,
 }
 } // namespace boto
 
-#endif // DUI_INPUTBOX_HPP
+#endif // BOTO_INPUTBOX_HPP

@@ -1,5 +1,5 @@
-#ifndef DUI_INPUTFIELD_HPP
-#define DUI_INPUTFIELD_HPP
+#ifndef BOTO_INPUTFIELD_HPP
+#define BOTO_INPUTFIELD_HPP
 
 #include <string_view>
 #include "Group.hpp"
@@ -164,4 +164,4 @@ numberField(Target target,
 }
 } // namespace boto
 
-#endif // DUI_INPUTFIELD_HPP
+#endif // BOTO_INPUTFIELD_HPP

@@ -1,5 +1,5 @@
-#ifndef DUI_SLIDERBOX_HPP_
-#define DUI_SLIDERBOX_HPP_
+#ifndef BOTO_SLIDERBOX_HPP_
+#define BOTO_SLIDERBOX_HPP_
 
 #include <algorithm>
 #include <optional>
@@ -228,4 +228,4 @@ sliderBoxV(Target target,
 
 } // namespace boto
 
-#endif // DUI_SLIDERBOX_HPP_
+#endif // BOTO_SLIDERBOX_HPP_

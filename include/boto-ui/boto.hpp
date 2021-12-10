@@ -1,5 +1,5 @@
-#ifndef DUI_HPP_
-#define DUI_HPP_
+#ifndef BOTO_HPP_
+#define BOTO_HPP_
 
 #include "Button.hpp"
 #include "DisplayList.hpp"
@@ -18,4 +18,4 @@
 #include "Window.hpp"
 #include "Wrapper.hpp"
 
-#endif // DUI_HPP_H
+#endif // BOTO_HPP_H

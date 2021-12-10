@@ -1,5 +1,5 @@
-#ifndef DUI_INPUTBOXSTYLE_HPP_
-#define DUI_INPUTBOXSTYLE_HPP_
+#ifndef BOTO_INPUTBOXSTYLE_HPP_
+#define BOTO_INPUTBOXSTYLE_HPP_
 
 #include <SDL.h>
 #include "ElementStyle.hpp"
@@ -66,4 +66,4 @@ struct FromTheme<FloatBox, Theme> : FromTheme<NumberBox, Theme>
 }
 } // namespace boto
 
-#endif // DUI_INPUTBOXSTYLE_HPP_
+#endif // BOTO_INPUTBOXSTYLE_HPP_

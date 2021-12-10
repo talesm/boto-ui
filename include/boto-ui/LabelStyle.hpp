@@ -1,5 +1,5 @@
-#ifndef DUI_LABELSTYLE_HPP_
-#define DUI_LABELSTYLE_HPP_
+#ifndef BOTO_LABELSTYLE_HPP_
+#define BOTO_LABELSTYLE_HPP_
 
 #include "ElementStyle.hpp"
 #include "Theme.hpp"
@@ -16,4 +16,4 @@ struct FromTheme<Label, Theme> : FromTheme<Element, Theme>
 
 } // namespace boto
 
-#endif // DUI_LABELSTYLE_HPP_
+#endif // BOTO_LABELSTYLE_HPP_

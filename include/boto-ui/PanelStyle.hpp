@@ -1,5 +1,5 @@
-#ifndef DUI_PANELSTYLE_HPP_
-#define DUI_PANELSTYLE_HPP_
+#ifndef BOTO_PANELSTYLE_HPP_
+#define BOTO_PANELSTYLE_HPP_
 
 #include "BoxStyle.hpp"
 #include "EdgeSize.hpp"
@@ -116,4 +116,4 @@ struct FromTheme<Panel, Theme>
 
 } // namespace boto
 
-#endif // DUI_PANELSTYLE_HPP_
+#endif // BOTO_PANELSTYLE_HPP_

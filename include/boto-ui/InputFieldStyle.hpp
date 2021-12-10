@@ -1,5 +1,5 @@
-#ifndef DUI_INPUTFIELDSTYLE_HPP_
-#define DUI_INPUTFIELDSTYLE_HPP_
+#ifndef BOTO_INPUTFIELDSTYLE_HPP_
+#define BOTO_INPUTFIELDSTYLE_HPP_
 
 #include "InputBoxStyle.hpp"
 #include "LabelStyle.hpp"
@@ -51,4 +51,4 @@ struct FromTheme<FloatField, Theme> : FieldFromThemeBase<FloatBox, Theme>
 
 } // namespace boto
 
-#endif // DUI_INPUTFIELDSTYLE_HPP_
+#endif // BOTO_INPUTFIELDSTYLE_HPP_

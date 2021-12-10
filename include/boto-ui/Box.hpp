@@ -1,5 +1,5 @@
-#ifndef DUI_BOX_HPP_
-#define DUI_BOX_HPP_
+#ifndef BOTO_BOX_HPP_
+#define BOTO_BOX_HPP_
 
 #include <SDL.h>
 #include "BoxStyle.hpp"
@@ -83,4 +83,4 @@ box(Target target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
 
 } // namespace boto
 
-#endif // DUI_BOX_HPP_
+#endif // BOTO_BOX_HPP_

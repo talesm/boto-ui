@@ -1,5 +1,5 @@
-#ifndef DUI_TARGET_HPP_
-#define DUI_TARGET_HPP_
+#ifndef BOTO_TARGET_HPP_
+#define BOTO_TARGET_HPP_
 
 #include <SDL.h>
 #include "State.hpp"
@@ -273,4 +273,4 @@ private:
 
 } // namespace boto
 
-#endif // DUI_TARGET_HPP_
+#endif // BOTO_TARGET_HPP_

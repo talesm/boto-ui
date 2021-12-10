@@ -1,5 +1,5 @@
-#ifndef DUI_DISPLAY_LIST_HPP
-#define DUI_DISPLAY_LIST_HPP
+#ifndef BOTO_DISPLAY_LIST_HPP
+#define BOTO_DISPLAY_LIST_HPP
 
 #include <vector>
 #include <SDL_rect.h>
@@ -153,4 +153,4 @@ DisplayList::render(SDL_Renderer* renderer) const
 
 } // namespace boto
 
-#endif // DUI_DISPLAY_LIST_HPP
+#endif // BOTO_DISPLAY_LIST_HPP

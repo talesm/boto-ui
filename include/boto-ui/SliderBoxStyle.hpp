@@ -1,5 +1,5 @@
-#ifndef DUI_SLIDERBOXSTYLE_HPP_
-#define DUI_SLIDERBOXSTYLE_HPP_
+#ifndef BOTO_SLIDERBOXSTYLE_HPP_
+#define BOTO_SLIDERBOXSTYLE_HPP_
 
 #include <SDL.h>
 #include "BoxStyle.hpp"
@@ -57,4 +57,4 @@ struct FromTheme<SliderBox, Theme>
 
 } // namespace boto
 
-#endif // DUI_SLIDERBOXSTYLE_HPP_
+#endif // BOTO_SLIDERBOXSTYLE_HPP_

@@ -1,5 +1,5 @@
-#ifndef DUI_THEME_HPP_
-#define DUI_THEME_HPP_
+#ifndef BOTO_THEME_HPP_
+#define BOTO_THEME_HPP_
 
 namespace boto {
 
@@ -8,8 +8,8 @@ namespace style {
 // Default theme
 struct SteelBlue;
 
-#ifndef DUI_THEME
-#define DUI_THEME boto::style::SteelBlue
+#ifndef BOTO_THEME
+#define BOTO_THEME boto::style::SteelBlue
 #endif
 
 template<class Element, class Theme>
@@ -23,7 +23,7 @@ struct DerivedTheme
 
 } // namespace style
 
-template<class Element, class Theme = DUI_THEME>
+template<class Element, class Theme = BOTO_THEME>
 constexpr auto
 themeFor()
 {
@@ -32,4 +32,4 @@ themeFor()
 
 } // namespace boto
 
-#endif // DUI_THEME_HPP_
+#endif // BOTO_THEME_HPP_

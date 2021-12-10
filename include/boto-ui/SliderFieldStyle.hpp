@@ -1,5 +1,5 @@
-#ifndef DUI_SLIDERFIELDSTYLE_HPP_
-#define DUI_SLIDERFIELDSTYLE_HPP_
+#ifndef BOTO_SLIDERFIELDSTYLE_HPP_
+#define BOTO_SLIDERFIELDSTYLE_HPP_
 
 #include <SDL.h>
 #include "LabelStyle.hpp"
@@ -32,4 +32,4 @@ struct FromTheme<SliderField, Theme>
 
 } // namespace boto
 
-#endif // DUI_SLIDERFIELDSTYLE_HPP_
+#endif // BOTO_SLIDERFIELDSTYLE_HPP_

@@ -1,5 +1,5 @@
-#ifndef DUI_STATE_HPP_
-#define DUI_STATE_HPP_
+#ifndef BOTO_STATE_HPP_
+#define BOTO_STATE_HPP_
 
 #include <string>
 #include <SDL.h>
@@ -406,4 +406,4 @@ State::event(SDL_Event& ev)
 }
 } // namespace boto
 
-#endif // DUI_STATE_HPP_
+#endif // BOTO_STATE_HPP_

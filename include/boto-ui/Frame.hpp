@@ -1,5 +1,5 @@
-#ifndef _DUI_FRAME_HPP
-#define _DUI_FRAME_HPP
+#ifndef _BOTO_FRAME_HPP
+#define _BOTO_FRAME_HPP
 
 #include "State.hpp"
 #include "Target.hpp"
@@ -88,4 +88,4 @@ Frame::end()
 
 } // namespace boto
 
-#endif // _DUI_FRAME_HPP
+#endif // _BOTO_FRAME_HPP

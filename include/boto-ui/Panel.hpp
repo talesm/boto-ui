@@ -1,5 +1,5 @@
-#ifndef DUI_PANEL_HPP_
-#define DUI_PANEL_HPP_
+#ifndef BOTO_PANEL_HPP_
+#define BOTO_PANEL_HPP_
 
 #include <string_view>
 #include "Element.hpp"
@@ -123,4 +123,4 @@ panel(Target target,
 }
 } // namespace boto
 
-#endif // DUI_PANEL_HPP_
+#endif // BOTO_PANEL_HPP_

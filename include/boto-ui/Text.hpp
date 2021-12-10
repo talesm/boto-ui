@@ -1,5 +1,5 @@
-#ifndef DUI_TEXT_HPP_
-#define DUI_TEXT_HPP_
+#ifndef BOTO_TEXT_HPP_
+#define BOTO_TEXT_HPP_
 
 #include <SDL.h>
 #include "Group.hpp"
@@ -94,4 +94,4 @@ text(Target target,
 }
 } // namespace boto
 
-#endif // DUI_TEXT_HPP_
+#endif // BOTO_TEXT_HPP_

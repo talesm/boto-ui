@@ -1,5 +1,5 @@
-#ifndef DUI_BUTTONSTYLE_HPP
-#define DUI_BUTTONSTYLE_HPP
+#ifndef BOTO_BUTTONSTYLE_HPP
+#define BOTO_BUTTONSTYLE_HPP
 
 #include <SDL.h>
 #include "ElementStyle.hpp"
@@ -80,4 +80,4 @@ struct FromTheme<ChoiceButton, Theme> : FromTheme<ButtonBase, Theme>
 } // namespace style
 } // namespace boto
 
-#endif // DUI_BUTTONSTYLE_HPP
+#endif // BOTO_BUTTONSTYLE_HPP

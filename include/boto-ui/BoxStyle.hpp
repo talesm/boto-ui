@@ -1,5 +1,5 @@
-#ifndef DUI_BOXSTYLE_HPP_
-#define DUI_BOXSTYLE_HPP_
+#ifndef BOTO_BOXSTYLE_HPP_
+#define BOTO_BOXSTYLE_HPP_
 
 #include <SDL.h>
 #include "EdgeSize.hpp"
@@ -99,4 +99,4 @@ struct FromTheme<Box, SteelBlue>
 } // namespace style
 } // namespace boto
 
-#endif // DUI_BOXSTYLE_HPP_
+#endif // BOTO_BOXSTYLE_HPP_

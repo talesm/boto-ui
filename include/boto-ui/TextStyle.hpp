@@ -1,5 +1,5 @@
-#ifndef DUI_TEXTSTYLE_HPP_
-#define DUI_TEXTSTYLE_HPP_
+#ifndef BOTO_TEXTSTYLE_HPP_
+#define BOTO_TEXTSTYLE_HPP_
 
 #include <SDL.h>
 #include "Font.hpp"
@@ -46,4 +46,4 @@ struct FromTheme<Text, Theme>
 }
 } // namespace boto
 
-#endif // DUI_TEXTSTYLE_HPP_
+#endif // BOTO_TEXTSTYLE_HPP_

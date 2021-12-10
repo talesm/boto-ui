@@ -1,5 +1,5 @@
-#ifndef DUI_SLIDERFIELD_HPP_
-#define DUI_SLIDERFIELD_HPP_
+#ifndef BOTO_SLIDERFIELD_HPP_
+#define BOTO_SLIDERFIELD_HPP_
 
 #include <algorithm>
 #include <SDL.h>
@@ -59,4 +59,4 @@ sliderField(Target target,
 }
 } // namespace boto
 
-#endif // DUI_SLIDERFIELD_HPP_
+#endif // BOTO_SLIDERFIELD_HPP_

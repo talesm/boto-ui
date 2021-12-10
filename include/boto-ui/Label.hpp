@@ -1,5 +1,5 @@
-#ifndef DUI_LABEL_HPP_
-#define DUI_LABEL_HPP_
+#ifndef BOTO_LABEL_HPP_
+#define BOTO_LABEL_HPP_
 
 #include <string_view>
 #include "EdgeSize.hpp"
@@ -61,4 +61,4 @@ centeredLabel(Target target,
 }
 } // namespace boto
 
-#endif // DUI_LABEL_HPP_
+#endif // BOTO_LABEL_HPP_
