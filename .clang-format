@@ -10,6 +10,7 @@ IncludeCategories:
     Priority: 2
   - Regex: '.*'
     Priority: 3
+IndentCaseLabels: false
 # Not specified here but important Naming Conventions ((!) means divergence from Mozilla):
 #
 # - Classes, functions and methods use CamelCase (as AsThis);
@@ -24,5 +25,5 @@ IncludeCategories:
 # - (!) Constants and enum member must be ALL_CAPS.
 #
 # File names that contains a main class must be named after that class, using the exact same CamelCase.
-# Other files should start with lower case. Anything else is valid. 
+# Other files should start with lower case. Anything else is valid.
 # Unit test should be named after the tested class, with a "Test" suffix
