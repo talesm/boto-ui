@@ -47,7 +47,6 @@ class State
   bool inFrame = false;
   SDL_Renderer* renderer;
   DisplayList dList;
-  int lastMaxZIndex = 0;
 
   SDL_Point mPos;
   bool mLeftPressed = false;
@@ -68,17 +67,13 @@ class State
   Uint32 ticksCount;
 
   Font font;
-  int width = 0;
-  int height = 0;
 
 public:
   /// Ctor
   State(SDL_Renderer* renderer)
     : renderer(renderer)
     , font(loadDefaultFont(renderer))
-  {
-    SDL_GetRendererOutputSize(renderer, &width, &height);
-  }
+  {}
 
   /**
    * @brief Render the ui
@@ -204,18 +199,12 @@ public:
   void endGroup(std::string_view id, const SDL_Rect& r);
   const Font& getFont() const { return font; }
   void setFont(const Font& f) { font = f; }
-  void pushLayer() { dList.incZ(); }
-  void popLayer() { dList.decZ(); }
-
-  int getWidth() { return width; }
-  int getHeight() { return height; }
 
 private:
   void beginFrame()
   {
     SDL_assert(inFrame == false);
     inFrame = true;
-    lastMaxZIndex = dList.getMaxZIndex();
     dList.clear();
     mHovering = false;
     ticksCount = SDL_GetTicks();
@@ -258,7 +247,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
 {
   SDL_assert(inFrame);
   if (eGrabbed.empty()) {
-    if (!mLeftPressed || dList.getZIndex() < lastMaxZIndex) {
+    if (!mLeftPressed) {
       return MouseAction::NONE;
     }
     if (SDL_PointInRect(&mPos, &r) && !mGrabbing) {

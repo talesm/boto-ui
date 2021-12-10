@@ -11,7 +11,6 @@ namespace dui {
 class Scrollable : public Targetable<Scrollable>
 {
   ScrollableStyle style;
-  Group decoration;
   Wrapper<Group> wrapper;
   SDL_Point* scrollOffset;
 
@@ -23,8 +22,9 @@ public:
              const SDL_Rect& r,
              const ScrollableStyle& style)
     : style(style)
-    , decoration(group(parent, id, r, Layout::NONE))
-    , wrapper(decoration,
+    , wrapper(parent,
+              id,
+              r,
               evalPadding(style),
               [=](auto t, auto r) {
                 return offsetGroup(t, "client", *scrollOffset, r, style);
@@ -32,21 +32,10 @@ public:
     , scrollOffset(scrollOffset)
   {}
   /// Move ctor
-  Scrollable(Scrollable&& rhs)
-    : style(rhs.style)
-    , decoration(std::move(rhs.decoration))
-    , wrapper(std::move(rhs.wrapper), decoration)
-    , scrollOffset(rhs.scrollOffset)
-  {}
+  Scrollable(Scrollable&&) = default;
 
   /// Move assign operator
-  Scrollable& operator=(const Scrollable&) = delete;
-  Scrollable& operator=(Scrollable&& rhs)
-  {
-    this->~Scrollable();
-    new (this) Scrollable(std::move(rhs));
-    return *this;
-  }
+  Scrollable& operator=(Scrollable&&) = default;
 
   ~Scrollable()
   {
@@ -58,44 +47,40 @@ public:
   /// Finished the group
   void end()
   {
-    SDL_Point clientSize{wrapper.width(), wrapper.height()};
-    SDL_Point decorationSize{wrapper.end()};
-    auto rect = decoration.getRect();
-    if (rect.w > 0) {
-      decorationSize.x = rect.w;
+    SDL_Point clientSize{0}; //{wrapper.width(), wrapper.height()};
+    {
+      Target client{wrapper};
+      clientSize = {client.contentWidth(), client.contentHeight()};
     }
-    if (rect.h > 0) {
-      decorationSize.y = rect.h;
-    }
-
+    SDL_Point wrapperSize = wrapper.endClient();
     auto padding = evalPadding(style);
     if (padding.right > 0) {
-      sliderBoxV(decoration,
+      sliderBoxV(wrapper,
                  "vertical",
                  &scrollOffset->y,
                  0,
                  clientSize.y,
                  {
-                   decorationSize.x - padding.right,
+                   wrapperSize.x - padding.right,
                    0,
                    padding.right,
-                   decorationSize.y,
+                   wrapperSize.y,
                  });
     }
     if (padding.bottom > 0) {
-      sliderBox(decoration,
+      sliderBox(wrapper,
                 "horizontal",
                 &scrollOffset->x,
                 0,
                 clientSize.x,
                 {
                   0,
-                  decorationSize.y - padding.bottom,
-                  decorationSize.x - padding.right,
+                  wrapperSize.y - padding.bottom,
+                  wrapperSize.x - padding.right,
                   padding.bottom,
                 });
     }
-    decoration.end();
+    wrapper.end();
   }
 
   /// Return true if it can accept elements

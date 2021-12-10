@@ -1,26 +1,25 @@
 TODO
 ====
 
-Pop Ups! (0.4)
---------------
+scRollers (0.3)
+---------------
 
-- [ ] selectable
-- [ ] listBox
-- [ ] modal
-- [ ] dropdown
-- [ ] comboBox
-- [ ] menus
-- [ ] treeNode
-- [ ] dialog
-- [ ] messageBox
+- [x] Auto ending groups;
+- [x] Organize source files into include;
+- [x] sliderBox (derived from slider);
+- [x] Vertical sliderBox;
+- [x] offsetGroup;
+- [x] Scrollable;
+- [x] Template WrapperGroup;
+- [x] ScrollablePanel;
+- [x] Make Scrollable and Panel fill all available space
+- [x] Window;
+- [x] Group element spacing should be customizable;
+- [x] Generate doxygen
 
 Wishlist
 --------
 
-- [ ] Make style more easy to handle
-- [ ] fileDialog
-- [ ] colorInput
-- [ ] colorDialog
 - [ ] Allow some sort of cache on State
 - [ ] textArea;
 - [ ] generic numberField;
@@ -32,10 +31,23 @@ Wishlist
 - [ ] section
 - [ ] checkBox
 - [ ] radioBox
+- [ ] selectable
+- [ ] treeNode
 - [ ] vector numeric input
+- [ ] listBox
+- [ ] dropdown
+- [ ] modal
+- [ ] comboBox
+- [ ] menus
 - [ ] Keyboard navigation
 - [ ] Joystick navigation
 - [ ] Explicit activation
+- [ ] dialog
+- [ ] messageBox
+- [ ] inputBox
+- [ ] fileDialog
+- [ ] colorInput
+- [ ] colorDialog
 - [ ] graphs
 - [ ] drag & drop
 - [ ] multiple mouse buttons

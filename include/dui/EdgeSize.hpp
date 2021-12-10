@@ -48,17 +48,8 @@ elementSize(const EdgeSize& edge, const SDL_Point& client = {0})
 constexpr SDL_Point
 clientSize(const EdgeSize& edge, const SDL_Point& element)
 {
-  auto width = edge.left + edge.right;
-  auto height = edge.top + edge.bottom;
-  return {element.x > width ? element.x - width : 0,
-          element.y > height ? element.y - height : 0};
-}
-
-static constexpr SDL_Rect
-clientRect(const EdgeSize& edge, const SDL_Rect& element)
-{
-  auto sz = clientSize(edge, {element.w, element.h});
-  return {edge.left, edge.top, sz.x, sz.y};
+  return {element.x - edge.left - edge.right,
+          element.y - edge.top - edge.bottom};
 }
 } // namespace dui
 

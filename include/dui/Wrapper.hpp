@@ -13,60 +13,91 @@ class Wrapper : public Targetable<Wrapper<CLIENT>>
   using ClientInitializer = std::function<CLIENT(Target, const SDL_Rect&)>;
   EdgeSize padding;
   ClientInitializer initializer;
+  Group decoration;
   CLIENT client;
-  bool valid = false;
+  bool onClient = false;
   bool autoW;
   bool autoH;
 
-public:
-  Wrapper(Target parent, const EdgeSize& padding, ClientInitializer initializer)
-    : padding(padding)
-    , initializer(std::move(initializer))
-    , client(this->initializer(parent, clientRect(padding, parent.getRect())))
-    , autoW(parent.getRect().w == 0)
-    , autoH(parent.getRect().h == 0)
+  static constexpr SDL_Rect paddedSize(const SDL_Rect& rect,
+                                       const EdgeSize& padding)
   {
-    valid = true;
+    int pw = padding.left + padding.right;
+    int dw = rect.w > pw ? pw : 0;
+    int ph = padding.top + padding.bottom;
+    int dh = rect.h > ph ? ph : 0;
+    return {padding.left, padding.top, rect.w - dw, rect.h - dh};
+  }
+
+public:
+  Wrapper(Target parent,
+          std::string_view id,
+          const SDL_Rect& rect,
+          const EdgeSize& padding,
+          ClientInitializer initializer)
+    : padding(padding)
+    , initializer(initializer)
+    , decoration(parent, id, {0}, rect, {0, Layout::NONE})
+    , client(this->initializer(decoration, paddedSize(rect, padding)))
+    , autoW(rect.w == 0)
+    , autoH(rect.h == 0)
+  {
+    onClient = true;
   }
   Wrapper(const Wrapper&) = delete;
-  Wrapper(Wrapper&&) = delete;
-
-  Wrapper(Wrapper&& rhs, Target parent)
+  Wrapper(Wrapper&& rhs)
     : padding(rhs.padding)
     , initializer(rhs.initializer)
-    , client(initializer(parent, clientRect(padding, parent.getRect())))
-    , valid(rhs.valid)
+    , decoration(std::move(rhs.decoration))
+    , client(initializer(decoration, paddedSize(decoration.getRect(), padding)))
+    , onClient(rhs.onClient)
     , autoW(rhs.autoW)
     , autoH(rhs.autoH)
   {
-    rhs.valid = false;
+    rhs.onClient = false;
   }
   Wrapper& operator=(const Wrapper& rhs) = delete;
-  Wrapper& operator=(Wrapper&& rhs) = delete;
+  Wrapper& operator=(Wrapper&& rhs)
+  {
+    this->~Wrapper();
+    new (this) Wrapper(std::move(rhs));
+    return *this;
+  }
 
   ~Wrapper()
   {
-    if (valid) {
+    SDL_assert(!onClient);
+    if (decoration) {
       end();
     }
   }
 
-  operator Target() & { return client; }
-  operator bool() const { return valid && bool(client); }
+  operator Target() & { return onClient ? Target{client} : Target{decoration}; }
+  operator bool() const { return onClient || bool(decoration); }
 
-  SDL_Point end();
+  SDL_Point endClient();
+
+  void end()
+  {
+    SDL_assert(!onClient);
+    decoration.end();
+  }
 };
 
 template<class CLIENT>
 inline SDL_Point
-Wrapper<CLIENT>::end()
+Wrapper<CLIENT>::endClient()
 {
-  SDL_assert(valid);
-  SDL_Point sz{client.width() + padding.left + padding.right,
-               client.height() + padding.top + padding.bottom};
+  SDL_assert(onClient);
+  if (autoW) {
+    decoration.setWidth(client.width() + padding.left + padding.right);
+  }
+  if (autoH) {
+    decoration.setHeight(client.height() + padding.top + padding.bottom);
+  }
   client.end();
-  valid = false;
-  return sz;
+  onClient = false;
+  return {decoration.width(), decoration.height()};
 }
 
 } // namespace dui

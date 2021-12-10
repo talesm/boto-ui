@@ -1,4 +1,5 @@
 build/
 .vscode/
 docs/html/
+scratch/
 imgui.ini

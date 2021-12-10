@@ -2,7 +2,6 @@
 #define DUI_HPP_
 
 #include "Button.hpp"
-#include "Dialogs.hpp"
 #include "DisplayList.hpp"
 #include "Element.hpp"
 #include "Font.hpp"
@@ -11,7 +10,6 @@
 #include "InputBox.hpp"
 #include "InputField.hpp"
 #include "Label.hpp"
-#include "Layer.hpp"
 #include "Panel.hpp"
 #include "Scrollable.hpp"
 #include "SliderBox.hpp"

@@ -5,7 +5,6 @@
 #include "EdgeSize.hpp"
 #include "Element.hpp"
 #include "Group.hpp"
-#include "LabelStyle.hpp"
 
 namespace dui {
 
