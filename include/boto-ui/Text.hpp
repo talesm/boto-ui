@@ -53,7 +53,7 @@ character(Target target,
                    (ch / font.cols) * font.charH,
                    font.charW,
                    font.charH};
-  state.display(Shape::Texture(dstRect, font.texture, srcRect, style.color));
+  state.display(dstRect, font.texture, srcRect, style.color);
 }
 
 /**
@@ -88,7 +88,7 @@ text(Target target,
                      (ch / font.cols) * font.charH,
                      font.charW,
                      font.charH};
-    state.display(Shape::Texture(dstRect, font.texture, srcRect, style.color));
+    state.display(dstRect, font.texture, srcRect, style.color);
     dstRect.x += dstRect.w;
   }
 }

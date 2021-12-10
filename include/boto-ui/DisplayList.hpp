@@ -28,13 +28,13 @@ struct Shape
   }
   static Shape Texture(const SDL_Rect& r,
                        SDL_Texture* texture,
-                       SDL_Rect& srcRect)
+                       const SDL_Rect& srcRect)
   {
     return {texture, r, srcRect, {255, 255, 255, 255}};
   }
   static Shape Texture(const SDL_Rect& r,
                        SDL_Texture* texture,
-                       SDL_Rect& srcRect,
+                       const SDL_Rect& srcRect,
                        SDL_Color c)
   {
     return {texture, r, srcRect, c};

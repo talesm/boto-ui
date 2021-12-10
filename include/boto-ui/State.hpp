@@ -189,7 +189,21 @@ public:
    *
    * @param item
    */
-  void display(const Shape& item) { dList.insert(item); }
+  void display(const SDL_Rect& r, SDL_Color c)
+  {
+    dList.insert(Shape::Box(r, c));
+  }
+  void display(const SDL_Rect& r, SDL_Texture* texture, const SDL_Rect& srcRect)
+  {
+    dList.insert(Shape::Texture(r, texture, srcRect));
+  }
+  void display(const SDL_Rect& r,
+               SDL_Texture* texture,
+               const SDL_Rect& srcRect,
+               SDL_Color c)
+  {
+    dList.insert(Shape::Texture(r, texture, srcRect, c));
+  }
 
   /// Ticks count
   Uint32 ticks() const { return ticksCount; }

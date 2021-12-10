@@ -27,7 +27,7 @@ colorBox(Target target, SDL_Rect rect, SDL_Color c)
   target.advance({rect.x + rect.w, rect.y + rect.h});
   rect.x += caret.x;
   rect.y += caret.y;
-  state.display(Shape::Box(rect, c));
+  state.display(rect, c);
 }
 
 /**
@@ -48,7 +48,7 @@ textureBox(Target target, SDL_Texture* texture, SDL_Rect rect)
   target.advance({rect.x + rect.w, rect.y + rect.h});
   rect.x += caret.x;
   rect.y += caret.y;
-  state.display(Shape::Texture(rect, texture));
+  state.display(rect, texture, {0, 0, rect.w, rect.h});
 }
 
 /**
