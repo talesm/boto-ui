@@ -22,7 +22,7 @@ The goal is review and reorganize the code and make it more consistent with its 
 - [ ] Move nextPos, nextSize and etc to the targetStack
 - [ ] Move styling utils to targetStack (nextStyle, nextColor, etc)
 - [ ] Simplify target to use a functor to decide how to advance
-- [ ] Refactor Style hierarchy with 4 fundamental Style concepts (Box, Text, Element and Control) and the respectives render* functions to them
+- [ ] Refactor Style hierarchy with 4 fundamental Style concepts (Box, Text, Element and Control) and the respective render* functions to them
   - [ ] Add basic state awareness on the get/set: HOVER, GRABBING, FOCUSING.
 - [ ] Move current main back to a branch
 - [ ] Except for frame, remove ability of manual ending(), forcing RAII. No more necessary to allow moving them too.
