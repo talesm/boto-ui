@@ -1,10 +1,11 @@
-#ifndef BOTO_CORE_DISPLAY_LIST_ITEM
-#define BOTO_CORE_DISPLAY_LIST_ITEM
+#ifndef BOTO_CORE_DISPLAYLIST_HPP
+#define BOTO_CORE_DISPLAYLIST_HPP
 
 #include <vector>
 #include <SDL_blendmode.h>
 #include <SDL_pixels.h>
 #include <SDL_rect.h>
+#include "util/CookieBase.hpp"
 
 struct SDL_Texture;
 typedef struct SDL_Texture SDL_Texture;
@@ -33,6 +34,11 @@ class DisplayList
 private:
   std::vector<SDL_Rect> clipRects;
   std::vector<DisplayListItem> items;
+
+  struct UnClipper
+  {
+    void operator()(DisplayList* dList) const { dList->unClip(); }
+  };
 
 public:
   void clear()
@@ -72,31 +78,7 @@ public:
     push(rect, color, mode, nullptr, {0});
   }
 
-  class Clip
-  {
-    DisplayList* dList;
-
-    Clip(DisplayList* dList)
-      : dList(dList)
-    {}
-
-  public:
-    Clip(const Clip&) = delete;
-    Clip(Clip&& c)
-      : dList(c.dList)
-    {
-      c.dList = nullptr;
-    }
-    ~Clip()
-    {
-      if (dList)
-        dList->unClip();
-    }
-
-    operator bool() const { return true; }
-
-    friend class DisplayList;
-  };
+  using Clip = CookieBase<DisplayList, UnClipper>;
 
   Clip clip(const SDL_Rect& clip)
   {
@@ -124,4 +106,4 @@ private:
 
 } // namespace boto
 
-#endif // BOTO_CORE_DISPLAY_LIST_ITEM
+#endif // BOTO_CORE_DISPLAYLIST_HPP
