@@ -43,10 +43,14 @@ struct EventTarget
 class EventDispatcher
 {
   SDL_Point pointerPos;
+  bool hadHover;
 
 public:
   // Event triggers
   void movePointer(const SDL_Point& pos) { pointerPos = pos; }
+
+  /// Reset flags (call once per turn)
+  void reset() { hadHover = false; }
 
   EventTarget check(RequestEvent ev, const SDL_Rect& rect)
   {
@@ -55,8 +59,9 @@ public:
       goto END;
     }
 
-    if (SDL_PointInRect(&pointerPos, &rect)) {
+    if (!hadHover && SDL_PointInRect(&pointerPos, &rect)) {
       status |= STATUS_HOVERED;
+      hadHover = true;
     }
   END:
     return {status};
