@@ -39,7 +39,14 @@ class EventDispatcher
 {
   SDL_Point pointerPos;
   bool hadHover;
-  std::vector<SDL_Rect> elementRects;
+
+  struct TargetState
+  {
+    SDL_Rect rect;
+    uint16_t status;
+  };
+
+  std::vector<TargetState> elementRects;
 
   struct EventTargetUnStack
   {
@@ -71,9 +78,8 @@ public:
   EventTarget check(RequestEvent ev, SDL_Rect rect)
   {
     if (!elementRects.empty()) {
-      SDL_IntersectRect(&elementRects.back(), &rect, &rect);
+      SDL_IntersectRect(&elementRects.back().rect, &rect, &rect);
     }
-    elementRects.push_back(rect);
 
     uint16_t status = 0;
     if (ev == RequestEvent::NONE) {
@@ -86,6 +92,7 @@ public:
       hadHover = true;
     }
   END:
+    elementRects.emplace_back(TargetState{rect, status});
     return {this, rect, status};
   }
 
