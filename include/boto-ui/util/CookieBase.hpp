@@ -24,7 +24,7 @@ protected:
     : component(component)
   {}
 
-  Component* get() { return component.get(); }
+  Component* get() const { return component.get(); }
 
 public:
   constexpr CookieBase() = default;

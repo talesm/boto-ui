@@ -46,7 +46,7 @@ class EventDispatcher
   SDL_Point pointerPos;
   bool hadHover;
 
-  std::vector<TargetState> elementRects;
+  std::vector<TargetState> elementStack;
 
   struct EventTargetUnStack
   {
@@ -62,26 +62,32 @@ public:
 
   using Cookie = CookieBase<EventDispatcher, EventTargetUnStack>;
 
-  struct EventTarget : CookieBase<EventDispatcher, EventTargetUnStack>
+  class EventTarget : public CookieBase<EventDispatcher, EventTargetUnStack>
   {
-    SDL_Rect rect_;
-    uint16_t status_;
+    size_t index;
 
-    EventTarget() = default;
-    EventTarget(EventDispatcher* c, const SDL_Rect r, uint16_t status)
+    EventTarget(EventDispatcher* c, size_t index)
       : CookieBase(c)
-      , rect_(r)
-      , status_(status)
+      , index(index)
     {}
 
-    uint16_t status() const { return status_; }
-    const SDL_Rect& rect() const { return rect_; }
+    friend class EventDispatcher;
+
+  public:
+    EventTarget() = default;
+
+    const TargetState& state() const { return get()->elementStack[index]; }
+    TargetState& state() { return get()->elementStack[index]; }
+
+    uint16_t status() const { return state().status; }
+
+    const SDL_Rect& rect() const { return state().rect; }
   };
 
   EventTarget check(RequestEvent ev, SDL_Rect rect)
   {
-    if (!elementRects.empty()) {
-      SDL_IntersectRect(&elementRects.back().rect, &rect, &rect);
+    if (!elementStack.empty()) {
+      SDL_IntersectRect(&elementStack.back().rect, &rect, &rect);
     }
 
     uint16_t status = 0;
@@ -95,12 +101,13 @@ public:
       hadHover = true;
     }
   END:
-    elementRects.emplace_back(TargetState{rect, status});
-    return {this, rect, status};
+    auto index = elementStack.size();
+    elementStack.emplace_back(TargetState{rect, status});
+    return {this, index};
   }
 
 private:
-  void endCheck() { elementRects.pop_back(); }
+  void endCheck() { elementStack.pop_back(); }
 };
 
 using EventTarget = EventDispatcher::EventTarget;
