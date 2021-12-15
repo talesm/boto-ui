@@ -19,9 +19,12 @@ private:
 
   friend Component;
 
+protected:
   CookieBase(Component* component)
     : component(component)
   {}
+
+  Component* get() { return component.get(); }
 
 public:
   constexpr CookieBase() = default;
