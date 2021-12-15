@@ -3,6 +3,7 @@
 
 #include <string>
 #include <string_view>
+#include <vector>
 #include <SDL_keycode.h>
 #include <SDL_rect.h>
 #include "util/CookieBase.hpp"
@@ -34,16 +35,16 @@ enum class RequestEvent
   HOVER,
 };
 
-struct EventTarget
-{
-  uint16_t status;
-  bool isPointerOver() const { return status & STATUS_HOVERED; }
-};
-
 class EventDispatcher
 {
   SDL_Point pointerPos;
   bool hadHover;
+  std::vector<SDL_Rect> elementRects;
+
+  struct EventTargetUnStack
+  {
+    void operator()(EventDispatcher* dispatcher) { dispatcher->endCheck(); }
+  };
 
 public:
   // Event triggers
@@ -52,21 +53,47 @@ public:
   /// Reset flags (call once per turn)
   void reset() { hadHover = false; }
 
-  EventTarget check(RequestEvent ev, const SDL_Rect& rect)
+  using Cookie = CookieBase<EventDispatcher, EventTargetUnStack>;
+
+  struct EventTarget : CookieBase<EventDispatcher, EventTargetUnStack>
   {
+    SDL_Rect rect;
+    uint16_t status;
+
+    EventTarget() = default;
+    EventTarget(EventDispatcher* c, const SDL_Rect r, uint16_t status)
+      : CookieBase(c)
+      , rect(r)
+      , status(status)
+    {}
+  };
+
+  EventTarget check(RequestEvent ev, SDL_Rect rect)
+  {
+    if (!elementRects.empty()) {
+      SDL_IntersectRect(&elementRects.back(), &rect, &rect);
+    }
+    elementRects.push_back(rect);
+
     uint16_t status = 0;
     if (ev == RequestEvent::NONE) {
       goto END;
     }
 
+    // Check hovering
     if (!hadHover && SDL_PointInRect(&pointerPos, &rect)) {
       status |= STATUS_HOVERED;
       hadHover = true;
     }
   END:
-    return {status};
+    return {this, rect, status};
   }
+
+private:
+  void endCheck() { elementRects.pop_back(); }
 };
+
+using EventTarget = EventDispatcher::EventTarget;
 
 } // namespace boto
 
