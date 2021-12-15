@@ -10,7 +10,11 @@
 
 namespace boto {
 
-enum ElementStatus : uint16_t
+/**
+ * @brief The current element state
+ *
+ */
+enum Status : uint16_t
 {
   STATUS_NONE = 0,
   STATUS_HOVERED = 1,
@@ -18,7 +22,11 @@ enum ElementStatus : uint16_t
   STATUS_FOCUSED = 4,
   STATUS_INPUTING = 8,
 };
-enum class ElementEvent : uint16_t
+/**
+ * @brief The event the element is receiving
+ *
+ */
+enum class Event : uint16_t
 {
   NONE,
   FOCUS_GAINED,
@@ -29,28 +37,43 @@ enum class ElementEvent : uint16_t
   BACKSPACE,
 };
 
+/**
+ * @brief The events an element will accept
+ *
+ */
 enum class RequestEvent
 {
   NONE,
   HOVER,
 };
 
-struct TargetState
+/**
+ * @brief The state of an event target
+ *
+ */
+struct EventTargetState
 {
-  SDL_Rect rect;
-  uint16_t status;
+  SDL_Rect rect;   ///< @brief The event target area (absolute)
+  uint16_t status; ///< @brief the event target status
 };
 
+/**
+ * @brief Component responsible to handle and dispatch events for the UI
+ *
+ */
 class EventDispatcher
 {
   SDL_Point pointerPos;
   bool hadHover;
 
-  std::vector<TargetState> elementStack;
+  std::vector<EventTargetState> elementStack;
 
   struct EventTargetUnStack
   {
-    void operator()(EventDispatcher* dispatcher) { dispatcher->endCheck(); }
+    void operator()(EventDispatcher* dispatcher)
+    {
+      dispatcher->elementStack.pop_back();
+    }
   };
 
 public:
@@ -60,8 +83,10 @@ public:
   /// Reset flags (call once per turn)
   void reset() { hadHover = false; }
 
-  using Cookie = CookieBase<EventDispatcher, EventTargetUnStack>;
-
+  /**
+   * @brief An element able to receive events
+   *
+   */
   class EventTarget : public CookieBase<EventDispatcher, EventTargetUnStack>
   {
     size_t index;
@@ -76,14 +101,21 @@ public:
   public:
     EventTarget() = default;
 
-    const TargetState& state() const { return get()->elementStack[index]; }
-    TargetState& state() { return get()->elementStack[index]; }
+    const EventTargetState& state() const { return get()->elementStack[index]; }
+    EventTargetState& state() { return get()->elementStack[index]; }
 
     uint16_t status() const { return state().status; }
 
     const SDL_Rect& rect() const { return state().rect; }
   };
 
+  /**
+   * @brief Check events for the specified element
+   *
+   * @param ev events you accept. Events after it will be ignored
+   * @param rect the area occupied by the element (absolute)
+   * @return EventTarget
+   */
   EventTarget check(RequestEvent ev, SDL_Rect rect)
   {
     if (!elementStack.empty()) {
@@ -102,12 +134,9 @@ public:
     }
   END:
     auto index = elementStack.size();
-    elementStack.emplace_back(TargetState{rect, status});
+    elementStack.emplace_back(EventTargetState{rect, status});
     return {this, index};
   }
-
-private:
-  void endCheck() { elementStack.pop_back(); }
 };
 
 using EventTarget = EventDispatcher::EventTarget;
