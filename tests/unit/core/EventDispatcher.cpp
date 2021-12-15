@@ -9,13 +9,13 @@ TEST_CASE("EventDispatcher hover handling", "[event-dispatcher]")
   dispatcher.movePointer({0, 0});
 
   dispatcher.reset();
-  REQUIRE_FALSE(dispatcher.check(RequestEvent::NONE, {0, 0, 2, 2}).status &
+  REQUIRE_FALSE(dispatcher.check(RequestEvent::NONE, {0, 0, 2, 2}).status() &
                 STATUS_HOVERED);
   dispatcher.reset();
-  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status &
+  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
           STATUS_HOVERED);
   dispatcher.reset();
-  REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {1, 1, 2, 2}).status &
+  REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {1, 1, 2, 2}).status() &
                 STATUS_HOVERED);
   dispatcher.reset();
 }
@@ -27,12 +27,12 @@ TEST_CASE("EventDispatcher hovers only one element per turn",
   dispatcher.movePointer({0, 0});
 
   dispatcher.reset();
-  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status &
+  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
           STATUS_HOVERED);
-  REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status &
+  REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
                 STATUS_HOVERED);
   dispatcher.reset();
-  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status &
+  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
           STATUS_HOVERED);
 }
 
@@ -52,11 +52,11 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
   SECTION("sub EventTarget is intersected by super target")
   {
     if (auto target = dispatcher.check(RequestEvent::NONE, {0, 0, 2, 2})) {
-      REQUIRE(target.rect == SDL_Rect{0, 0, 2, 2});
-      REQUIRE(dispatcher.check(RequestEvent::NONE, {1, 1, 3, 3}).rect ==
+      REQUIRE(target.rect() == SDL_Rect{0, 0, 2, 2});
+      REQUIRE(dispatcher.check(RequestEvent::NONE, {1, 1, 3, 3}).rect() ==
               SDL_Rect{1, 1, 1, 1});
     }
-    REQUIRE(dispatcher.check(RequestEvent::NONE, {1, 1, 3, 3}).rect ==
+    REQUIRE(dispatcher.check(RequestEvent::NONE, {1, 1, 3, 3}).rect() ==
             SDL_Rect{1, 1, 3, 3});
   }
 }

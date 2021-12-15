@@ -35,16 +35,16 @@ enum class RequestEvent
   HOVER,
 };
 
+struct TargetState
+{
+  SDL_Rect rect;
+  uint16_t status;
+};
+
 class EventDispatcher
 {
   SDL_Point pointerPos;
   bool hadHover;
-
-  struct TargetState
-  {
-    SDL_Rect rect;
-    uint16_t status;
-  };
 
   std::vector<TargetState> elementRects;
 
@@ -64,15 +64,18 @@ public:
 
   struct EventTarget : CookieBase<EventDispatcher, EventTargetUnStack>
   {
-    SDL_Rect rect;
-    uint16_t status;
+    SDL_Rect rect_;
+    uint16_t status_;
 
     EventTarget() = default;
     EventTarget(EventDispatcher* c, const SDL_Rect r, uint16_t status)
       : CookieBase(c)
-      , rect(r)
-      , status(status)
+      , rect_(r)
+      , status_(status)
     {}
+
+    uint16_t status() const { return status_; }
+    const SDL_Rect& rect() const { return rect_; }
   };
 
   EventTarget check(RequestEvent ev, SDL_Rect rect)
