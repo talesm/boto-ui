@@ -48,6 +48,6 @@ add_library(botoui-tests
 target_include_directories(botoui-tests INTERFACE tests/unit/)
 target_link_libraries(botoui-tests PUBLIC botoui)
 add_executable(botoui-tests-core
-  tests/unit/core/DisplayListTest.cpp
+  tests/unit/core/DisplayList.cpp
 )
 target_link_libraries(botoui-tests-core botoui-tests)
