@@ -68,12 +68,17 @@ class EventDispatcher
 
   std::vector<EventTargetState> elementStack;
 
+  void popTarget()
+  {
+    if (elementStack.back().status & STATUS_HOVERED) {
+      hadHover = true;
+    }
+    elementStack.pop_back();
+  }
+
   struct EventTargetUnStack
   {
-    void operator()(EventDispatcher* dispatcher)
-    {
-      dispatcher->elementStack.pop_back();
-    }
+    void operator()(EventDispatcher* dispatcher) { dispatcher->popTarget(); }
   };
 
 public:
@@ -130,7 +135,6 @@ public:
     // Check hovering
     if (!hadHover && SDL_PointInRect(&pointerPos, &rect)) {
       status |= STATUS_HOVERED;
-      hadHover = true;
     }
   END:
     auto index = elementStack.size();

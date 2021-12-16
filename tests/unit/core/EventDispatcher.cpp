@@ -59,4 +59,15 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
     REQUIRE(dispatcher.check(RequestEvent::NONE, {1, 1, 3, 3}).rect() ==
             SDL_Rect{1, 1, 3, 3});
   }
+
+  SECTION("sub target can be hovered")
+  {
+    if (auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2})) {
+      REQUIRE(target.status() & STATUS_HOVERED);
+      REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
+              STATUS_HOVERED);
+    }
+    REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
+                  STATUS_HOVERED);
+  }
 }
