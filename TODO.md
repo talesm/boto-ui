@@ -9,27 +9,21 @@ The goal is review and reorganize the code and make it more consistent with its 
 - [x] Rename project
 - [x] Add unit test configuration
 - [x] Unify DisplayList::Command and Shape into DisplayItem and DisplayAction
-  - [x] Instead of SHAPE, we have the options SET_CLIP, COLOR_RECT, TEX_RECT
-  - [x] Resolve PUSH and POP while still receiving commands
 - [x] Refactor DisplayList so it delegates the rendering to a visitor
-- [x] Wrap push and pop clip into a Proper guard type
-- [ ] When frame is created it sets a thread_local where the current target resides.
-  - [ ] All new targets are going to be stacked there;
-  - [ ] The group targets receive cookies that allow popping them
-  - [ ] Remove Target parameter from all elements, use stack instead
-  - [ ] This stack has two methods: element() and group(), that are related, as they wrap the interaction with Parent, with events and with the State.
+- [x] Wrap push and pop clip into a Proper guard type;
+- [ ] Move event related stuff to new core class EventDispatcher;
+- [ ] When frame is created it sets a thread_local where the current target resides
 - [ ] Move nextPos, nextSize and etc to the targetStack
 - [ ] Move styling utils to targetStack (nextStyle, nextColor, etc)
 - [ ] Simplify target to use a functor to decide how to advance
 - [ ] Refactor Style hierarchy with 4 fundamental Style concepts (Box, Text, Element and Control) and the respective render* functions to them
-  - [ ] Add basic state awareness on the get/set: HOVER, GRABBING, FOCUSING.
-- [ ] Move current main back to a branch
-- [ ] Except for frame, remove ability of manual ending(), forcing RAII. No more necessary to allow moving them too.
-- [ ] Dynamic Styles (stretch)
+- [x] Move current main back to a branch;
+- [ ] Group source files into subdirectories;
 
 Wishlist
 --------
 
+- [ ] Dynamic Styles
 - [ ] Persistent elements (conventional UI)
 - [ ] selectable
 - [ ] listBox
