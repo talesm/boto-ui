@@ -90,6 +90,15 @@ public:
     pointerPressed = pointerReleased = 0;
   }
 
+  // Accessors
+  const SDL_Point pointerPosition() const { return pointerPos; }
+  bool isPointerPressed(unsigned button) const
+  {
+    SDL_assert(button < 32);
+    // Equals is used because multiple buttons was buggy
+    return !pointerReleased && pointerPressed == unsigned(1 << button);
+  }
+
   /**
    * @brief An element able to receive events
    *
