@@ -133,17 +133,15 @@ private:
     elementStack.pop_back();
   }
 
-  uint16_t processHover(RequestEvent req,
-                        const SDL_Rect& rect,
-                        std::string_view id,
-                        Event& event);
+  uint16_t checkHover(RequestEvent req,
+                      const SDL_Rect& rect,
+                      std::string_view id,
+                      Event& event);
 
-  uint16_t processAction(RequestEvent req,
-                         const SDL_Rect& rect,
-                         std::string_view id,
-                         Event& event);
+  uint16_t checkGrabOver(RequestEvent req, std::string_view id, Event& event);
+  uint16_t checkGrabOut(RequestEvent req, std::string_view id, Event& event);
 
-  uint16_t processFocus(RequestEvent req, std::string_view id, Event& event);
+  uint16_t checkFocus(RequestEvent req, std::string_view id, Event& event);
   uint16_t gainFocus(RequestEvent req, std::string_view id, Event& event);
 };
 
@@ -185,43 +183,33 @@ EventDispatcher::check(RequestEvent req, SDL_Rect rect, std::string_view id)
   }
 
   Event event = Event::NONE;
-  uint16_t status = req == RequestEvent::NONE
-                      ? STATUS_NONE
-                      : processHover(req, rect, id, event);
+  uint16_t status =
+    req == RequestEvent::NONE ? STATUS_NONE : checkHover(req, rect, id, event);
   auto index = elementStack.size();
   elementStack.emplace_back(EventTargetState{rect, status, event});
   return {this, index};
 }
 
 inline uint16_t
-EventDispatcher::processHover(RequestEvent req,
-                              const SDL_Rect& rect,
-                              std::string_view id,
-                              Event& event)
+EventDispatcher::checkHover(RequestEvent req,
+                            const SDL_Rect& rect,
+                            std::string_view id,
+                            Event& event)
 {
   if (hadHover || !SDL_PointInRect(&pointerPos, &rect)) {
     if (req == RequestEvent::HOVER) {
       return STATUS_NONE;
     }
-    if (idGrabbed != id) {
-      return processFocus(req, id, event);
-    }
-    if (pointerReleased == 0 && pointerPressed == 0) {
-      return STATUS_GRABBED | processFocus(req, id, event);
-    }
-    idGrabbed.clear();
-    event = Event::CANCEL;
-    return idFocus == id ? STATUS_FOCUSED : STATUS_NONE;
+    return checkGrabOut(req, id, event);
   }
   if (req == RequestEvent::HOVER) {
     return STATUS_HOVERED;
   }
-  return STATUS_HOVERED | processAction(req, rect, id, event);
+  return STATUS_HOVERED | checkGrabOver(req, id, event);
 }
 
 inline uint16_t
-EventDispatcher::processAction(RequestEvent req,
-                               const SDL_Rect& rect,
+EventDispatcher::checkGrabOver(RequestEvent req,
                                std::string_view id,
                                Event& event)
 {
@@ -230,26 +218,19 @@ EventDispatcher::processAction(RequestEvent req,
       event = Event::ACTION;
       idGrabbed.clear();
     }
-    if (idFocus == id) {
-      return STATUS_FOCUSED;
-    }
-    return STATUS_NONE;
+    return checkFocus(req, id, event);
   }
   if (pointerPressed != 1) {
     if (idGrabbed != id) {
-      return gainFocus(req, id, event);
+      return req == RequestEvent::ACTION ? STATUS_NONE
+                                         : gainFocus(req, id, event);
     }
     if (pointerPressed == 0) {
-      // return idFocus == id ? STATUS_FOCUSED : STATUS_NONE;
-      if (req == RequestEvent::ACTION) {
-        return STATUS_GRABBED;
-      }
-      return STATUS_GRABBED | processFocus(req, id, event);
+      return STATUS_GRABBED | checkFocus(req, id, event);
     }
     event = Event::CANCEL;
     idGrabbed.clear();
-    return req == RequestEvent::ACTION ? STATUS_NONE
-                                       : processFocus(req, id, event);
+    return checkFocus(req, id, event);
   }
   event = Event::GRAB;
   idGrabbed = id;
@@ -260,9 +241,23 @@ EventDispatcher::processAction(RequestEvent req,
 }
 
 inline uint16_t
-EventDispatcher::processFocus(RequestEvent req,
+EventDispatcher::checkGrabOut(RequestEvent req,
                               std::string_view id,
                               Event& event)
+{
+  if (idGrabbed != id) {
+    return checkFocus(req, id, event);
+  }
+  if (pointerReleased == 0 && pointerPressed == 0) {
+    return STATUS_GRABBED | checkFocus(req, id, event);
+  }
+  event = Event::CANCEL;
+  idGrabbed.clear();
+  return idFocus == id ? STATUS_FOCUSED : STATUS_NONE;
+}
+
+inline uint16_t
+EventDispatcher::checkFocus(RequestEvent req, std::string_view id, Event& event)
 {
   if (idFocus == id) {
     return STATUS_FOCUSED;
@@ -278,8 +273,8 @@ EventDispatcher::processFocus(RequestEvent req,
 inline uint16_t
 EventDispatcher::gainFocus(RequestEvent req, std::string_view id, Event& event)
 {
-  if (idFocus == id) {
-    return STATUS_FOCUSED;
+  if (idFocus == id || idNextFocus == id) {
+    return checkFocus(req, id, event);
   }
   if (idNextFocus.empty()) {
     idNextFocus = id;
