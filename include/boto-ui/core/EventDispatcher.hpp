@@ -57,6 +57,8 @@ struct EventTargetState
   Event event;     ///< @brief the event target event
 };
 
+class EventTarget;
+
 /**
  * @brief Component responsible to handle and dispatch events for the UI
  *
@@ -68,6 +70,7 @@ private:
   {
     void operator()(EventDispatcher* dispatcher) { dispatcher->popTarget(); }
   };
+  friend class EventTarget;
 
 public:
   // Event triggers
@@ -100,35 +103,6 @@ public:
   }
 
   /**
-   * @brief An element able to receive events
-   *
-   */
-  class EventTarget : public CookieBase<EventDispatcher, EventTargetUnStack>
-  {
-    size_t index;
-
-    EventTarget(EventDispatcher* c, size_t index)
-      : CookieBase(c)
-      , index(index)
-    {}
-
-    friend class EventDispatcher;
-
-  public:
-    EventTarget() = default;
-
-    const EventTargetState& state() const { return get()->elementStack[index]; }
-    EventTargetState& state() { return get()->elementStack[index]; }
-
-    uint16_t status() const { return state().status; }
-    Event event() const { return state().event; }
-
-    const SDL_Rect& rect() const { return state().rect; }
-
-    void discard(uint16_t flags) { state().status &= ~flags; }
-  };
-
-  /**
    * @brief Check events for the specified element
    *
    * @param req events you accept. Events after it will be ignored
@@ -136,20 +110,7 @@ public:
    * @param id the unique id representing the event target
    * @return EventTarget
    */
-  EventTarget check(RequestEvent req, SDL_Rect rect, std::string_view id = {})
-  {
-    if (!elementStack.empty()) {
-      SDL_IntersectRect(&elementStack.back().rect, &rect, &rect);
-    }
-
-    Event event = Event::NONE;
-    uint16_t status = req == RequestEvent::NONE
-                        ? STATUS_NONE
-                        : processHover(req, rect, id, event);
-    auto index = elementStack.size();
-    elementStack.emplace_back(EventTargetState{rect, status, event});
-    return {this, index};
-  }
+  EventTarget check(RequestEvent req, SDL_Rect rect, std::string_view id = {});
 
 private:
   SDL_Point pointerPos;
@@ -171,49 +132,105 @@ private:
   uint16_t processHover(RequestEvent req,
                         const SDL_Rect& rect,
                         std::string_view id,
-                        Event& event)
-  {
-    if (hadHover || !SDL_PointInRect(&pointerPos, &rect)) {
-      if (req >= RequestEvent::ACTION && idGrabbed == id &&
-          (pointerReleased != 0 || pointerPressed != 0)) {
-        event = Event::CANCEL;
-      }
-      return STATUS_NONE;
-    }
-    if (req == RequestEvent::HOVER) {
-      return STATUS_HOVERED;
-    }
-    return STATUS_HOVERED | processActionHovered(req, rect, id, event);
-  }
+                        Event& event);
 
   uint16_t processActionHovered(RequestEvent req,
                                 const SDL_Rect& rect,
                                 std::string_view id,
-                                Event& event)
-  {
-    if (pointerReleased != 0) {
-      if (idGrabbed == id) {
-        event = Event::ACTION;
-      }
-      return STATUS_NONE;
-    }
-    if (pointerPressed != 1) {
-      if (idGrabbed == id) {
-        if (pointerPressed == 0) {
-          return STATUS_GRABBED;
-        }
-        event = Event::CANCEL;
-        idGrabbed.clear();
-      }
-      return STATUS_NONE;
-    }
-    event = Event::GRAB;
-    idGrabbed = id;
-    return STATUS_GRABBED;
-  }
+                                Event& event);
 };
 
-using EventTarget = EventDispatcher::EventTarget;
+/**
+ * @brief An element able to receive events
+ *
+ */
+class EventTarget
+  : public CookieBase<EventDispatcher, EventDispatcher::EventTargetUnStack>
+{
+  size_t index;
+
+  EventTarget(EventDispatcher* c, size_t index)
+    : CookieBase(c)
+    , index(index)
+  {}
+
+  friend class EventDispatcher;
+
+public:
+  EventTarget() = default;
+
+  const EventTargetState& state() const { return get()->elementStack[index]; }
+  EventTargetState& state() { return get()->elementStack[index]; }
+
+  uint16_t status() const { return state().status; }
+  Event event() const { return state().event; }
+
+  const SDL_Rect& rect() const { return state().rect; }
+
+  void discard(uint16_t flags) { state().status &= ~flags; }
+};
+
+inline EventTarget
+EventDispatcher::check(RequestEvent req, SDL_Rect rect, std::string_view id)
+{
+  if (!elementStack.empty()) {
+    SDL_IntersectRect(&elementStack.back().rect, &rect, &rect);
+  }
+
+  Event event = Event::NONE;
+  uint16_t status = req == RequestEvent::NONE
+                      ? STATUS_NONE
+                      : processHover(req, rect, id, event);
+  auto index = elementStack.size();
+  elementStack.emplace_back(EventTargetState{rect, status, event});
+  return {this, index};
+}
+
+inline uint16_t
+EventDispatcher::processHover(RequestEvent req,
+                              const SDL_Rect& rect,
+                              std::string_view id,
+                              Event& event)
+{
+  if (hadHover || !SDL_PointInRect(&pointerPos, &rect)) {
+    if (req >= RequestEvent::ACTION && idGrabbed == id &&
+        (pointerReleased != 0 || pointerPressed != 0)) {
+      event = Event::CANCEL;
+    }
+    return STATUS_NONE;
+  }
+  if (req == RequestEvent::HOVER) {
+    return STATUS_HOVERED;
+  }
+  return STATUS_HOVERED | processActionHovered(req, rect, id, event);
+}
+
+inline uint16_t
+EventDispatcher::processActionHovered(RequestEvent req,
+                                      const SDL_Rect& rect,
+                                      std::string_view id,
+                                      Event& event)
+{
+  if (pointerReleased != 0) {
+    if (idGrabbed == id) {
+      event = Event::ACTION;
+    }
+    return STATUS_NONE;
+  }
+  if (pointerPressed != 1) {
+    if (idGrabbed == id) {
+      if (pointerPressed == 0) {
+        return STATUS_GRABBED;
+      }
+      event = Event::CANCEL;
+      idGrabbed.clear();
+    }
+    return STATUS_NONE;
+  }
+  event = Event::GRAB;
+  idGrabbed = id;
+  return STATUS_GRABBED;
+}
 
 } // namespace boto
 
