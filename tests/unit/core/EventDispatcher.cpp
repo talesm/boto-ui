@@ -7,18 +7,24 @@ using namespace std;
 TEST_CASE("EventDispatcher hover handling", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};
+  dispatcher.reset();
   dispatcher.movePointer({0, 0});
 
-  dispatcher.reset();
-  REQUIRE_FALSE(dispatcher.check(RequestEvent::NONE, {0, 0, 2, 2}).status() &
-                STATUS_HOVERED);
-  dispatcher.reset();
-  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
-          STATUS_HOVERED);
-  dispatcher.reset();
-  REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {1, 1, 2, 2}).status() &
-                STATUS_HOVERED);
-  dispatcher.reset();
+  SECTION("Ignore if not requested")
+  {
+    REQUIRE_FALSE(dispatcher.check(RequestEvent::NONE, {0, 0, 2, 2}).status() &
+                  STATUS_HOVERED);
+  }
+  SECTION("Status is hover if square under the pointer pos")
+  {
+    REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
+            STATUS_HOVERED);
+  }
+  SECTION("Status is not hover if square not under the pointer pos")
+  {
+    REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {1, 1, 2, 2}).status() &
+                  STATUS_HOVERED);
+  }
 }
 
 TEST_CASE("EventDispatcher hovers only one element per turn",
