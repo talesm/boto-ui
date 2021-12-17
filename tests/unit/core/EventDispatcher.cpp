@@ -43,6 +43,21 @@ TEST_CASE("EventDispatcher hovers only one element per turn",
           STATUS_HOVERED);
 }
 
+TEST_CASE("EventDispatcher hovered target can be discarded",
+          "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  if (auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 1, 1})) {
+    REQUIRE(target.status() == STATUS_HOVERED);
+    target.discard(STATUS_HOVERED);
+  }
+  REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
+          STATUS_HOVERED);
+}
+
 TEST_CASE("EventDispatcher grab handling", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};

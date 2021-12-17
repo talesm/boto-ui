@@ -124,6 +124,8 @@ public:
     Event event() const { return state().event; }
 
     const SDL_Rect& rect() const { return state().rect; }
+
+    void discard(uint16_t flags) { state().status &= ~flags; }
   };
 
   /**
