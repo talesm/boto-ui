@@ -33,6 +33,7 @@ enum class Event : uint16_t
   GRAB,
   ACTION,
   CANCEL,
+  FOCUS_GAINED,
 };
 
 /**
@@ -44,6 +45,7 @@ enum class RequestEvent
   NONE,
   HOVER,
   ACTION,
+  FOCUS,
 };
 
 /**
@@ -118,6 +120,8 @@ private:
   Uint32 pointerReleased;
   bool hadHover;
   std::string idGrabbed;
+  std::string idFocus;
+  std::string idNextFocus;
 
   std::vector<EventTargetState> elementStack;
 
@@ -134,10 +138,13 @@ private:
                         std::string_view id,
                         Event& event);
 
-  uint16_t processActionHovered(RequestEvent req,
-                                const SDL_Rect& rect,
-                                std::string_view id,
-                                Event& event);
+  uint16_t processAction(RequestEvent req,
+                         const SDL_Rect& rect,
+                         std::string_view id,
+                         Event& event);
+
+  uint16_t processFocus(RequestEvent req, std::string_view id, Event& event);
+  uint16_t gainFocus(RequestEvent req, std::string_view id, Event& event);
 };
 
 /**
@@ -193,43 +200,91 @@ EventDispatcher::processHover(RequestEvent req,
                               Event& event)
 {
   if (hadHover || !SDL_PointInRect(&pointerPos, &rect)) {
-    if (req >= RequestEvent::ACTION && idGrabbed == id &&
-        (pointerReleased != 0 || pointerPressed != 0)) {
-      event = Event::CANCEL;
+    if (req == RequestEvent::HOVER) {
+      return STATUS_NONE;
     }
-    return STATUS_NONE;
+    if (idGrabbed != id) {
+      return processFocus(req, id, event);
+    }
+    if (pointerReleased == 0 && pointerPressed == 0) {
+      return STATUS_GRABBED | processFocus(req, id, event);
+    }
+    idGrabbed.clear();
+    event = Event::CANCEL;
+    return idFocus == id ? STATUS_FOCUSED : STATUS_NONE;
   }
   if (req == RequestEvent::HOVER) {
     return STATUS_HOVERED;
   }
-  return STATUS_HOVERED | processActionHovered(req, rect, id, event);
+  return STATUS_HOVERED | processAction(req, rect, id, event);
 }
 
 inline uint16_t
-EventDispatcher::processActionHovered(RequestEvent req,
-                                      const SDL_Rect& rect,
-                                      std::string_view id,
-                                      Event& event)
+EventDispatcher::processAction(RequestEvent req,
+                               const SDL_Rect& rect,
+                               std::string_view id,
+                               Event& event)
 {
   if (pointerReleased != 0) {
     if (idGrabbed == id) {
       event = Event::ACTION;
+      idGrabbed.clear();
+    }
+    if (idFocus == id) {
+      return STATUS_FOCUSED;
     }
     return STATUS_NONE;
   }
   if (pointerPressed != 1) {
-    if (idGrabbed == id) {
-      if (pointerPressed == 0) {
+    if (idGrabbed != id) {
+      return gainFocus(req, id, event);
+    }
+    if (pointerPressed == 0) {
+      // return idFocus == id ? STATUS_FOCUSED : STATUS_NONE;
+      if (req == RequestEvent::ACTION) {
         return STATUS_GRABBED;
       }
-      event = Event::CANCEL;
-      idGrabbed.clear();
+      return STATUS_GRABBED | processFocus(req, id, event);
     }
-    return STATUS_NONE;
+    event = Event::CANCEL;
+    idGrabbed.clear();
+    return req == RequestEvent::ACTION ? STATUS_NONE
+                                       : processFocus(req, id, event);
   }
   event = Event::GRAB;
   idGrabbed = id;
-  return STATUS_GRABBED;
+  if (req == RequestEvent::ACTION) {
+    return STATUS_GRABBED;
+  }
+  return STATUS_GRABBED | gainFocus(req, id, event);
+}
+
+inline uint16_t
+EventDispatcher::processFocus(RequestEvent req,
+                              std::string_view id,
+                              Event& event)
+{
+  if (idFocus == id) {
+    return STATUS_FOCUSED;
+  }
+  if (idNextFocus == id) {
+    idFocus = id;
+    event = Event::FOCUS_GAINED;
+    return STATUS_FOCUSED;
+  }
+  return STATUS_NONE;
+}
+
+inline uint16_t
+EventDispatcher::gainFocus(RequestEvent req, std::string_view id, Event& event)
+{
+  if (idFocus == id) {
+    return STATUS_FOCUSED;
+  }
+  if (idNextFocus.empty()) {
+    idNextFocus = id;
+  }
+  return STATUS_NONE;
 }
 
 } // namespace boto
