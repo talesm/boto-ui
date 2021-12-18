@@ -174,11 +174,7 @@ public:
 
   const SDL_Rect& rect() const { return state().rect; }
 
-  void discard(StatusFlags flags)
-  {
-    //
-    state().status.reset(flags);
-  }
+  void discard(StatusFlags flags) { state().status.reset(flags); }
 };
 
 inline EventTarget
