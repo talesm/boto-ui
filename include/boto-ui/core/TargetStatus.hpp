@@ -15,7 +15,6 @@ enum class Status : uint16_t
   HOVERED = 1,
   GRABBED = 2,
   FOCUSED = 4,
-  INPUTING = 8,
 };
 
 using StatusFlags = FlagsBase<Status>;

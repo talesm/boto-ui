@@ -4,6 +4,29 @@
 using namespace boto;
 using namespace std;
 
+namespace std {
+std::ostream&
+operator<<(std::ostream& out, StatusFlags flag)
+{
+  if (!flag) {
+    out << "[]";
+    return out;
+  }
+  out.put('[');
+  if (flag.test(Status::HOVERED)) {
+    out.put('h');
+  }
+  if (flag.test(Status::GRABBED)) {
+    out.put('g');
+  }
+  if (flag.test(Status::FOCUSED)) {
+    out.put('f');
+  }
+  out.put(']');
+  return out;
+}
+}
+
 TEST_CASE("EventDispatcher hover handling", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};
@@ -128,6 +151,54 @@ TEST_CASE("EventDispatcher grab handling", "[event-dispatcher]")
       REQUIRE_FALSE(target.status() & Status::GRABBED);
       REQUIRE(target.event() == Event::CANCEL);
     }
+  }
+}
+TEST_CASE("EventDispatcher handles commands on grabbed", "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(0);
+  {
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::GRABBED | Status::HOVERED));
+    REQUIRE(target.event() == Event::GRAB);
+  }
+  dispatcher.reset();
+  SECTION("Action command")
+  {
+    dispatcher.command(Command::ACTION);
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::GRABBED | Status::HOVERED));
+    REQUIRE(target.event() == Event::ACTION);
+  }
+  SECTION("Enter command")
+  {
+    dispatcher.command(Command::ENTER);
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::GRABBED | Status::HOVERED));
+    REQUIRE(target.event() == Event::ACTION);
+  }
+  SECTION("Space command")
+  {
+    dispatcher.command(Command::SPACE);
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::GRABBED | Status::HOVERED));
+    REQUIRE(target.event() == Event::ACTION);
+  }
+  SECTION("Escape command")
+  {
+    dispatcher.command(Command::ESCAPE);
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::GRABBED | Status::HOVERED));
+    REQUIRE(target.event() == Event::CANCEL);
+  }
+
+  dispatcher.reset();
+  {
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == Status::HOVERED);
+    REQUIRE(target.event() == Event::NONE);
   }
 }
 

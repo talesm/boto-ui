@@ -154,13 +154,13 @@ private:
 
   StatusFlags checkGrabOver(RequestEvent req, Event& event);
   StatusFlags checkGrabOut(RequestEvent req, Event& event);
+  StatusFlags checkGrabCommand(RequestEvent req, Event& event);
 
   StatusFlags checkFocus(RequestEvent req, Event& event);
   StatusFlags gainFocus(RequestEvent req, Event& event);
   StatusFlags loseFocus(RequestEvent req, Event& event);
 
-  StatusFlags checkCommandGrabbing(Event& event);
-  StatusFlags checkCommandFocused(Event& event);
+  StatusFlags checkActionCommand(Event& event);
 };
 
 /**
@@ -254,7 +254,7 @@ EventDispatcher::checkGrabOver(RequestEvent req, Event& event)
       return req == RequestEvent::GRAB ? Status::NONE : gainFocus(req, event);
     }
     if (pointerPressed == 0) {
-      return Status::GRABBED | checkFocus(req, event);
+      return Status::GRABBED | checkGrabCommand(req, event);
     }
     event = Event::CANCEL;
     idGrabbed.clear();
@@ -289,6 +289,16 @@ EventDispatcher::checkGrabOut(RequestEvent req, Event& event)
 }
 
 inline StatusFlags
+EventDispatcher::checkGrabCommand(RequestEvent req, Event& event)
+{
+  if (nextCommand == Command::ESCAPE) {
+    event = Event::CANCEL;
+  }
+  return req == RequestEvent::GRAB ? checkActionCommand(event)
+                                   : checkFocus(req, event);
+}
+
+inline StatusFlags
 EventDispatcher::checkFocus(RequestEvent req, Event& event)
 {
   if (idFocus == idCurrent) {
@@ -296,7 +306,7 @@ EventDispatcher::checkFocus(RequestEvent req, Event& event)
       return Status::FOCUSED;
     }
     idNextFocus = idCurrent;
-    return checkCommandFocused(event);
+    return Status::FOCUSED | checkActionCommand(event);
   }
   if (idLosingFocus == idCurrent) {
     event = Event::FOCUS_LOST;
@@ -345,19 +355,23 @@ EventDispatcher::loseFocus(RequestEvent req, Event& event)
   return status;
 }
 inline StatusFlags
-EventDispatcher::checkCommandFocused(Event& event)
+EventDispatcher::checkActionCommand(Event& event)
 {
   switch (nextCommand) {
+  case Command::NONE:
+    return Status::NONE;
   case Command::ACTION:
   case Command::ENTER:
   case Command::SPACE:
     event = Event::ACTION;
     break;
-  case Command::NONE:
   default:
     break;
   }
-  return Status::FOCUSED;
+  if (idGrabbed == idCurrent) {
+    idGrabbed.clear();
+  }
+  return Status::NONE;
 }
 
 } // namespace boto
