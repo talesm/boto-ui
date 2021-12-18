@@ -66,8 +66,9 @@ TEST_CASE("EventDispatcher grab handling", "[event-dispatcher]")
 
   SECTION("The status is not changed before press")
   {
-    REQUIRE_FALSE(
-      dispatcher.check(RequestEvent::GRAB, {1, 1, 1, 1}, "id0"sv).status());
+    REQUIRE(
+      dispatcher.check(RequestEvent::GRAB, {1, 1, 1, 1}, "id0"sv).status() ==
+      Status::NONE);
     REQUIRE(
       dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id0"sv).status() ==
       Status::HOVERED);
@@ -80,27 +81,31 @@ TEST_CASE("EventDispatcher grab handling", "[event-dispatcher]")
   {
     REQUIRE_FALSE(
       dispatcher.check(RequestEvent::GRAB, {1, 1, 1, 1}, "id0"sv).status());
-    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
-    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
-    REQUIRE(target.event() == Event::GRAB);
+    {
+      auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+      REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(target.event() == Event::GRAB);
+    }
 
     dispatcher.reset();
-    target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
-    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
-    REQUIRE(target.event() == Event::NONE);
+    {
+      auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+      REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(target.event() == Event::NONE);
+    }
 
     dispatcher.reset();
     SECTION("release while still hovering")
     {
       dispatcher.releasePointer(0);
-      target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+      auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
       REQUIRE(target.status() == Status::HOVERED);
       REQUIRE(target.event() == Event::ACTION);
     }
     SECTION("release after moving out")
     {
       dispatcher.movePointer({2, 2});
-      target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+      auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
       REQUIRE(target.status() == Status::GRABBED);
       REQUIRE(target.event() == Event::NONE);
 
@@ -114,7 +119,7 @@ TEST_CASE("EventDispatcher grab handling", "[event-dispatcher]")
     {
       dispatcher.reset();
       dispatcher.pressPointer(1);
-      target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+      auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
       REQUIRE_FALSE(target.status() & Status::GRABBED);
       REQUIRE(target.event() == Event::CANCEL);
     }
