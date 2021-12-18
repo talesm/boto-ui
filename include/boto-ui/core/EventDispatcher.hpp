@@ -65,7 +65,8 @@ private:
   friend class EventTarget;
 
 public:
-  // Event triggers
+  /// @name Event triggers
+  /// @{
   void movePointer(const SDL_Point& pos) { pointerPos = pos; }
   void pressPointer(unsigned button)
   {
@@ -77,6 +78,7 @@ public:
     SDL_assert(button < 32);
     pointerReleased |= 1 << button;
   }
+  /// @}
 
   /// Reset flags (call once per turn)
   void reset()
