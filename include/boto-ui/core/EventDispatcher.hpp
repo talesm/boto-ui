@@ -45,7 +45,7 @@ enum class RequestEvent
 {
   NONE,
   HOVER,
-  ACTION,
+  GRAB,
   FOCUS,
 };
 
@@ -233,8 +233,8 @@ EventDispatcher::checkGrabOver(RequestEvent req,
   }
   if (pointerPressed != 1) {
     if (idGrabbed != id) {
-      return req == RequestEvent::ACTION ? STATUS_NONE
-                                         : gainFocus(req, id, event);
+      return req == RequestEvent::GRAB ? STATUS_NONE
+                                       : gainFocus(req, id, event);
     }
     if (pointerPressed == 0) {
       return STATUS_GRABBED | checkFocus(req, id, event);
@@ -245,7 +245,7 @@ EventDispatcher::checkGrabOver(RequestEvent req,
   }
   event = Event::GRAB;
   idGrabbed = id;
-  if (req == RequestEvent::ACTION) {
+  if (req == RequestEvent::GRAB) {
     return STATUS_GRABBED;
   }
   return STATUS_GRABBED | gainFocus(req, id, event);
@@ -265,7 +265,7 @@ EventDispatcher::checkGrabOut(RequestEvent req,
   }
   event = Event::CANCEL;
   idGrabbed.clear();
-  if (req == RequestEvent::ACTION || idFocus != id) {
+  if (req == RequestEvent::GRAB || idFocus != id) {
     return STATUS_NONE;
   }
   if (pointerPressed != 0) {
