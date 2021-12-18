@@ -7,36 +7,11 @@
 #include <SDL_assert.h>
 #include <SDL_keycode.h>
 #include <SDL_rect.h>
+#include "Event.hpp"
 #include "TargetStatus.hpp"
 #include "util/CookieBase.hpp"
 
 namespace boto {
-
-/**
- * @brief The event the element is receiving
- *
- */
-enum class Event : uint16_t
-{
-  NONE,
-  GRAB,
-  ACTION,
-  CANCEL,
-  FOCUS_GAINED,
-  FOCUS_LOST,
-};
-
-/**
- * @brief The events an element will accept
- *
- */
-enum class RequestEvent
-{
-  NONE,
-  HOVER,
-  GRAB,
-  FOCUS,
-};
 
 /**
  * @brief The state of an event target
