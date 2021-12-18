@@ -75,7 +75,7 @@ public:
   void releasePointer(unsigned button)
   {
     SDL_assert(button < 32);
-    pointerReleased = ~1 << button;
+    pointerReleased |= 1 << button;
   }
 
   /// Reset flags (call once per turn)
