@@ -121,7 +121,7 @@ TEST_CASE("EventDispatcher grab handling", "[event-dispatcher]")
   }
 }
 
-TEST_CASE("EventDispatcher handle Action", "[event-dispatcher]")
+TEST_CASE("EventDispatcher handle Focus gain", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};
   dispatcher.reset();
@@ -222,9 +222,27 @@ TEST_CASE("EventDispatcher handle Action", "[event-dispatcher]")
         REQUIRE(target.status() == STATUS_FOCUSED);
       }
     }
-    SECTION("Focus when do CANCEL by press non left button not hovered")
+  }
+}
+TEST_CASE("EventDispatcher handle focus lost", "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(0);
+  dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv); // grab
+
+  dispatcher.reset();
+  dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv); // Focus gain
+
+  SECTION("Losing focus by press non left button not hovered")
+  {
+    dispatcher.reset();
+    dispatcher.movePointer({3, 3});
+    dispatcher.pressPointer(1);
+
+    SECTION("Focus lost without replacement")
     {
-      dispatcher.pressPointer(1);
       {
         auto target =
           dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
@@ -232,13 +250,236 @@ TEST_CASE("EventDispatcher handle Action", "[event-dispatcher]")
         REQUIRE(target.status() == STATUS_FOCUSED);
       }
 
-      // dispatcher.reset();
-      // {
-      //   auto target =
-      //     dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
-      //   // REQUIRE(target.event() == Event::NONE);
-      //   REQUIRE(target.status() == STATUS_NONE);
-      // }
+      dispatcher.reset();
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == STATUS_NONE);
+        REQUIRE(target.event() == Event::FOCUS_LOST);
+      }
+      dispatcher.reset();
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == STATUS_NONE);
+        REQUIRE(target.event() == Event::NONE);
+      }
+    }
+    SECTION("Focus lost with replacement after it")
+    {
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.event() == Event::CANCEL);
+        REQUIRE(target.status() == STATUS_FOCUSED);
+      }
+      {
+        auto target2 =
+          dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+        REQUIRE(target2.status() == STATUS_HOVERED);
+        REQUIRE(target2.event() == Event::NONE);
+      }
+
+      dispatcher.reset();
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == STATUS_NONE);
+        REQUIRE(target.event() == Event::FOCUS_LOST);
+      }
+      {
+        auto target2 =
+          dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+        REQUIRE(target2.status() == (STATUS_HOVERED | STATUS_FOCUSED));
+        REQUIRE(target2.event() == Event::FOCUS_GAINED);
+      }
+    }
+    SECTION("Focus lost with replacement before it")
+    {
+      {
+        auto target2 =
+          dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+        REQUIRE(target2.status() == STATUS_HOVERED);
+        REQUIRE(target2.event() == Event::NONE);
+      }
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.event() == Event::CANCEL);
+        REQUIRE(target.status() == STATUS_FOCUSED);
+      }
+
+      dispatcher.reset();
+      {
+        auto target2 =
+          dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+        REQUIRE(target2.status() == (STATUS_HOVERED | STATUS_FOCUSED));
+        REQUIRE(target2.event() == Event::FOCUS_GAINED);
+      }
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == STATUS_NONE);
+        REQUIRE(target.event() == Event::FOCUS_LOST);
+      }
+    }
+  }
+  SECTION("Focused element not grabbed")
+  {
+    dispatcher.reset();
+    dispatcher.movePointer({3, 3});
+    dispatcher.releasePointer(0);
+    REQUIRE(
+      dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv).status() ==
+      STATUS_FOCUSED);
+
+    SECTION("Focus lost without replacement")
+    {
+      dispatcher.reset();
+      dispatcher.pressPointer(0);
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == STATUS_NONE);
+        REQUIRE(target.event() == Event::FOCUS_LOST);
+      }
+
+      dispatcher.reset();
+      {
+        auto target =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == STATUS_NONE);
+        REQUIRE(target.event() == Event::NONE);
+      }
+    }
+    SECTION("Focus lost due to other element being grabbed")
+    {
+      dispatcher.reset();
+      dispatcher.pressPointer(0);
+      SECTION("Focus lost with replacement after it")
+      {
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::FOCUS_LOST);
+        }
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.status() == (STATUS_GRABBED | STATUS_HOVERED));
+          REQUIRE(target2.event() == Event::GRAB);
+        }
+
+        dispatcher.reset();
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::NONE);
+        }
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.status() ==
+                  (STATUS_GRABBED | STATUS_HOVERED | STATUS_FOCUSED));
+          REQUIRE(target2.event() == Event::FOCUS_GAINED);
+        }
+      }
+      SECTION("Focus lost with replacement before it")
+      {
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.status() == (STATUS_GRABBED | STATUS_HOVERED));
+          REQUIRE(target2.event() == Event::GRAB);
+        }
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::FOCUS_LOST);
+        }
+
+        dispatcher.reset();
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.status() ==
+                  (STATUS_GRABBED | STATUS_HOVERED | STATUS_FOCUSED));
+          REQUIRE(target2.event() == Event::FOCUS_GAINED);
+        }
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::NONE);
+        }
+      }
+    }
+
+    SECTION("Focus lost due to other element being focused, but not grabbed")
+    {
+      dispatcher.reset();
+      dispatcher.pressPointer(1);
+      SECTION("Focus lost with replacement after it")
+      {
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::FOCUS_LOST);
+        }
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.event() == Event::FOCUS_GAINED);
+          REQUIRE(target2.status() == (STATUS_HOVERED | STATUS_FOCUSED));
+        }
+
+        dispatcher.reset();
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::NONE);
+        }
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.event() == Event::NONE);
+          REQUIRE(target2.status() == (STATUS_HOVERED | STATUS_FOCUSED));
+        }
+      }
+      SECTION("Focus lost with replacement before it")
+      {
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.status() == (STATUS_FOCUSED | STATUS_HOVERED));
+          REQUIRE(target2.event() == Event::FOCUS_GAINED);
+        }
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::FOCUS_LOST);
+        }
+
+        dispatcher.reset();
+        {
+          auto target2 =
+            dispatcher.check(RequestEvent::FOCUS, {3, 3, 1, 1}, "id2"sv);
+          REQUIRE(target2.status() == (STATUS_HOVERED | STATUS_FOCUSED));
+          REQUIRE(target2.event() == Event::NONE);
+        }
+        {
+          auto target =
+            dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+          REQUIRE(target.status() == STATUS_NONE);
+          REQUIRE(target.event() == Event::NONE);
+        }
+      }
     }
   }
 }

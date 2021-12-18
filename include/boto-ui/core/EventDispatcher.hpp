@@ -34,6 +34,7 @@ enum class Event : uint16_t
   ACTION,
   CANCEL,
   FOCUS_GAINED,
+  FOCUS_LOST,
 };
 
 /**
@@ -93,6 +94,14 @@ public:
   {
     hadHover = false;
     pointerPressed = pointerReleased = 0;
+    if (idNextFocus == idFocus) {
+      idNextFocus.clear();
+    }
+    if (idLosingFocus == idFocus) {
+      idFocus.clear();
+    } else {
+      idLosingFocus.clear();
+    }
   }
 
   // Accessors
@@ -122,6 +131,7 @@ private:
   std::string idGrabbed;
   std::string idFocus;
   std::string idNextFocus;
+  std::string idLosingFocus;
 
   std::vector<EventTargetState> elementStack;
 
@@ -143,6 +153,7 @@ private:
 
   uint16_t checkFocus(RequestEvent req, std::string_view id, Event& event);
   uint16_t gainFocus(RequestEvent req, std::string_view id, Event& event);
+  uint16_t loseFocus(RequestEvent req, std::string_view id, Event& event);
 };
 
 /**
@@ -246,21 +257,35 @@ EventDispatcher::checkGrabOut(RequestEvent req,
                               Event& event)
 {
   if (idGrabbed != id) {
-    return checkFocus(req, id, event);
+    return pointerPressed == 0 ? checkFocus(req, id, event)
+                               : loseFocus(req, id, event);
   }
   if (pointerReleased == 0 && pointerPressed == 0) {
     return STATUS_GRABBED | checkFocus(req, id, event);
   }
   event = Event::CANCEL;
   idGrabbed.clear();
-  return idFocus == id ? STATUS_FOCUSED : STATUS_NONE;
+  if (req == RequestEvent::ACTION || idFocus != id) {
+    return STATUS_NONE;
+  }
+  if (pointerPressed != 0) {
+    return loseFocus(req, id, event);
+  }
+  return checkFocus(req, id, event);
 }
 
 inline uint16_t
 EventDispatcher::checkFocus(RequestEvent req, std::string_view id, Event& event)
 {
   if (idFocus == id) {
+    if (idLosingFocus != id) {
+      idNextFocus = id;
+    }
     return STATUS_FOCUSED;
+  }
+  if (idLosingFocus == id) {
+    event = Event::FOCUS_LOST;
+    return STATUS_NONE;
   }
   if (idNextFocus == id) {
     idFocus = id;
@@ -276,10 +301,33 @@ EventDispatcher::gainFocus(RequestEvent req, std::string_view id, Event& event)
   if (idFocus == id || idNextFocus == id) {
     return checkFocus(req, id, event);
   }
-  if (idNextFocus.empty()) {
-    idNextFocus = id;
+  if (!idNextFocus.empty()) {
+    return STATUS_NONE;
   }
-  return STATUS_NONE;
+  idNextFocus = id;
+  if (event != Event::NONE || !idLosingFocus.empty() ||
+      (!idFocus.empty() && idFocus == idGrabbed)) {
+    return STATUS_NONE;
+  }
+  idLosingFocus = idFocus;
+  idFocus = id;
+  event = Event::FOCUS_GAINED;
+  return STATUS_FOCUSED;
+}
+inline uint16_t
+EventDispatcher::loseFocus(RequestEvent req, std::string_view id, Event& event)
+{
+  if (idFocus != id) {
+    return checkFocus(req, id, event);
+  }
+  if (event == Event::NONE) {
+    idFocus.clear();
+    event = Event::FOCUS_LOST;
+    return STATUS_NONE;
+  }
+  idLosingFocus = id;
+  auto status = checkFocus(req, id, event);
+  return status;
 }
 
 } // namespace boto
