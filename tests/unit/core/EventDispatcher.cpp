@@ -105,15 +105,20 @@ TEST_CASE("EventDispatcher grab handling", "[event-dispatcher]")
     SECTION("release after moving out")
     {
       dispatcher.movePointer({2, 2});
-      auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
-      REQUIRE(target.status() == Status::GRABBED);
-      REQUIRE(target.event() == Event::NONE);
-
+      {
+        auto target =
+          dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == Status::GRABBED);
+        REQUIRE(target.event() == Event::NONE);
+      }
       dispatcher.reset();
       dispatcher.releasePointer(0);
-      target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
-      REQUIRE(target.status() == Status::NONE);
-      REQUIRE(target.event() == Event::CANCEL);
+      {
+        auto target =
+          dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+        REQUIRE(target.status() == Status::NONE);
+        REQUIRE(target.event() == Event::CANCEL);
+      }
     }
     SECTION("pressing another button")
     {

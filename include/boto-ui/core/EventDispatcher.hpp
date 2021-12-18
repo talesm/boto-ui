@@ -12,6 +12,11 @@
 #include "util/CookieBase.hpp"
 
 namespace boto {
+/**
+ * @brief Separate group for its sub element
+ *
+ */
+constexpr char groupNameSeparator = '/';
 
 /**
  * @brief The state of an event target
@@ -19,6 +24,7 @@ namespace boto {
  */
 struct EventTargetState
 {
+  size_t idLength;    ///< @brief just an aux. Ignore
   SDL_Rect rect;      ///< @brief The event target area (absolute)
   StatusFlags status; ///< @brief the event target status
   Event event;        ///< @brief the event target event
@@ -58,6 +64,7 @@ public:
   /// Reset flags (call once per turn)
   void reset()
   {
+    SDL_assert(elementStack.empty());
     hadHover = false;
     pointerPressed = pointerReleased = 0;
     if (idNextFocus == idFocus) {
@@ -107,10 +114,18 @@ private:
 
   void popTarget()
   {
-    if (elementStack.back().status & Status::HOVERED) {
+    auto& element = elementStack.back();
+    if (element.status & Status::HOVERED) {
       hadHover = true;
     }
+    auto sz = element.idLength + 1;
     elementStack.pop_back();
+    if (elementStack.empty()) {
+      idCurrent.clear();
+    } else {
+      SDL_assert_paranoid(idCurrent.size() > sz);
+      idCurrent.resize(idCurrent.size() - sz);
+    }
   }
 
   StatusFlags checkHover(RequestEvent req, const SDL_Rect& rect, Event& event);
@@ -158,14 +173,20 @@ EventDispatcher::check(RequestEvent req,
                        const SDL_Rect& rect,
                        std::string_view id)
 {
-  idCurrent = id;
+  if (elementStack.empty()) {
+    idCurrent = id;
+  } else {
+    idCurrent += groupNameSeparator;
+    idCurrent += id;
+  }
   if (req == RequestEvent::NONE) {
-    elementStack.emplace_back(EventTargetState{rect});
+    elementStack.emplace_back(EventTargetState{id.size(), rect});
     return {this, elementStack.size() - 1};
   }
 
   Event event = Event::NONE;
   elementStack.emplace_back(EventTargetState{
+    id.size(),
     rect,
     checkHover(req, rect, event),
     event,
