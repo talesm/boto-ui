@@ -494,6 +494,40 @@ TEST_CASE("EventDispatcher handle focus lost", "[event-dispatcher]")
   }
 }
 
+TEST_CASE("EventDispatcher handles commands on focused", "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+  dispatcher.reset();
+  dispatcher.tryFocus("id1"sv);
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::FOCUS_GAINED);
+  }
+  dispatcher.reset();
+  SECTION("Action command")
+  {
+    dispatcher.command(Command::ACTION);
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::ACTION);
+  }
+  SECTION("Enter command")
+  {
+    dispatcher.command(Command::ENTER);
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::ACTION);
+  }
+  SECTION("Space command")
+  {
+    dispatcher.command(Command::SPACE);
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::ACTION);
+  }
+}
+
 TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};

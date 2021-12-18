@@ -7,6 +7,7 @@
 #include <SDL_assert.h>
 #include <SDL_keycode.h>
 #include <SDL_rect.h>
+#include "Command.hpp"
 #include "Event.hpp"
 #include "TargetStatus.hpp"
 #include "util/CookieBase.hpp"
@@ -59,6 +60,7 @@ public:
     SDL_assert(button < 32);
     pointerReleased |= 1 << button;
   }
+  void command(Command cmd) { nextCommand = cmd; }
   /// @}
 
   /// Reset flags (call once per turn)
@@ -75,6 +77,24 @@ public:
     } else {
       idLosingFocus.clear();
     }
+    nextCommand = Command::NONE;
+  }
+  /**
+   * @brief Try to focus on the given element
+   *
+   * @return true if it is possible to focus
+   * @return false if focus already changed this frame
+   */
+  bool tryFocus(std::string_view qualifiedId)
+  {
+    if (!idNextFocus.empty() && idNextFocus != idFocus) {
+      return false;
+    }
+    idNextFocus = qualifiedId;
+    if (!idFocus.empty()) {
+      idLosingFocus = idFocus;
+    }
+    return true;
   }
 
   // Accessors
@@ -110,6 +130,8 @@ private:
   std::string idNextFocus;
   std::string idLosingFocus;
 
+  Command nextCommand;
+
   std::vector<EventTargetState> elementStack;
 
   void popTarget()
@@ -136,6 +158,9 @@ private:
   StatusFlags checkFocus(RequestEvent req, Event& event);
   StatusFlags gainFocus(RequestEvent req, Event& event);
   StatusFlags loseFocus(RequestEvent req, Event& event);
+
+  StatusFlags checkCommandGrabbing(Event& event);
+  StatusFlags checkCommandFocused(Event& event);
 };
 
 /**
@@ -267,10 +292,11 @@ inline StatusFlags
 EventDispatcher::checkFocus(RequestEvent req, Event& event)
 {
   if (idFocus == idCurrent) {
-    if (idLosingFocus != idCurrent) {
-      idNextFocus = idCurrent;
+    if (idLosingFocus == idCurrent) {
+      return Status::FOCUSED;
     }
-    return Status::FOCUSED;
+    idNextFocus = idCurrent;
+    return checkCommandFocused(event);
   }
   if (idLosingFocus == idCurrent) {
     event = Event::FOCUS_LOST;
@@ -317,6 +343,21 @@ EventDispatcher::loseFocus(RequestEvent req, Event& event)
   idLosingFocus = idCurrent;
   auto status = checkFocus(req, event);
   return status;
+}
+inline StatusFlags
+EventDispatcher::checkCommandFocused(Event& event)
+{
+  switch (nextCommand) {
+  case Command::ACTION:
+  case Command::ENTER:
+  case Command::SPACE:
+    event = Event::ACTION;
+    break;
+  case Command::NONE:
+  default:
+    break;
+  }
+  return Status::FOCUSED;
 }
 
 } // namespace boto
