@@ -489,38 +489,35 @@ TEST_CASE("EventDispatcher handle focus lost", "[event-dispatcher]")
   }
 }
 
-inline bool
-operator==(const SDL_Rect& lhs, const SDL_Rect& rhs)
-{
-  return lhs.x == rhs.x && lhs.y == rhs.y && lhs.w == rhs.w && lhs.h == rhs.h;
-}
-
 TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};
-  dispatcher.movePointer({0, 0});
-
   dispatcher.reset();
-
-  SECTION("sub EventTarget is intersected by super target")
-  {
-    if (auto target = dispatcher.check(RequestEvent::NONE, {0, 0, 2, 2})) {
-      REQUIRE(target.rect() == SDL_Rect{0, 0, 2, 2});
-      REQUIRE(dispatcher.check(RequestEvent::NONE, {1, 1, 3, 3}).rect() ==
-              SDL_Rect{1, 1, 1, 1});
-    }
-    REQUIRE(dispatcher.check(RequestEvent::NONE, {1, 1, 3, 3}).rect() ==
-            SDL_Rect{1, 1, 3, 3});
-  }
 
   SECTION("sub target can be hovered")
   {
-    if (auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2})) {
-      REQUIRE(target.status() & Status::HOVERED);
-      REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
+    dispatcher.movePointer({0, 0});
+    {
+      auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2});
+      REQUIRE(target.status() == Status::HOVERED);
+      REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() ==
               Status::HOVERED);
+      REQUIRE(target.status() == Status::HOVERED);
     }
-    REQUIRE_FALSE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
-                  Status::HOVERED);
+    REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() ==
+            Status::NONE);
+  }
+  SECTION("sub target can be hovered only if its parent is hovered")
+  {
+    dispatcher.movePointer({2, 2});
+    {
+      auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2});
+      REQUIRE(target.status() == Status::NONE);
+      REQUIRE(dispatcher.check(RequestEvent::HOVER, {1, 1, 2, 2}).status() ==
+              Status::NONE);
+      REQUIRE(target.status() == Status::NONE);
+    }
+    REQUIRE(dispatcher.check(RequestEvent::HOVER, {1, 1, 2, 2}).status() ==
+            Status::HOVERED);
   }
 }
