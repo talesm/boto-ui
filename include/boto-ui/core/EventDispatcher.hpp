@@ -7,22 +7,11 @@
 #include <SDL_assert.h>
 #include <SDL_keycode.h>
 #include <SDL_rect.h>
+#include "TargetStatus.hpp"
 #include "util/CookieBase.hpp"
 
 namespace boto {
 
-/**
- * @brief The current element state
- *
- */
-enum Status : uint16_t
-{
-  STATUS_NONE = 0,
-  STATUS_HOVERED = 1,
-  STATUS_GRABBED = 2,
-  STATUS_FOCUSED = 4,
-  STATUS_INPUTING = 8,
-};
 /**
  * @brief The event the element is receiving
  *
