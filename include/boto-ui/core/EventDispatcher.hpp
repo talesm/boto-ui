@@ -9,7 +9,7 @@
 #include <SDL_rect.h>
 #include "Command.hpp"
 #include "Event.hpp"
-#include "TargetStatus.hpp"
+#include "Status.hpp"
 #include "util/CookieBase.hpp"
 
 namespace boto {
