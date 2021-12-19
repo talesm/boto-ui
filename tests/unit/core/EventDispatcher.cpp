@@ -599,6 +599,48 @@ TEST_CASE("EventDispatcher handles commands on focused", "[event-dispatcher]")
   }
 }
 
+TEST_CASE("EventDispatcher handles commands on input active",
+          "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+  dispatcher.reset();
+  dispatcher.tryFocus("id1"sv);
+  {
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::FOCUS_GAINED);
+  }
+  dispatcher.reset();
+  SECTION("Action command")
+  {
+    dispatcher.command(Command::ACTION);
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::ACTION);
+  }
+  SECTION("Enter command")
+  {
+    dispatcher.command(Command::ENTER);
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::END_LINE);
+  }
+  SECTION("Space command")
+  {
+    dispatcher.command(Command::SPACE);
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::SPACE);
+  }
+  SECTION("Backspace command")
+  {
+    dispatcher.command(Command::BACKSPACE);
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::BACKSPACE);
+  }
+}
+
 TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};

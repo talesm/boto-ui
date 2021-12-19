@@ -11,6 +11,7 @@ enum class Command
   ENTER,
   SPACE,
   ESCAPE,
+  BACKSPACE,
 };
 } // namespace boto
 

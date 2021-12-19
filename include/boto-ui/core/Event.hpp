@@ -15,6 +15,9 @@ enum class Event : uint16_t
   CANCEL,
   FOCUS_GAINED,
   FOCUS_LOST,
+  END_LINE,
+  SPACE,
+  BACKSPACE,
 };
 
 /**
@@ -27,6 +30,7 @@ enum class RequestEvent
   HOVER,
   GRAB,
   FOCUS,
+  INPUT,
 };
 
 } // namespace boto

@@ -159,6 +159,9 @@ private:
   StatusFlags checkFocus(RequestEvent req, Event& event);
   StatusFlags gainFocus(RequestEvent req, Event& event);
   StatusFlags loseFocus(RequestEvent req, Event& event);
+  StatusFlags checkFocusCommand(RequestEvent req, Event& event);
+
+  StatusFlags checkInputCommand(Event& event);
 
   StatusFlags checkActionCommand(Event& event);
 };
@@ -306,7 +309,7 @@ EventDispatcher::checkFocus(RequestEvent req, Event& event)
       return Status::FOCUSED;
     }
     idNextFocus = idCurrent;
-    return Status::FOCUSED | checkActionCommand(event);
+    return Status::FOCUSED | checkFocusCommand(req, event);
   }
   if (idLosingFocus == idCurrent) {
     event = Event::FOCUS_LOST;
@@ -354,9 +357,40 @@ EventDispatcher::loseFocus(RequestEvent req, Event& event)
   auto status = checkFocus(req, event);
   return status;
 }
+
+inline StatusFlags
+EventDispatcher::checkFocusCommand(RequestEvent req, Event& event)
+{
+  return req == RequestEvent::FOCUS ? checkActionCommand(event)
+                                    : checkInputCommand(event);
+}
+
+inline StatusFlags
+EventDispatcher::checkInputCommand(Event& event)
+{
+  switch (nextCommand) {
+  case Command::ENTER:
+    event = Event::END_LINE;
+    break;
+  case Command::SPACE:
+    event = Event::SPACE;
+    break;
+  case Command::BACKSPACE:
+    event = Event::BACKSPACE;
+    break;
+  default:
+    break;
+  }
+  return checkActionCommand(event);
+}
+
 inline StatusFlags
 EventDispatcher::checkActionCommand(Event& event)
 {
+  if (event != Event::NONE) {
+    idGrabbed.clear();
+    return Status::NONE;
+  }
   switch (nextCommand) {
   case Command::NONE:
     return Status::NONE;
@@ -368,9 +402,7 @@ EventDispatcher::checkActionCommand(Event& event)
   default:
     break;
   }
-  if (idGrabbed == idCurrent) {
-    idGrabbed.clear();
-  }
+  idGrabbed.clear();
   return Status::NONE;
 }
 
