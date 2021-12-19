@@ -38,6 +38,7 @@ enum class TextAction
 struct ElementState
 {
   DisplayList::Clip clip;
+  EventDispatcher::EventTarget eventTarget;
 };
 
 /**
@@ -49,32 +50,18 @@ struct ElementState
  */
 class State
 {
-  bool inFrame = false;
   SDL_Renderer* renderer;
   DisplayList dList;
   EventDispatcher dispatcher;
 
-  SDL_Point mPos;
-  bool mLeftPressed = false;
-  std::string eGrabbed;
-  bool mHovering = false;
-  bool mGrabbing = false;
-  bool mReleasing = false;
-  std::string eActive;
-  char tBuffer[SDL_TEXTINPUTEVENT_TEXT_SIZE];
   SDL_Keysym tKeysym;
-  bool tChanged = false;
-  TextAction tAction = TextAction::NONE;
-
-  std::string group;
-  bool gGrabbed = false;
-  bool gActive = false;
 
   Uint32 ticksCount;
 
   Font font;
 
   std::vector<ElementState> elements;
+  bool levelChanged = true;
 
 public:
   /// Ctor
@@ -92,7 +79,7 @@ public:
    */
   void render()
   {
-    SDL_assert(!inFrame);
+    SDL_assert(elements.empty());
     dList.visit([&](const DisplayListItem& item) {
       SDL_Color c = item.color;
       switch (item.action) {
@@ -125,6 +112,14 @@ public:
   void event(SDL_Event& ev);
 
   /**
+   * @brief Access event dispatcher
+   *
+   * @return EventDispatcher&
+   */
+  EventDispatcher& events() { return dispatcher; }
+  const EventDispatcher& events() const { return dispatcher; }
+
+  /**
    * @brief If a frame is in progress
    *
    * You shouldn't send events nor render during this
@@ -132,7 +127,7 @@ public:
    * @return true
    * @return false
    */
-  bool isInFrame() const { return inFrame; }
+  bool isInFrame() const { return !elements.empty(); }
 
   /**
    * @brief Check if the element was activated
@@ -142,13 +137,13 @@ public:
    *
    * Other ways of activate might exist.
    *
-   * @param id the element id
+   * @param qualifiedId the element id
    * @return true
    * @return false
    */
-  bool isActive(std::string_view id) const
+  bool isActive(std::string_view qualifiedId) const
   {
-    return isSameGroupId(eActive, id);
+    return dispatcher.isActive(qualifiedId);
   }
 
   /**
@@ -168,10 +163,17 @@ public:
    */
   TextAction checkText(std::string_view id) const
   {
-    if (!tChanged || !isSameGroupId(eActive, id)) {
+    auto& state = elements.back().eventTarget.state();
+    switch (state.event) {
+    case Event::INPUT:
+      return TextAction::INPUT;
+    case Event::END_LINE:
+    case Event::SPACE:
+    case Event::BACKSPACE:
+      return TextAction::KEYDOWN;
+    default:
       return TextAction::NONE;
     }
-    return tAction;
   }
 
   /**
@@ -182,7 +184,7 @@ public:
    *
    * @return std::string_view
    */
-  std::string_view lastText() const { return {tBuffer}; }
+  std::string_view lastText() const { return dispatcher.input(); }
 
   /**
    * @brief Get the last key
@@ -199,19 +201,19 @@ public:
    *
    * @return SDL_Point the last mouse pos
    */
-  SDL_Point lastMousePos() const { return mPos; }
+  SDL_Point lastMousePos() const { return dispatcher.pointerPosition(); }
 
   /**
    * @brief If true, the state wants the mouse events
    */
-  bool wantsMouse() const { return mHovering || !eGrabbed.empty(); }
+  bool wantsMouse() const { return dispatcher.wantsMouse(); }
 
   /**
    * @brief If true, the state wants the keyboard events
    * @return true
    * @return false
    */
-  bool wantsKeyboard() const { return !eActive.empty(); }
+  bool wantsKeyboard() const { return dispatcher.wantsKeyboard(); }
 
   /**
    * @brief Add the given item Shape to display list
@@ -246,23 +248,15 @@ public:
 private:
   void beginFrame()
   {
-    SDL_assert(inFrame == false);
-    inFrame = true;
-    dList.clear();
-    mHovering = false;
+    SDL_assert(elements.empty());
     ticksCount = SDL_GetTicks();
+    levelChanged = true;
   }
 
   void endFrame()
   {
-    SDL_assert(inFrame == true);
-    inFrame = false;
-    tChanged = false;
-    mGrabbing = false;
-    if (mReleasing) {
-      eGrabbed.clear();
-      mReleasing = false;
-    }
+    SDL_assert(elements.empty());
+    tKeysym = {};
     dispatcher.reset();
   }
 
@@ -271,138 +265,63 @@ private:
   friend class Frame;
 };
 
-inline bool
-State::isSameGroupId(std::string_view qualifiedId, std::string_view id) const
-{
-  auto groupSize = group.size();
-  if (qualifiedId.size() < groupSize + 1) {
-    return false;
-  }
-  if (qualifiedId.substr(0, groupSize) != group ||
-      qualifiedId[groupSize] != groupNameSeparator ||
-      qualifiedId.substr(groupSize + 1) != id) {
-    return false;
-  }
-  return true;
-}
-
 inline MouseAction
 State::checkMouse(std::string_view id, SDL_Rect r)
 {
-  SDL_assert(inFrame);
-  if (eGrabbed.empty()) {
-    if (!mLeftPressed) {
+  if (levelChanged) {
+    levelChanged = false;
+  } else {
+    elements.pop_back();
+  }
+  elements.emplace_back(ElementState{
+    dList.clip(r),
+    dispatcher.check(RequestEvent::INPUT, r, id),
+  });
+  auto& elState = elements.back().eventTarget.state();
+  switch (elState.event) {
+  case Event::GRAB:
+    return MouseAction::GRAB;
+  case Event::ACTION:
+    return MouseAction::ACTION;
+  case Event::CANCEL:
+    return MouseAction::CANCEL;
+  default:
+    if (!elState.status.test(Status::GRABBED)) {
       return MouseAction::NONE;
     }
-    if (SDL_PointInRect(&mPos, &r) && !mGrabbing) {
-      eGrabbed = group;
-      eGrabbed += groupNameSeparator;
-      eGrabbed += id;
-      eActive = group;
-      eActive += groupNameSeparator;
-      eActive += id;
-      gGrabbed = true;
-      gActive = true;
-      mGrabbing = true;
-      return MouseAction::GRAB;
-    }
-    if (isSameGroupId(eActive, id)) {
-      eActive.clear();
-    }
-    return MouseAction::NONE;
+    return elState.status.test(Status::HOVERED) ? MouseAction::HOLD
+                                                : MouseAction::DRAG;
   }
-  if (!isSameGroupId(eGrabbed, id)) {
-    return MouseAction::NONE;
-  }
-  gGrabbed = true;
-  if (mLeftPressed) {
-    if (mGrabbing) {
-      return MouseAction::GRAB;
-    }
-    if (!SDL_PointInRect(&mPos, &r)) {
-      return MouseAction::DRAG;
-    }
-    return MouseAction::HOLD;
-  }
-  mReleasing = true;
-  if (!SDL_PointInRect(&mPos, &r)) {
-    return MouseAction::CANCEL;
-  }
-  return MouseAction::ACTION;
 }
 
 inline void
 State::beginGroup(std::string_view id, const SDL_Rect& r)
 {
-  elements.emplace_back(ElementState{dList.clip(r)});
+  if (!levelChanged) {
+    elements.pop_back();
+  }
   if (id.empty()) {
-    return;
-  }
-  auto idSize = id.size();
-  auto groupSize = group.size();
-  if (groupSize > 0) {
-    group += groupNameSeparator;
-    if (!gGrabbed || eGrabbed.size() <= idSize + groupSize + 1 ||
-        std::string_view{eGrabbed}.substr(groupSize, idSize + 1) != id ||
-        eGrabbed[groupSize + idSize + 1] != groupNameSeparator) {
-      gGrabbed = false;
-    }
-    if (!gActive || eActive.size() <= idSize + groupSize + 1 ||
-        std::string_view{eActive}.substr(groupSize, idSize + 1) != id ||
-        eActive[groupSize + idSize + 1] != groupNameSeparator) {
-      gActive = false;
-    }
+    elements.emplace_back(ElementState{
+      dList.clip(r),
+      dispatcher.check(RequestEvent::GRAB, r, id),
+    });
   } else {
-    if (eGrabbed.size() <= idSize ||
-        std::string_view{eGrabbed}.substr(0, idSize) != id ||
-        eGrabbed[idSize] != groupNameSeparator) {
-      gGrabbed = false;
-    } else {
-      gGrabbed = true;
-    }
-    if (eActive.size() <= idSize ||
-        std::string_view{eActive}.substr(0, idSize) != id ||
-        eActive[idSize] != groupNameSeparator) {
-      gActive = false;
-    } else {
-      gActive = true;
-    }
+    elements.emplace_back(ElementState{
+      dList.clip(r),
+      dispatcher.check(RequestEvent::INPUT, r, id),
+    });
   }
-  group += id;
+  levelChanged = true;
 }
 
 inline void
 State::endGroup(std::string_view id, const SDL_Rect& r)
 {
-  if (id.empty()) {
-    // Nothing to do
-  } else if (id.size() >= group.size()) {
-    // A top level group
-    SDL_assert(group == id);
-    group.clear();
-    gActive = gGrabbed = false;
-    if (!mHovering && SDL_PointInRect(&mPos, &r)) {
-      mHovering = true;
-    }
-  } else {
-    auto groupSize = group.size();
-    auto nextSize = groupSize - id.size() - 1;
-    SDL_assert(group[nextSize] == groupNameSeparator);
-    SDL_assert(std::string_view{group}.substr(nextSize + 1) == id);
-
-    group.erase(group.begin() + nextSize, group.end());
-    if (!gGrabbed && eGrabbed.size() > nextSize &&
-        std::string_view{eGrabbed}.substr(0, nextSize) == group &&
-        eGrabbed[nextSize] == groupNameSeparator) {
-      gGrabbed = true;
-    }
-    if (!gActive && eActive.size() > nextSize &&
-        std::string_view{eActive}.substr(0, nextSize) == group &&
-        eActive[nextSize] == groupNameSeparator) {
-      gActive = true;
-    }
+  if (!levelChanged) {
+    elements.pop_back();
   }
   elements.pop_back();
+  levelChanged = true;
 }
 
 inline void
@@ -410,47 +329,38 @@ State::event(SDL_Event& ev)
 {
   switch (ev.type) {
   case SDL_MOUSEBUTTONDOWN:
-    mPos = {ev.button.x, ev.button.y};
-    if (ev.button.button == SDL_BUTTON_LEFT) {
-      mLeftPressed = true;
-    }
+    dispatcher.movePointer({ev.button.x, ev.button.y});
+    dispatcher.pressPointer(ev.button.button - SDL_BUTTON_LEFT);
     break;
   case SDL_MOUSEMOTION:
-    if (!(eGrabbed.empty() && mLeftPressed)) {
-      mPos = {ev.motion.x, ev.motion.y};
-    }
+    dispatcher.movePointer({ev.motion.x, ev.motion.y});
     break;
   case SDL_MOUSEBUTTONUP:
-    mPos = {ev.button.x, ev.button.y};
-    mLeftPressed = false;
+    dispatcher.movePointer({ev.button.x, ev.button.y});
+    dispatcher.releasePointer(ev.button.button - SDL_BUTTON_LEFT);
     break;
   case SDL_TEXTINPUT:
-    if (eActive.empty()) {
-      return;
-    }
-    for (int i = 0, j = 0; i < SDL_TEXTINPUTEVENT_TEXT_SIZE; ++i) {
-      tBuffer[j] = ev.text.text[i];
-      if (tBuffer[j] == 0) {
-        break;
-      }
-      // Magic handling of utf8
-      if ((tBuffer[j] & 0xc0) == 0x80) {
-        continue;
-      }
-      if ((tBuffer[j] & 0x80) != 0) {
-        tBuffer[j] = '\x0f'; // This is valid on our particular font
-      }
-      ++j;
-    }
-    tChanged = true;
-    tAction = TextAction::INPUT;
+    dispatcher.input(ev.text.text);
     break;
   case SDL_KEYDOWN:
-    if (!tChanged) {
-      tKeysym = ev.key.keysym;
-      tChanged = true;
-      tAction = TextAction::KEYDOWN;
+    switch (ev.key.keysym.sym) {
+    case SDLK_RETURN:
+    case SDLK_KP_ENTER:
+      dispatcher.command(Command::ENTER);
+      break;
+    case SDLK_SPACE:
+      dispatcher.command(Command::SPACE);
+      break;
+    case SDLK_ESCAPE:
+      dispatcher.command(Command::ESCAPE);
+      break;
+    case SDLK_BACKSPACE:
+      dispatcher.command(Command::BACKSPACE);
+      break;
+    default:
+      break;
     }
+    tKeysym = ev.key.keysym;
   default:
     break;
   }

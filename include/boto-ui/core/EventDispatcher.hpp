@@ -86,6 +86,10 @@ public:
     return !pointerReleased && pointerPressed & unsigned(1 << button);
   }
 
+  bool isActive(std::string_view id) const { return idFocus == id; }
+
+  Command command() const { return nextCommand; }
+
   std::string_view input() const { return inputBuffer; }
 
   /**
