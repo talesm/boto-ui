@@ -50,64 +50,45 @@ public:
   /// @name EventTriggers Event triggers
   /// @{
   void movePointer(const SDL_Point& pos) { pointerPos = pos; }
+
   void pressPointer(unsigned button)
   {
     SDL_assert(button < 32);
     pointerPressed |= 1 << button;
   }
+
   void releasePointer(unsigned button)
   {
     SDL_assert(button < 32);
     pointerReleased |= 1 << button;
   }
+
   void command(Command cmd) { nextCommand = cmd; }
+
   void input(std::string_view text);
   /// @}
 
-  /// Reset flags (call once per turn)
-  void reset()
-  {
-    SDL_assert(elementStack.empty());
-    hadHover = false;
-    pointerPressed = pointerReleased = 0;
-    if (idNextFocus == idFocus) {
-      idNextFocus.clear();
-    }
-    if (idLosingFocus == idFocus) {
-      idFocus.clear();
-    } else {
-      idLosingFocus.clear();
-    }
-    nextCommand = Command::NONE;
-    inputBuffer.clear();
-  }
+  /// @brief Reset Distatcher (call once per turn)
+  void reset();
+
   /**
    * @brief Try to focus on the given element
    *
    * @return true if it is possible to focus
    * @return false if focus already changed this frame
    */
-  bool tryFocus(std::string_view qualifiedId)
-  {
-    if (!idNextFocus.empty() && idNextFocus != idFocus) {
-      return false;
-    }
-    idNextFocus = qualifiedId;
-    if (!idFocus.empty()) {
-      idLosingFocus = idFocus;
-    }
-    return true;
-  }
+  bool tryFocus(std::string_view qualifiedId);
 
   /// @name accessors Accessors
   /// @{
   const SDL_Point pointerPosition() const { return pointerPos; }
+
   bool isPointerPressed(unsigned button) const
   {
     SDL_assert(button < 32);
-    // Equals is used because multiple buttons was buggy
-    return !pointerReleased && pointerPressed == unsigned(1 << button);
+    return !pointerReleased && pointerPressed & unsigned(1 << button);
   }
+
   std::string_view input() const { return inputBuffer; }
   /// @}
 
@@ -206,6 +187,37 @@ inline void
 EventDispatcher::input(std::string_view text)
 {
   inputBuffer += text;
+}
+
+inline void
+EventDispatcher::reset()
+{
+  SDL_assert(elementStack.empty());
+  hadHover = false;
+  pointerPressed = pointerReleased = 0;
+  if (idNextFocus == idFocus) {
+    idNextFocus.clear();
+  }
+  if (idLosingFocus == idFocus) {
+    idFocus.clear();
+  } else {
+    idLosingFocus.clear();
+  }
+  nextCommand = Command::NONE;
+  inputBuffer.clear();
+}
+
+inline bool
+EventDispatcher::tryFocus(std::string_view qualifiedId)
+{
+  if (!idNextFocus.empty() && idNextFocus != idFocus) {
+    return false;
+  }
+  idNextFocus = qualifiedId;
+  if (!idFocus.empty()) {
+    idLosingFocus = idFocus;
+  }
+  return true;
 }
 
 inline EventTarget
