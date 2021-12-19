@@ -1,6 +1,7 @@
 #ifndef BOTO_STATE_HPP_
 #define BOTO_STATE_HPP_
 
+#include <optional>
 #include <string>
 #include <SDL.h>
 #include "Font.hpp"
@@ -32,6 +33,11 @@ enum class TextAction
   NONE,    ///< Default status
   INPUT,   ///< text input
   KEYDOWN, ///< erased last character
+};
+
+struct ElementState
+{
+  DisplayList::Clip clip;
 };
 
 /**
@@ -68,7 +74,7 @@ class State
 
   Font font;
 
-  std::vector<DisplayList::Clip> clips;
+  std::vector<ElementState> elements;
 
 public:
   /// Ctor
@@ -257,6 +263,7 @@ private:
       eGrabbed.clear();
       mReleasing = false;
     }
+    dispatcher.reset();
   }
 
   bool isSameGroupId(std::string_view qualifiedId, std::string_view id) const;
@@ -327,7 +334,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
 inline void
 State::beginGroup(std::string_view id, const SDL_Rect& r)
 {
-  clips.emplace_back(dList.clip(r));
+  elements.emplace_back(ElementState{dList.clip(r)});
   if (id.empty()) {
     return;
   }
@@ -395,7 +402,7 @@ State::endGroup(std::string_view id, const SDL_Rect& r)
       gActive = true;
     }
   }
-  clips.pop_back();
+  elements.pop_back();
 }
 
 inline void
