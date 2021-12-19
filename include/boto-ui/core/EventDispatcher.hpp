@@ -177,6 +177,7 @@ public:
 
   StatusFlags status() const { return state().status; }
   Event event() const { return state().event; }
+  std::string_view input() const { return get()->input(); }
 
   const SDL_Rect& rect() const { return state().rect; }
 

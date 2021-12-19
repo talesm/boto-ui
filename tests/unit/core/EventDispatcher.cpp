@@ -641,10 +641,11 @@ TEST_CASE("EventDispatcher handles commands on input active",
   }
   SECTION("Text input")
   {
-    dispatcher.input("example text");
+    dispatcher.input("example text"sv);
     auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
     REQUIRE(target.status() == Status::FOCUSED);
     REQUIRE(target.event() == Event::INPUT);
+    REQUIRE(target.input() == "example text"sv);
   }
 }
 
