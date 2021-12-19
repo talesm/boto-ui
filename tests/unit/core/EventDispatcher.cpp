@@ -639,6 +639,13 @@ TEST_CASE("EventDispatcher handles commands on input active",
     REQUIRE(target.status() == Status::FOCUSED);
     REQUIRE(target.event() == Event::BACKSPACE);
   }
+  SECTION("Text input")
+  {
+    dispatcher.input("example text");
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::INPUT);
+  }
 }
 
 TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")

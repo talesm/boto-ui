@@ -47,7 +47,7 @@ private:
   friend class EventTarget;
 
 public:
-  /// @name Event triggers
+  /// @name EventTriggers Event triggers
   /// @{
   void movePointer(const SDL_Point& pos) { pointerPos = pos; }
   void pressPointer(unsigned button)
@@ -61,6 +61,7 @@ public:
     pointerReleased |= 1 << button;
   }
   void command(Command cmd) { nextCommand = cmd; }
+  void input(std::string_view text);
   /// @}
 
   /// Reset flags (call once per turn)
@@ -78,6 +79,7 @@ public:
       idLosingFocus.clear();
     }
     nextCommand = Command::NONE;
+    inputBuffer.clear();
   }
   /**
    * @brief Try to focus on the given element
@@ -97,7 +99,8 @@ public:
     return true;
   }
 
-  // Accessors
+  /// @name accessors Accessors
+  /// @{
   const SDL_Point pointerPosition() const { return pointerPos; }
   bool isPointerPressed(unsigned button) const
   {
@@ -105,6 +108,8 @@ public:
     // Equals is used because multiple buttons was buggy
     return !pointerReleased && pointerPressed == unsigned(1 << button);
   }
+  std::string_view input() const { return inputBuffer; }
+  /// @}
 
   /**
    * @brief Check events for the specified element
@@ -131,6 +136,7 @@ private:
   std::string idLosingFocus;
 
   Command nextCommand;
+  std::string inputBuffer;
 
   std::vector<EventTargetState> elementStack;
 
@@ -195,6 +201,12 @@ public:
 
   void discard(StatusFlags flags) { state().status.reset(flags); }
 };
+
+inline void
+EventDispatcher::input(std::string_view text)
+{
+  inputBuffer += text;
+}
 
 inline EventTarget
 EventDispatcher::check(RequestEvent req,
@@ -379,6 +391,9 @@ EventDispatcher::checkInputCommand(Event& event)
     event = Event::BACKSPACE;
     break;
   default:
+    if (!inputBuffer.empty()) {
+      event = Event::INPUT;
+    }
     break;
   }
   return checkActionCommand(event);

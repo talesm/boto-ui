@@ -18,6 +18,7 @@ enum class Event : uint16_t
   END_LINE,
   SPACE,
   BACKSPACE,
+  INPUT,
 };
 
 /**
