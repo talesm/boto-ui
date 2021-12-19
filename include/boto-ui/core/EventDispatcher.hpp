@@ -63,7 +63,7 @@ public:
     pointerReleased |= 1 << button;
   }
 
-  void command(Command cmd) { nextCommand = cmd; }
+  void command(Command cmd);
 
   void input(std::string_view text);
   /// @}
@@ -185,8 +185,27 @@ public:
 };
 
 inline void
+EventDispatcher::command(Command cmd)
+{
+  nextCommand = cmd;
+}
+
+inline void
 EventDispatcher::input(std::string_view text)
 {
+  if (nextCommand == Command::SPACE) {
+    nextCommand = Command::NONE;
+    inputBuffer += ' ';
+    if (text == " ") {
+      return;
+    }
+  } else if (nextCommand == Command::BACKSPACE) {
+    if (inputBuffer.empty()) {
+      return;
+    }
+    nextCommand = Command::NONE;
+    inputBuffer.pop_back();
+  }
   inputBuffer += text;
 }
 
@@ -395,13 +414,31 @@ EventDispatcher::checkInputCommand(Event& event)
 {
   switch (nextCommand) {
   case Command::ENTER:
-    event = Event::END_LINE;
+    if (inputBuffer.empty()) {
+      event = Event::END_LINE;
+    } else {
+      event = Event::NONE;
+      return Status::NONE;
+    }
     break;
   case Command::SPACE:
-    event = Event::SPACE;
+    if (inputBuffer.empty()) {
+      event = Event::SPACE;
+    } else {
+      event = Event::INPUT;
+      inputBuffer += ' ';
+    }
     break;
   case Command::BACKSPACE:
-    event = Event::BACKSPACE;
+    if (inputBuffer.empty()) {
+      event = Event::BACKSPACE;
+    } else {
+      event = Event::INPUT;
+      inputBuffer.pop_back();
+    }
+    break;
+  case Command::ESCAPE:
+    event = Event::CANCEL;
     break;
   default:
     if (!inputBuffer.empty()) {

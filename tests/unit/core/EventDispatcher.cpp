@@ -599,7 +599,7 @@ TEST_CASE("EventDispatcher handles commands on focused", "[event-dispatcher]")
   }
 }
 
-TEST_CASE("EventDispatcher handles commands on input active",
+TEST_CASE("EventDispatcher handles commands on input focused",
           "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};
@@ -646,6 +646,143 @@ TEST_CASE("EventDispatcher handles commands on input active",
     REQUIRE(target.status() == Status::FOCUSED);
     REQUIRE(target.event() == Event::INPUT);
     REQUIRE(target.input() == "example text"sv);
+  }
+}
+TEST_CASE("EventDispatcher interaction input and command on focused input",
+          "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+  dispatcher.reset();
+  dispatcher.tryFocus("id1"sv);
+  {
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::FOCUS_GAINED);
+  }
+  dispatcher.reset();
+
+  SECTION("action -> input")
+  {
+    dispatcher.command(Command::ACTION);
+    dispatcher.input("example text"sv);
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::INPUT);
+    REQUIRE(target.input() == "example text"sv);
+  }
+  SECTION("enter -> input")
+  {
+    dispatcher.command(Command::ENTER);
+    dispatcher.input("example text"sv);
+
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::NONE);
+  }
+  SECTION("space -> input")
+  {
+    dispatcher.command(Command::SPACE);
+    dispatcher.input("example text"sv);
+
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::INPUT);
+    REQUIRE(target.input() == " example text"sv);
+  }
+  SECTION("escape -> input")
+  {
+    dispatcher.command(Command::ESCAPE);
+    dispatcher.input("example text"sv);
+
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::CANCEL);
+  }
+  SECTION("backspace -> input")
+  {
+    dispatcher.command(Command::BACKSPACE);
+    dispatcher.input("example text"sv);
+
+    auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::BACKSPACE);
+  }
+  SECTION("input -> command")
+  {
+    dispatcher.input("example text"sv);
+    SECTION("action")
+    {
+      dispatcher.command(Command::ACTION);
+
+      auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+      REQUIRE(target.status() == Status::FOCUSED);
+      REQUIRE(target.event() == Event::INPUT);
+      REQUIRE(target.input() == "example text"sv);
+    }
+    SECTION("enter")
+    {
+      dispatcher.command(Command::ENTER);
+
+      auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+      REQUIRE(target.status() == Status::FOCUSED);
+      REQUIRE(target.event() == Event::NONE);
+    }
+    SECTION("space")
+    {
+      dispatcher.command(Command::SPACE);
+
+      SECTION("input -> space")
+      {
+        auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+        REQUIRE(target.status() == Status::FOCUSED);
+        REQUIRE(target.event() == Event::INPUT);
+        REQUIRE(target.input() == "example text "sv);
+      }
+      SECTION("input -> space -> normal input")
+      {
+        dispatcher.input("example2"sv);
+        auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+        REQUIRE(target.status() == Status::FOCUSED);
+        REQUIRE(target.event() == Event::INPUT);
+        REQUIRE(target.input() == "example text example2"sv);
+      }
+      SECTION("input -> space -> space input")
+      {
+        dispatcher.input(" "sv);
+        auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+        REQUIRE(target.status() == Status::FOCUSED);
+        REQUIRE(target.event() == Event::INPUT);
+        REQUIRE(target.input() == "example text "sv);
+      }
+    }
+    SECTION("escape")
+    {
+      dispatcher.command(Command::ESCAPE);
+
+      auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+      REQUIRE(target.status() == Status::FOCUSED);
+      REQUIRE(target.event() == Event::CANCEL);
+    }
+    SECTION("backspace")
+    {
+      dispatcher.command(Command::BACKSPACE);
+
+      SECTION("input -> backspace")
+      {
+        auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+        REQUIRE(target.status() == Status::FOCUSED);
+        REQUIRE(target.event() == Event::INPUT);
+        REQUIRE(target.input() == "example tex"sv);
+      }
+      SECTION("input -> backspace -> input")
+      {
+        dispatcher.input("example2"sv);
+        auto target = dispatcher.check(RequestEvent::INPUT, {0}, "id1"sv);
+        REQUIRE(target.status() == Status::FOCUSED);
+        REQUIRE(target.event() == Event::INPUT);
+        REQUIRE(target.input() == "example texexample2"sv);
+      }
+    }
   }
 }
 
