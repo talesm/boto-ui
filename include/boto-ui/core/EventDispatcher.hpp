@@ -163,21 +163,7 @@ private:
 
   std::vector<EventTargetState> elementStack;
 
-  void popTarget()
-  {
-    auto& element = elementStack.back();
-    if (element.status & Status::HOVERED) {
-      hadHover = true;
-    }
-    auto sz = element.idLength + 1;
-    elementStack.pop_back();
-    if (elementStack.empty()) {
-      idCurrent.clear();
-    } else {
-      SDL_assert_paranoid(idCurrent.size() > sz);
-      idCurrent.resize(idCurrent.size() - sz);
-    }
-  }
+  void popTarget();
 
   StatusFlags checkHover(RequestEvent req, const SDL_Rect& rect, Event& event);
 
@@ -511,6 +497,34 @@ EventDispatcher::checkActionCommand(Event& event)
   }
   idGrabbed.clear();
   return Status::NONE;
+}
+
+inline void
+EventDispatcher::popTarget()
+{
+  auto element = elementStack.back();
+  elementStack.pop_back();
+  if (element.status.test(Status::HOVERED)) {
+    hadHover = true;
+  }
+  if (elementStack.empty()) {
+    idCurrent.clear();
+    return;
+  }
+
+  auto sz = element.idLength + 1;
+  SDL_assert_paranoid(idCurrent.size() > sz);
+  idCurrent.resize(idCurrent.size() - sz);
+
+  bool hadGrab = element.status.test(Status::GRABBED);
+  if (!hadGrab) {
+    return;
+  }
+  auto& superElement = elementStack.back();
+  superElement.status.reset(Status::GRABBED);
+  if (superElement.event == Event::GRAB) {
+    superElement.event = Event::NONE;
+  }
 }
 
 } // namespace boto

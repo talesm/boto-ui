@@ -817,4 +817,27 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
     REQUIRE(dispatcher.check(RequestEvent::HOVER, {1, 1, 2, 2}).status() ==
             Status::HOVERED);
   }
+  SECTION("sub target can be grabbed")
+  {
+    dispatcher.movePointer({0, 0});
+    dispatcher.pressPointer(0);
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(superTarget.event() == Event::GRAB);
+
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() == (Status::HOVERED | Status::GRABBED));
+        REQUIRE(subTarget.event() == Event::GRAB);
+      }
+
+      REQUIRE(superTarget.status() == Status::HOVERED);
+    }
+    REQUIRE(
+      dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id0"sv).status() ==
+      Status::NONE);
+  }
 }
