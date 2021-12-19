@@ -31,8 +31,6 @@ struct EventTargetState
   Event event;        ///< @brief the event target event
 };
 
-class EventTarget;
-
 /**
  * @brief Component responsible to handle and dispatch events for the UI
  *
@@ -44,7 +42,6 @@ private:
   {
     void operator()(EventDispatcher* dispatcher) { dispatcher->popTarget(); }
   };
-  friend class EventTarget;
 
 public:
   /// @name EventTriggers Event triggers
@@ -104,6 +101,7 @@ public:
   bool wantsKeyboard() const { return !idFocus.empty(); }
   /// @}
 
+  class EventTarget;
   /**
    * @brief Check events for the specified element
    *
@@ -169,7 +167,7 @@ private:
  * @brief An element able to receive events
  *
  */
-class EventTarget
+class EventDispatcher::EventTarget
   : public CookieBase<EventDispatcher, EventDispatcher::EventTargetUnStack>
 {
   size_t index;
@@ -252,7 +250,7 @@ EventDispatcher::tryFocus(std::string_view qualifiedId)
   return true;
 }
 
-inline EventTarget
+inline EventDispatcher::EventTarget
 EventDispatcher::check(RequestEvent req,
                        const SDL_Rect& rect,
                        std::string_view id)
