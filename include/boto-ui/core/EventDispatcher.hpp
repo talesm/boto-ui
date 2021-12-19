@@ -46,22 +46,28 @@ private:
 public:
   /// @name EventTriggers Event triggers
   /// @{
+
+  /// @brief Change position for pointer
   void movePointer(const SDL_Point& pos) { pointerPos = pos; }
 
+  /// @brief Mark given mouse button as pressed on this frame
   void pressPointer(unsigned button)
   {
     SDL_assert(button < 32);
     pointerPressed |= 1 << button;
   }
 
+  /// @brief Mark given mouse button as released on this frame
   void releasePointer(unsigned button)
   {
     SDL_assert(button < 32);
     pointerReleased |= 1 << button;
   }
 
+  /// @brief Insert a keyboard command
   void command(Command cmd);
 
+  /// @brief Insert text
   void input(std::string_view text);
   /// @}
 
@@ -78,18 +84,40 @@ public:
 
   /// @name accessors Accessors
   /// @{
-  const SDL_Point pointerPosition() const { return pointerPos; }
 
+  /**
+   * @brief Return current pointer position
+   *
+   * @return const SDL_Point
+   */
+  const SDL_Point& pointerPosition() const { return pointerPos; }
+
+  /**
+   * @brief Check if the n-th button is pressed
+   *
+   * @param button the button number. 0 is the left, 1 middle and 2 is right
+   * @return true
+   * @return false
+   */
   bool isPointerPressed(unsigned button) const
   {
     SDL_assert(button < 32);
     return !pointerReleased && pointerPressed & unsigned(1 << button);
   }
 
+  /**
+   * @brief Checks if given id is focused
+   *
+   * @param id the qualified id
+   * @return true
+   * @return false
+   */
   bool isActive(std::string_view id) const { return idFocus == id; }
 
+  /// @brief Gets the current command
   Command command() const { return nextCommand; }
 
+  /// @brief Gets the current input
   std::string_view input() const { return inputBuffer; }
 
   /**
