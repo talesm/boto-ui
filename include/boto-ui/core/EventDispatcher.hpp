@@ -7,9 +7,9 @@
 #include <SDL_assert.h>
 #include <SDL_keycode.h>
 #include <SDL_rect.h>
-#include "Command.hpp"
-#include "Event.hpp"
-#include "Status.hpp"
+#include "core/Command.hpp"
+#include "core/Event.hpp"
+#include "core/Status.hpp"
 #include "util/CookieBase.hpp"
 
 namespace boto {
@@ -90,6 +90,18 @@ public:
   }
 
   std::string_view input() const { return inputBuffer; }
+
+  /**
+   * @brief If true, the state wants the mouse events
+   */
+  bool wantsMouse() const { return hadHover || !idGrabbed.empty(); }
+
+  /**
+   * @brief If true, the state wants the keyboard events
+   * @return true
+   * @return false
+   */
+  bool wantsKeyboard() const { return !idFocus.empty(); }
   /// @}
 
   /**

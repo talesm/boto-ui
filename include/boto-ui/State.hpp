@@ -5,10 +5,9 @@
 #include <SDL.h>
 #include "Font.hpp"
 #include "core/DisplayList.hpp"
+#include "core/EventDispatcher.hpp"
 
 namespace boto {
-
-constexpr char groupNameSeparator = '/';
 
 /**
  * @brief The mouse action and status for a element in a frame
@@ -47,6 +46,7 @@ class State
   bool inFrame = false;
   SDL_Renderer* renderer;
   DisplayList dList;
+  EventDispatcher dispatcher;
 
   SDL_Point mPos;
   bool mLeftPressed = false;
