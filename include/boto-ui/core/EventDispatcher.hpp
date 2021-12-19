@@ -402,7 +402,17 @@ EventDispatcher::gainFocus(RequestEvent req, Event& event)
     return checkFocus(req, event);
   }
   if (!idNextFocus.empty()) {
-    return Status::NONE;
+    if (elementStack.empty() ||
+        !elementStack.back().status.test(Status::FOCUSED)) {
+      return Status::NONE;
+    }
+    auto& superElement = elementStack.back();
+    if (superElement.event != Event::NONE &&
+        superElement.event != Event::FOCUS_GAINED) {
+      idNextFocus = idCurrent;
+      idLosingFocus = idFocus;
+      return Status::NONE;
+    }
   }
   idNextFocus = idCurrent;
   if (event != Event::NONE || !idLosingFocus.empty() ||
@@ -517,13 +527,24 @@ EventDispatcher::popTarget()
   idCurrent.resize(idCurrent.size() - sz);
 
   bool hadGrab = element.status.test(Status::GRABBED);
-  if (!hadGrab) {
+  bool hadFocus = element.status.test(Status::FOCUSED);
+  if (!hadGrab && !hadFocus) {
     return;
   }
   auto& superElement = elementStack.back();
-  superElement.status.reset(Status::GRABBED);
-  if (superElement.event == Event::GRAB) {
-    superElement.event = Event::NONE;
+  if (hadGrab) {
+    superElement.status.reset(Status::GRABBED);
+    if (superElement.event == Event::GRAB) {
+      superElement.event = Event::NONE;
+    }
+  }
+  if (hadFocus) {
+    superElement.status.reset(Status::FOCUSED);
+    if (superElement.event == Event::FOCUS_GAINED) {
+      superElement.event = Event::NONE;
+    } else {
+      superElement.event = Event::FOCUS_LOST;
+    }
   }
 }
 

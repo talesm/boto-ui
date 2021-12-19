@@ -840,4 +840,27 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
       dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id0"sv).status() ==
       Status::NONE);
   }
+  SECTION("sub target can be focused")
+  {
+    dispatcher.movePointer({0, 0});
+    dispatcher.pressPointer(1);
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::FOCUSED));
+      REQUIRE(superTarget.event() == Event::FOCUS_GAINED);
+
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() == (Status::HOVERED | Status::FOCUSED));
+        REQUIRE(subTarget.event() == Event::FOCUS_GAINED);
+      }
+
+      // REQUIRE(superTarget.status() == Status::HOVERED);
+    }
+    REQUIRE(
+      dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id0"sv).status() ==
+      Status::NONE);
+  }
 }
