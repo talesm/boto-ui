@@ -408,19 +408,23 @@ State::endGroup(std::string_view id, const SDL_Rect& r)
 inline void
 State::event(SDL_Event& ev)
 {
-  if (ev.type == SDL_MOUSEBUTTONDOWN) {
+  switch (ev.type) {
+  case SDL_MOUSEBUTTONDOWN:
     mPos = {ev.button.x, ev.button.y};
     if (ev.button.button == SDL_BUTTON_LEFT) {
       mLeftPressed = true;
     }
-  } else if (ev.type == SDL_MOUSEMOTION) {
+    break;
+  case SDL_MOUSEMOTION:
     if (!(eGrabbed.empty() && mLeftPressed)) {
       mPos = {ev.motion.x, ev.motion.y};
     }
-  } else if (ev.type == SDL_MOUSEBUTTONUP) {
+    break;
+  case SDL_MOUSEBUTTONUP:
     mPos = {ev.button.x, ev.button.y};
     mLeftPressed = false;
-  } else if (ev.type == SDL_TEXTINPUT) {
+    break;
+  case SDL_TEXTINPUT:
     if (eActive.empty()) {
       return;
     }
@@ -440,12 +444,15 @@ State::event(SDL_Event& ev)
     }
     tChanged = true;
     tAction = TextAction::INPUT;
-  } else if (ev.type == SDL_KEYDOWN) {
+    break;
+  case SDL_KEYDOWN:
     if (!tChanged) {
       tKeysym = ev.key.keysym;
       tChanged = true;
       tAction = TextAction::KEYDOWN;
     }
+  default:
+    break;
   }
 }
 } // namespace boto
