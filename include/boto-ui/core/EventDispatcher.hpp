@@ -197,7 +197,7 @@ class EventDispatcher::EventTarget
 
   friend class EventDispatcher;
 
-  EventTargetState& state() { return get()->elementStack[index]; }
+  EventTargetState& stateMutable() { return get()->elementStack[index]; }
 
 public:
   EventTarget() = default;
@@ -570,7 +570,7 @@ EventDispatcher::popTarget()
 inline void
 EventDispatcher::EventTarget::shrinkWidth(int w)
 {
-  auto& rect = state().rect;
+  auto& rect = stateMutable().rect;
   rect.w = w;
   if (get()->pointerPos.x - rect.x >= w) {
     discard();
@@ -580,7 +580,7 @@ EventDispatcher::EventTarget::shrinkWidth(int w)
 inline void
 EventDispatcher::EventTarget::shrinkHeight(int h)
 {
-  auto& rect = state().rect;
+  auto& rect = stateMutable().rect;
   rect.h = h;
   if (get()->pointerPos.y - rect.y >= h) {
     discard();
@@ -590,7 +590,7 @@ EventDispatcher::EventTarget::shrinkHeight(int h)
 inline void
 EventDispatcher::EventTarget::shrink(int w, int h)
 {
-  auto& rect = state().rect;
+  auto& rect = stateMutable().rect;
   rect.w = w;
   rect.h = h;
   if (get()->pointerPos.y - rect.y >= h) {
@@ -601,7 +601,7 @@ EventDispatcher::EventTarget::shrink(int w, int h)
 inline void
 EventDispatcher::EventTarget::discard()
 {
-  auto& elState = state();
+  auto& elState = stateMutable();
 
   if (!elState.status.test(Status::GRABBED)) {
     auto dispatcher = get();
