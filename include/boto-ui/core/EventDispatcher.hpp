@@ -146,6 +146,18 @@ public:
                     const SDL_Rect& rect,
                     std::string_view id = {});
 
+  /// @brief Shrink the width of top target @b to given value
+  void shrinkWidth(int w);
+
+  /// @brief Shrink the height of top target @b to given value
+  void shrinkHeight(int h);
+
+  /// @brief Shrink the width and height of top target @b to given value
+  void shrink(int w, int h);
+
+  /// @brief Discard status and events acquired on current frame
+  void discard();
+
 private:
   SDL_Point pointerPos;
   Uint32 pointerPressed;
@@ -209,14 +221,6 @@ public:
   std::string_view input() const { return get()->input(); }
 
   const SDL_Rect& rect() const { return state().rect; }
-
-  void shrinkWidth(int w);
-
-  void shrinkHeight(int h);
-
-  void shrink(int w, int h);
-
-  void discard();
 };
 
 inline void
@@ -568,70 +572,65 @@ EventDispatcher::popTarget()
 }
 
 inline void
-EventDispatcher::EventTarget::shrinkWidth(int w)
+EventDispatcher::shrinkWidth(int w)
 {
-  auto& rect = stateMutable().rect;
+  auto& rect = elementStack.back().rect;
   rect.w = w;
-  if (get()->pointerPos.x - rect.x >= w) {
+  if (pointerPos.x - rect.x >= w) {
     discard();
   }
 }
 
 inline void
-EventDispatcher::EventTarget::shrinkHeight(int h)
+EventDispatcher::shrinkHeight(int h)
 {
-  auto& rect = stateMutable().rect;
+  auto& rect = elementStack.back().rect;
   rect.h = h;
-  if (get()->pointerPos.y - rect.y >= h) {
+  if (pointerPos.y - rect.y >= h) {
     discard();
   }
 }
 
 inline void
-EventDispatcher::EventTarget::shrink(int w, int h)
+EventDispatcher::shrink(int w, int h)
 {
-  auto& rect = stateMutable().rect;
+  auto& rect = elementStack.back().rect;
   rect.w = w;
   rect.h = h;
-  if (get()->pointerPos.y - rect.y >= h) {
+  if (pointerPos.y - rect.y >= h) {
     discard();
   }
 }
 
 inline void
-EventDispatcher::EventTarget::discard()
+EventDispatcher::discard()
 {
-  auto& elState = stateMutable();
+  auto& elState = elementStack.back();
 
   if (!elState.status.test(Status::GRABBED)) {
-    auto dispatcher = get();
-
     if (elState.event != Event::FOCUS_GAINED) {
       elState.status.reset(Status::HOVERED);
-      if (dispatcher->idNextFocus == dispatcher->idCurrent) {
-        dispatcher->idNextFocus.clear();
+      if (idNextFocus == idCurrent) {
+        idNextFocus.clear();
       }
       return;
     }
     elState.status.reset(Status::HOVERED | Status::FOCUSED);
     elState.event = Event::NONE;
-    dispatcher->idFocus = dispatcher->idNextFocus = dispatcher->idLosingFocus;
-    dispatcher->idLosingFocus.clear();
+    idFocus = idNextFocus = idLosingFocus;
+    idLosingFocus.clear();
   } else if (elState.event == Event::GRAB) {
-    auto dispatcher = get();
-
     elState.status.reset(Status::HOVERED | Status::GRABBED);
     elState.event = Event::NONE;
-    if (dispatcher->elementStack.size() > 1) {
-      dispatcher->idGrabbed.resize(dispatcher->idGrabbed.size() -
-                                   elState.idLength - 1);
+    if (elementStack.size() > 1) {
+      idGrabbed.resize(idGrabbed.size() - elState.idLength - 1);
     } else {
-      dispatcher->idGrabbed.clear();
+      idGrabbed.clear();
     }
 
     if (!elState.status.test(Status::FOCUSED)) {
-      if (dispatcher->idNextFocus == dispatcher->idCurrent) {
-        dispatcher->idNextFocus.clear();
+      if (idNextFocus == idCurrent) {
+        idNextFocus.clear();
       }
     }
   }

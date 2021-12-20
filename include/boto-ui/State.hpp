@@ -330,7 +330,7 @@ State::endGroup(std::string_view id, const SDL_Rect& r)
   if (!levelChanged) {
     elements.pop_back();
   }
-  elements.back().eventTarget.shrink(r.w, r.h);
+  dispatcher.shrink(r.w, r.h);
   elements.pop_back();
   levelChanged = true;
 }

@@ -75,7 +75,7 @@ TEST_CASE("EventDispatcher hovered target can be discarded",
   dispatcher.movePointer({0, 0});
   if (auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 1, 1})) {
     REQUIRE(target.status() == Status::HOVERED);
-    target.discard();
+    dispatcher.discard();
   }
   REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
           Status::HOVERED);
@@ -214,7 +214,7 @@ TEST_CASE("EventDispatcher grabbed target can be discarded",
     auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
     REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
     REQUIRE(target.event() == Event::GRAB);
-    target.discard();
+    dispatcher.discard();
     REQUIRE(target.status() == Status::NONE);
     REQUIRE(target.event() == Event::NONE);
   }
@@ -227,7 +227,7 @@ TEST_CASE("EventDispatcher grabbed target can be discarded",
   dispatcher.reset();
   {
     auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id2"sv);
-    target.discard();
+    dispatcher.discard();
     REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
     REQUIRE(target.event() == Event::NONE);
   }
@@ -609,7 +609,7 @@ TEST_CASE(
     auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
     REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
     REQUIRE(target.event() == Event::GRAB);
-    target.discard();
+    dispatcher.discard();
     REQUIRE(target.status() == Status::NONE);
     REQUIRE(target.event() == Event::NONE);
   }
@@ -642,7 +642,7 @@ TEST_CASE("EventDispatcher target grabbed given focus can not be discarded",
     REQUIRE(target.status() ==
             (Status::HOVERED | Status::GRABBED | Status::FOCUSED));
     REQUIRE(target.event() == Event::FOCUS_GAINED);
-    target.discard();
+    dispatcher.discard();
     REQUIRE(target.status() ==
             (Status::HOVERED | Status::GRABBED | Status::FOCUSED));
     REQUIRE(target.event() == Event::FOCUS_GAINED);
@@ -662,7 +662,7 @@ TEST_CASE("EventDispatcher target not grabbed given focus can be discarded",
     REQUIRE(target.status() == (Status::HOVERED | Status::FOCUSED));
     REQUIRE(target.event() == Event::FOCUS_GAINED);
 
-    target.discard();
+    dispatcher.discard();
     REQUIRE(target.status() == Status::NONE);
     REQUIRE(target.event() == Event::NONE);
   }
@@ -781,7 +781,7 @@ TEST_CASE("EventDispatcher target not grabbed given focus can take from "
     auto target = dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
     REQUIRE(target.status() == Status::HOVERED);
     REQUIRE(target.event() == Event::NONE);
-    target.discard();
+    dispatcher.discard();
     REQUIRE(target.status() == Status::NONE);
     REQUIRE(target.event() == Event::NONE);
   }
@@ -1089,7 +1089,7 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
           dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id2"sv);
         REQUIRE(subTarget.status() == (Status::HOVERED | Status::GRABBED));
         REQUIRE(subTarget.event() == Event::GRAB);
-        subTarget.discard();
+        dispatcher.discard();
         REQUIRE(subTarget.status() == Status::NONE);
         REQUIRE(subTarget.event() == Event::NONE);
       }
@@ -1138,7 +1138,7 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
           dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id2"sv);
         REQUIRE(subTarget.status() == (Status::HOVERED | Status::FOCUSED));
         REQUIRE(subTarget.event() == Event::FOCUS_GAINED);
-        subTarget.discard();
+        dispatcher.discard();
         REQUIRE(subTarget.status() == Status::NONE);
         REQUIRE(subTarget.event() == Event::NONE);
       }
@@ -1174,36 +1174,36 @@ TEST_CASE("EventDispatcher can be shrunk", "[event-dispatcher]")
     REQUIRE(target.status() == Status::HOVERED);
     SECTION("Horizontal")
     {
-      target.shrinkWidth(2);
+      dispatcher.shrinkWidth(2);
       REQUIRE(target.rect().w == 2);
       REQUIRE(target.rect().h == 3);
       REQUIRE(target.status() == Status::HOVERED);
 
-      target.shrinkWidth(1);
+      dispatcher.shrinkWidth(1);
       REQUIRE(target.rect().w == 1);
       REQUIRE(target.rect().h == 3);
       REQUIRE(target.status() == Status::NONE);
     }
     SECTION("Vertical")
     {
-      target.shrinkHeight(2);
+      dispatcher.shrinkHeight(2);
       REQUIRE(target.rect().w == 3);
       REQUIRE(target.rect().h == 2);
       REQUIRE(target.status() == Status::HOVERED);
 
-      target.shrinkHeight(1);
+      dispatcher.shrinkHeight(1);
       REQUIRE(target.rect().w == 3);
       REQUIRE(target.rect().h == 1);
       REQUIRE(target.status() == Status::NONE);
     }
     SECTION("Both")
     {
-      target.shrink(2, 2);
+      dispatcher.shrink(2, 2);
       REQUIRE(target.rect().w == 2);
       REQUIRE(target.rect().h == 2);
       REQUIRE(target.status() == Status::HOVERED);
 
-      target.shrink(1, 1);
+      dispatcher.shrink(1, 1);
       REQUIRE(target.rect().w == 1);
       REQUIRE(target.rect().h == 1);
       REQUIRE(target.status() == Status::NONE);
