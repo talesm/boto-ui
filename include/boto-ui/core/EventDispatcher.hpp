@@ -370,6 +370,9 @@ EventDispatcher::checkGrabOut(RequestEvent req, Event& event)
   event = Event::CANCEL;
   idGrabbed.clear();
   if (req == RequestEvent::GRAB || idFocus != idCurrent) {
+    if (idNextFocus == idCurrent) {
+      idNextFocus.clear();
+    }
     return Status::NONE;
   }
   if (pointerPressed != 0) {
@@ -400,6 +403,7 @@ EventDispatcher::checkFocus(RequestEvent req, Event& event)
   }
   if (idLosingFocus == idCurrent) {
     event = Event::FOCUS_LOST;
+    idLosingFocus.clear();
     return Status::NONE;
   }
   if (idNextFocus == idCurrent) {
@@ -600,11 +604,24 @@ EventDispatcher::EventTarget::discard()
   auto& elState = state();
 
   if (!elState.status.test(Status::GRABBED)) {
-    elState.status.reset(Status::HOVERED);
+    auto dispatcher = get();
+
+    if (elState.event != Event::FOCUS_GAINED) {
+      elState.status.reset(Status::HOVERED);
+      if (dispatcher->idNextFocus == dispatcher->idCurrent) {
+        dispatcher->idNextFocus.clear();
+      }
+      return;
+    }
+    elState.status.reset(Status::HOVERED | Status::FOCUSED);
+    elState.event = Event::NONE;
+    dispatcher->idFocus = dispatcher->idNextFocus = dispatcher->idLosingFocus;
+    dispatcher->idLosingFocus.clear();
   } else if (elState.event == Event::GRAB) {
+    auto dispatcher = get();
+
     elState.status.reset(Status::HOVERED | Status::GRABBED);
     elState.event = Event::NONE;
-    auto dispatcher = get();
     if (dispatcher->elementStack.size() > 1) {
       dispatcher->idGrabbed.resize(dispatcher->idGrabbed.size() -
                                    elState.idLength - 1);

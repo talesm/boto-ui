@@ -622,6 +622,182 @@ TEST_CASE(
   }
 }
 
+TEST_CASE("EventDispatcher target grabbed given focus can not be discarded",
+          "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(0);
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+    REQUIRE(target.event() == Event::GRAB);
+  }
+
+  dispatcher.reset();
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() ==
+            (Status::HOVERED | Status::GRABBED | Status::FOCUSED));
+    REQUIRE(target.event() == Event::FOCUS_GAINED);
+    target.discard();
+    REQUIRE(target.status() ==
+            (Status::HOVERED | Status::GRABBED | Status::FOCUSED));
+    REQUIRE(target.event() == Event::FOCUS_GAINED);
+  }
+}
+
+TEST_CASE("EventDispatcher target not grabbed given focus can be discarded",
+          "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(1);
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::HOVERED | Status::FOCUSED));
+    REQUIRE(target.event() == Event::FOCUS_GAINED);
+
+    target.discard();
+    REQUIRE(target.status() == Status::NONE);
+    REQUIRE(target.event() == Event::NONE);
+  }
+}
+
+TEST_CASE(
+  "EventDispatcher target not grabbed given focus can take from grabbed",
+  "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(0);
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+    REQUIRE(target.event() == Event::GRAB);
+  }
+  dispatcher.reset();
+  dispatcher.movePointer({1, 1});
+  SECTION("Regular pace")
+  {
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+      REQUIRE(target.status() == (Status::GRABBED | Status::FOCUSED));
+      REQUIRE(target.event() == Event::FOCUS_GAINED);
+    }
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
+      REQUIRE(target.status() == Status::HOVERED);
+      REQUIRE(target.event() == Event::NONE);
+    }
+    dispatcher.reset();
+    dispatcher.pressPointer(1);
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+      REQUIRE(target.status() == Status::FOCUSED);
+      REQUIRE(target.event() == Event::CANCEL);
+    }
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
+      REQUIRE(target.status() == Status::HOVERED);
+      REQUIRE(target.event() == Event::NONE);
+    }
+    dispatcher.reset();
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+      REQUIRE(target.status() == Status::NONE);
+      REQUIRE(target.event() == Event::FOCUS_LOST);
+    }
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
+      REQUIRE(target.status() == (Status::HOVERED | Status::FOCUSED));
+      REQUIRE(target.event() == Event::FOCUS_GAINED);
+    }
+  }
+  SECTION("Faster Pace")
+  {
+    dispatcher.pressPointer(1);
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+      REQUIRE(target.status() == Status::NONE);
+      REQUIRE(target.event() == Event::CANCEL);
+    }
+    {
+      auto target =
+        dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
+      REQUIRE(target.status() == (Status::HOVERED | Status::FOCUSED));
+      REQUIRE(target.event() == Event::FOCUS_GAINED);
+    }
+  }
+}
+
+TEST_CASE("EventDispatcher target not grabbed given focus can take from "
+          "grabbed and discard",
+          "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(0);
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+    REQUIRE(target.event() == Event::GRAB);
+  }
+  dispatcher.reset();
+  dispatcher.movePointer({1, 1});
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::GRABBED | Status::FOCUSED));
+    REQUIRE(target.event() == Event::FOCUS_GAINED);
+  }
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
+    REQUIRE(target.status() == Status::HOVERED);
+    REQUIRE(target.event() == Event::NONE);
+  }
+  dispatcher.reset();
+  dispatcher.pressPointer(1);
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == Status::FOCUSED);
+    REQUIRE(target.event() == Event::CANCEL);
+  }
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
+    REQUIRE(target.status() == Status::HOVERED);
+    REQUIRE(target.event() == Event::NONE);
+    target.discard();
+    REQUIRE(target.status() == Status::NONE);
+    REQUIRE(target.event() == Event::NONE);
+  }
+  dispatcher.reset();
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == Status::NONE);
+    REQUIRE(target.event() == Event::FOCUS_LOST);
+  }
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {1, 1, 1, 1}, "id2"sv);
+    REQUIRE(target.status() == Status::HOVERED);
+    REQUIRE(target.event() == Event::NONE);
+  }
+}
+
 TEST_CASE("EventDispatcher handles commands on focused", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};
@@ -946,6 +1122,43 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
     REQUIRE(
       dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id0"sv).status() ==
       Status::NONE);
+  }
+  SECTION("sub target can be focused and give it back to super")
+  {
+    dispatcher.movePointer({0, 0});
+    dispatcher.pressPointer(1);
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::FOCUSED));
+      REQUIRE(superTarget.event() == Event::FOCUS_GAINED);
+
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() == (Status::HOVERED | Status::FOCUSED));
+        REQUIRE(subTarget.event() == Event::FOCUS_GAINED);
+        subTarget.discard();
+        REQUIRE(subTarget.status() == Status::NONE);
+        REQUIRE(subTarget.event() == Event::NONE);
+      }
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::FOCUSED));
+      REQUIRE(superTarget.event() == Event::FOCUS_GAINED);
+    }
+
+    dispatcher.reset();
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::FOCUSED));
+      REQUIRE(superTarget.event() == Event::NONE);
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() == Status::HOVERED);
+        REQUIRE(subTarget.event() == Event::NONE);
+      }
+    }
   }
 }
 
