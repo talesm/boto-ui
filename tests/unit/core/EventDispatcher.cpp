@@ -895,3 +895,52 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
       Status::NONE);
   }
 }
+
+TEST_CASE("EventDispatcher can be shrunk", "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+  dispatcher.reset();
+  dispatcher.movePointer({1, 1});
+
+  SECTION("HOVER can be taken out")
+  {
+    auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 3, 3});
+    REQUIRE(target.status() == Status::HOVERED);
+    SECTION("Horizontal")
+    {
+      target.shrinkWidth(2);
+      REQUIRE(target.rect().w == 2);
+      REQUIRE(target.rect().h == 3);
+      REQUIRE(target.status() == Status::HOVERED);
+
+      target.shrinkWidth(1);
+      REQUIRE(target.rect().w == 1);
+      REQUIRE(target.rect().h == 3);
+      REQUIRE(target.status() == Status::NONE);
+    }
+    SECTION("Vertical")
+    {
+      target.shrinkHeight(2);
+      REQUIRE(target.rect().w == 3);
+      REQUIRE(target.rect().h == 2);
+      REQUIRE(target.status() == Status::HOVERED);
+
+      target.shrinkHeight(1);
+      REQUIRE(target.rect().w == 3);
+      REQUIRE(target.rect().h == 1);
+      REQUIRE(target.status() == Status::NONE);
+    }
+    SECTION("Both")
+    {
+      target.shrink(2, 2);
+      REQUIRE(target.rect().w == 2);
+      REQUIRE(target.rect().h == 2);
+      REQUIRE(target.status() == Status::HOVERED);
+
+      target.shrink(1, 1);
+      REQUIRE(target.rect().w == 1);
+      REQUIRE(target.rect().h == 1);
+      REQUIRE(target.status() == Status::NONE);
+    }
+  }
+}

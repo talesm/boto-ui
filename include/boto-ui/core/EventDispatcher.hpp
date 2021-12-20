@@ -197,17 +197,24 @@ class EventDispatcher::EventTarget
 
   friend class EventDispatcher;
 
+  EventTargetState& state() { return get()->elementStack[index]; }
+
 public:
   EventTarget() = default;
 
   const EventTargetState& state() const { return get()->elementStack[index]; }
-  EventTargetState& state() { return get()->elementStack[index]; }
 
   StatusFlags status() const { return state().status; }
   Event event() const { return state().event; }
   std::string_view input() const { return get()->input(); }
 
   const SDL_Rect& rect() const { return state().rect; }
+
+  void shrinkWidth(int w);
+
+  void shrinkHeight(int h);
+
+  void shrink(int w, int h);
 
   void discard();
 };
@@ -546,6 +553,37 @@ EventDispatcher::popTarget()
     } else {
       superElement.event = Event::FOCUS_LOST;
     }
+  }
+}
+
+inline void
+EventDispatcher::EventTarget::shrinkWidth(int w)
+{
+  auto& rect = state().rect;
+  rect.w = w;
+  if (get()->pointerPos.x - rect.x >= w) {
+    discard();
+  }
+}
+
+inline void
+EventDispatcher::EventTarget::shrinkHeight(int h)
+{
+  auto& rect = state().rect;
+  rect.h = h;
+  if (get()->pointerPos.y - rect.y >= h) {
+    discard();
+  }
+}
+
+inline void
+EventDispatcher::EventTarget::shrink(int w, int h)
+{
+  auto& rect = state().rect;
+  rect.w = w;
+  rect.h = h;
+  if (get()->pointerPos.y - rect.y >= h) {
+    discard();
   }
 }
 
