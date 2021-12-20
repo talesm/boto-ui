@@ -202,6 +202,37 @@ TEST_CASE("EventDispatcher handles commands on grabbed", "[event-dispatcher]")
   }
 }
 
+TEST_CASE("EventDispatcher grabbed target can be discarded",
+          "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(0);
+  {
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+    REQUIRE(target.event() == Event::GRAB);
+    target.discard();
+    REQUIRE(target.status() == Status::NONE);
+    REQUIRE(target.event() == Event::NONE);
+  }
+  {
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id2"sv);
+    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+    REQUIRE(target.event() == Event::GRAB);
+  }
+
+  dispatcher.reset();
+  {
+    auto target = dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id2"sv);
+    target.discard();
+    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+    REQUIRE(target.event() == Event::NONE);
+  }
+}
+
 TEST_CASE("EventDispatcher handle Focus gain", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};

@@ -552,7 +552,14 @@ EventDispatcher::popTarget()
 inline void
 EventDispatcher::EventTarget::discard()
 {
-  state().status.reset(Status::HOVERED);
+  auto& elState = state();
+
+  if (!elState.status.test(Status::GRABBED)) {
+    elState.status.reset(Status::HOVERED);
+  } else if (elState.event == Event::GRAB) {
+    elState.status.reset(Status::HOVERED | Status::GRABBED);
+    elState.event = Event::NONE;
+  }
 }
 
 } // namespace boto
