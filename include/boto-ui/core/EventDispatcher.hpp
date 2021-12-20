@@ -209,7 +209,7 @@ public:
 
   const SDL_Rect& rect() const { return state().rect; }
 
-  void discard(StatusFlags flags) { state().status.reset(flags); }
+  void discard();
 };
 
 inline void
@@ -546,6 +546,12 @@ EventDispatcher::popTarget()
       superElement.event = Event::FOCUS_LOST;
     }
   }
+}
+
+inline void
+EventDispatcher::EventTarget::discard()
+{
+  state().status.reset(Status::HOVERED);
 }
 
 } // namespace boto

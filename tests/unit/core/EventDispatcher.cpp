@@ -75,7 +75,7 @@ TEST_CASE("EventDispatcher hovered target can be discarded",
   dispatcher.movePointer({0, 0});
   if (auto target = dispatcher.check(RequestEvent::HOVER, {0, 0, 1, 1})) {
     REQUIRE(target.status() == Status::HOVERED);
-    target.discard(Status::HOVERED);
+    target.discard();
   }
   REQUIRE(dispatcher.check(RequestEvent::HOVER, {0, 0, 2, 2}).status() &
           Status::HOVERED);
