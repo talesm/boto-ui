@@ -241,7 +241,7 @@ public:
   Uint32 ticks() const { return ticksCount; }
 
   // These are experimental and should not be used
-  void beginGroup(std::string_view id, const SDL_Rect& r);
+  void beginGroup(std::string_view id, SDL_Rect r);
   void endGroup(std::string_view id, const SDL_Rect& r);
   const Font& getFont() const { return font; }
   void setFont(const Font& f) { font = f; }
@@ -253,6 +253,7 @@ private:
     ticksCount = SDL_GetTicks();
     levelChanged = true;
     inFrame = true;
+    dList.clear();
   }
 
   void endFrame()
@@ -298,7 +299,7 @@ State::checkMouse(std::string_view id, SDL_Rect r)
 }
 
 inline void
-State::beginGroup(std::string_view id, const SDL_Rect& r)
+State::beginGroup(std::string_view id, SDL_Rect r)
 {
   if (!levelChanged) {
     elements.pop_back();
@@ -309,6 +310,12 @@ State::beginGroup(std::string_view id, const SDL_Rect& r)
       dispatcher.check(RequestEvent::HOVER, r, id),
     });
   } else {
+    if (r.w == 0) {
+      r.w = 0xFFFF;
+    }
+    if (r.h == 0) {
+      r.h = 0xFFFF;
+    }
     elements.emplace_back(ElementState{
       dList.clip(r),
       dispatcher.check(RequestEvent::INPUT, r, id),
@@ -323,6 +330,7 @@ State::endGroup(std::string_view id, const SDL_Rect& r)
   if (!levelChanged) {
     elements.pop_back();
   }
+  elements.back().eventTarget.shrink(r.w, r.h);
   elements.pop_back();
   levelChanged = true;
 }
