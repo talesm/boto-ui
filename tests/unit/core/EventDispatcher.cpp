@@ -892,6 +892,34 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
       }
 
       REQUIRE(superTarget.status() == Status::HOVERED);
+      REQUIRE(superTarget.event() == Event::NONE);
+    }
+    REQUIRE(
+      dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id0"sv).status() ==
+      Status::NONE);
+  }
+  SECTION("sub target can be give grab back to super target")
+  {
+    dispatcher.movePointer({0, 0});
+    dispatcher.pressPointer(0);
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(superTarget.event() == Event::GRAB);
+
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() == (Status::HOVERED | Status::GRABBED));
+        REQUIRE(subTarget.event() == Event::GRAB);
+        subTarget.discard();
+        REQUIRE(subTarget.status() == Status::NONE);
+        REQUIRE(subTarget.event() == Event::NONE);
+      }
+
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(superTarget.event() == Event::GRAB);
     }
     REQUIRE(
       dispatcher.check(RequestEvent::GRAB, {0, 0, 2, 2}, "id0"sv).status() ==
@@ -913,8 +941,7 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
         REQUIRE(subTarget.status() == (Status::HOVERED | Status::FOCUSED));
         REQUIRE(subTarget.event() == Event::FOCUS_GAINED);
       }
-
-      // REQUIRE(superTarget.status() == Status::HOVERED);
+      REQUIRE(superTarget.status() == Status::HOVERED);
     }
     REQUIRE(
       dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id0"sv).status() ==
