@@ -62,6 +62,7 @@ class State
 
   std::vector<ElementState> elements;
   bool levelChanged = true;
+  bool inFrame = false;
 
 public:
   /// Ctor
@@ -127,7 +128,7 @@ public:
    * @return true
    * @return false
    */
-  bool isInFrame() const { return !elements.empty(); }
+  bool isInFrame() const { return inFrame; }
 
   /**
    * @brief Check if the element was activated
@@ -248,16 +249,18 @@ public:
 private:
   void beginFrame()
   {
-    SDL_assert(elements.empty());
+    SDL_assert(inFrame == false);
     ticksCount = SDL_GetTicks();
     levelChanged = true;
+    inFrame = true;
   }
 
   void endFrame()
   {
-    SDL_assert(elements.empty());
+    SDL_assert(inFrame == true);
     tKeysym = {};
     dispatcher.reset();
+    inFrame = false;
   }
 
   bool isSameGroupId(std::string_view qualifiedId, std::string_view id) const;
