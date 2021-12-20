@@ -269,6 +269,9 @@ EventDispatcher::tryFocus(std::string_view qualifiedId)
     return false;
   }
   idNextFocus = qualifiedId;
+  if (idFocus == qualifiedId) {
+    return true;
+  }
   if (!idFocus.empty()) {
     idLosingFocus = idFocus;
   }
