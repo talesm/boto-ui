@@ -596,6 +596,32 @@ TEST_CASE("EventDispatcher handle focus lost", "[event-dispatcher]")
   }
 }
 
+TEST_CASE(
+  "EventDispatcher grabbed target can be discarded and focus is not given",
+  "[event-dispatcher]")
+{
+  EventDispatcher dispatcher{};
+
+  dispatcher.reset();
+  dispatcher.movePointer({0, 0});
+  dispatcher.pressPointer(0);
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == (Status::HOVERED | Status::GRABBED));
+    REQUIRE(target.event() == Event::GRAB);
+    target.discard();
+    REQUIRE(target.status() == Status::NONE);
+    REQUIRE(target.event() == Event::NONE);
+  }
+
+  dispatcher.reset();
+  {
+    auto target = dispatcher.check(RequestEvent::FOCUS, {0, 0, 1, 1}, "id1"sv);
+    REQUIRE(target.status() == Status::HOVERED);
+    REQUIRE(target.event() == Event::NONE);
+  }
+}
+
 TEST_CASE("EventDispatcher handles commands on focused", "[event-dispatcher]")
 {
   EventDispatcher dispatcher{};

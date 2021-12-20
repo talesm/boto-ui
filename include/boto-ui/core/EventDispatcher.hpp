@@ -334,6 +334,10 @@ EventDispatcher::checkGrabOver(RequestEvent req, Event& event)
   }
   if (pointerPressed != 1) {
     if (idGrabbed != idCurrent) {
+      if (pointerPressed == 0) {
+        return req == RequestEvent::GRAB ? Status::NONE
+                                         : checkFocus(req, event);
+      }
       return req == RequestEvent::GRAB ? Status::NONE : gainFocus(req, event);
     }
     if (pointerPressed == 0) {
@@ -597,6 +601,19 @@ EventDispatcher::EventTarget::discard()
   } else if (elState.event == Event::GRAB) {
     elState.status.reset(Status::HOVERED | Status::GRABBED);
     elState.event = Event::NONE;
+    auto dispatcher = get();
+    if (dispatcher->elementStack.size() > 1) {
+      dispatcher->idGrabbed.resize(dispatcher->idGrabbed.size() -
+                                   elState.idLength - 1);
+    } else {
+      dispatcher->idGrabbed.clear();
+    }
+
+    if (!elState.status.test(Status::FOCUSED)) {
+      if (dispatcher->idNextFocus == dispatcher->idCurrent) {
+        dispatcher->idNextFocus.clear();
+      }
+    }
   }
 }
 
