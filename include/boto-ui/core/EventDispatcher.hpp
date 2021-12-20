@@ -283,6 +283,7 @@ EventDispatcher::check(RequestEvent req,
     elementStack.emplace_back(EventTargetState{id.size(), rect});
     return {this, elementStack.size() - 1};
   }
+  SDL_assert(!id.empty() || req == RequestEvent::HOVER);
 
   Event event = Event::NONE;
   elementStack.emplace_back(EventTargetState{
