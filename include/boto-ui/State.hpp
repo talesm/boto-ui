@@ -303,7 +303,7 @@ State::beginGroup(std::string_view id, const SDL_Rect& r)
   if (id.empty()) {
     elements.emplace_back(ElementState{
       dList.clip(r),
-      dispatcher.check(RequestEvent::GRAB, r, id),
+      dispatcher.check(RequestEvent::HOVER, r, id),
     });
   } else {
     elements.emplace_back(ElementState{
