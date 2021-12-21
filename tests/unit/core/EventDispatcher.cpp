@@ -1138,6 +1138,77 @@ TEST_CASE("EventDispatcher EventTarget stacks", "[event-dispatcher]")
       }
     }
   }
+
+  SECTION("sub target can be grabbed then focused")
+  {
+    dispatcher.movePointer({0, 0});
+    dispatcher.pressPointer(0);
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(superTarget.event() == Event::GRAB);
+
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() == (Status::HOVERED | Status::GRABBED));
+        REQUIRE(subTarget.event() == Event::GRAB);
+      }
+
+      REQUIRE(superTarget.status() == Status::HOVERED);
+      REQUIRE(superTarget.event() == Event::NONE);
+    }
+
+    dispatcher.reset();
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED));
+      REQUIRE(superTarget.event() == Event::NONE);
+
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() ==
+                (Status::HOVERED | Status::FOCUSED | Status::GRABBED));
+        REQUIRE(subTarget.event() == Event::FOCUS_GAINED);
+      }
+    }
+  }
+
+  SECTION(
+    "sub target can be grabbed give back to super and super is then focused")
+  {
+    dispatcher.movePointer({0, 0});
+    dispatcher.pressPointer(0);
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(superTarget.event() == Event::GRAB);
+
+      {
+        auto subTarget =
+          dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id2"sv);
+        REQUIRE(subTarget.status() == (Status::HOVERED | Status::GRABBED));
+        REQUIRE(subTarget.event() == Event::GRAB);
+        dispatcher.discard();
+      }
+
+      REQUIRE(superTarget.status() == (Status::HOVERED | Status::GRABBED));
+      REQUIRE(superTarget.event() == Event::GRAB);
+    }
+
+    dispatcher.reset();
+    {
+      auto superTarget =
+        dispatcher.check(RequestEvent::FOCUS, {0, 0, 2, 2}, "id1"sv);
+      REQUIRE(superTarget.status() ==
+              (Status::HOVERED | Status::FOCUSED | Status::GRABBED));
+      REQUIRE(superTarget.event() == Event::FOCUS_GAINED);
+    }
+  }
 }
 
 TEST_CASE("EventDispatcher can be shrunk", "[event-dispatcher]")

@@ -414,8 +414,7 @@ EventDispatcher::gainFocus(RequestEvent req, Event& event)
     return checkFocus(req, event);
   }
   if (!idNextFocus.empty()) {
-    if (elementStack.empty() ||
-        !elementStack.back().status.test(Status::FOCUSED)) {
+    if (elementStack.empty()) {
       return Status::NONE;
     }
     auto& superElement = elementStack.back();
@@ -613,11 +612,11 @@ EventDispatcher::discard()
     elState.event = Event::NONE;
     if (elementStack.size() > 1) {
       idGrabbed.resize(idGrabbed.size() - elState.idLength - 1);
+      if (idNextFocus == idCurrent) {
+        idNextFocus.resize(idNextFocus.size() - elState.idLength - 1);
+      }
     } else {
       idGrabbed.clear();
-    }
-
-    if (!elState.status.test(Status::FOCUSED)) {
       if (idNextFocus == idCurrent) {
         idNextFocus.clear();
       }
