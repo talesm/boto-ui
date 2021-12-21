@@ -1,6 +1,7 @@
 #ifndef BOTO_CORE_STATE_HPP_
 #define BOTO_CORE_STATE_HPP_
 
+#include <climits>
 #include <optional>
 #include <string_view>
 #include <SDL.h>
@@ -207,6 +208,11 @@ public:
 private:
   void endFrame();
 
+  // Create element
+  ElementState& elementState(std::string_view id,
+                             const SDL_Rect& r,
+                             RequestEvent req = RequestEvent::INPUT);
+
   struct FrameGuard
   {
     void operator()(State* state) { state->endFrame(); }
@@ -227,6 +233,7 @@ private:
   bool inFrame = false;
 };
 
+/// @brief A frame where you can add elements
 class State::Frame : public CookieBase<State, State::FrameGuard>
 {
 private:
@@ -243,8 +250,8 @@ public:
   using CookieBase::get;
 };
 
-inline MouseAction
-State::checkMouse(std::string_view id, SDL_Rect r)
+inline ElementState&
+State::elementState(std::string_view id, const SDL_Rect& r, RequestEvent req)
 {
   if (levelChanged) {
     levelChanged = false;
@@ -253,9 +260,15 @@ State::checkMouse(std::string_view id, SDL_Rect r)
   }
   elements.emplace_back(ElementState{
     dList.clip(r),
-    dispatcher.check(RequestEvent::INPUT, r, id),
+    dispatcher.check(req, r, id),
   });
-  auto& elState = elements.back().eventTarget.state();
+  return elements.back();
+}
+
+inline MouseAction
+State::checkMouse(std::string_view id, SDL_Rect r)
+{
+  auto& elState = elementState(id, r).eventTarget.state();
   switch (elState.event) {
   case Event::GRAB:
     return MouseAction::GRAB;
@@ -291,14 +304,8 @@ State::checkText(std::string_view id) const
 inline void
 State::beginGroup(std::string_view id, SDL_Rect r)
 {
-  if (!levelChanged) {
-    elements.pop_back();
-  }
   if (id.empty()) {
-    elements.emplace_back(ElementState{
-      dList.clip(r),
-      dispatcher.check(RequestEvent::HOVER, r, id),
-    });
+    elementState(id, r, RequestEvent::HOVER);
   } else {
     if (r.w == 0) {
       r.w = 0xFFFF;
@@ -306,10 +313,7 @@ State::beginGroup(std::string_view id, SDL_Rect r)
     if (r.h == 0) {
       r.h = 0xFFFF;
     }
-    elements.emplace_back(ElementState{
-      dList.clip(r),
-      dispatcher.check(RequestEvent::INPUT, r, id),
-    });
+    elementState(id, r);
   }
   levelChanged = true;
 }
