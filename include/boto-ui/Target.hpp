@@ -2,8 +2,8 @@
 #define BOTO_TARGET_HPP_
 
 #include <SDL.h>
-#include "State.hpp"
 #include "TargetStyle.hpp"
+#include "core/State.hpp"
 
 namespace boto {
 

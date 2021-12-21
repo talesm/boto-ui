@@ -13,9 +13,9 @@
 #include "Scrollable.hpp"
 #include "SliderBox.hpp"
 #include "SliderField.hpp"
-#include "State.hpp"
 #include "Window.hpp"
 #include "Wrapper.hpp"
 #include "core/DisplayList.hpp"
+#include "core/State.hpp"
 
 #endif // BOTO_HPP_H

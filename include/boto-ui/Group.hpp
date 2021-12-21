@@ -3,8 +3,8 @@
 #include <string_view>
 #include <SDL_rect.h>
 #include "GroupStyle.hpp"
-#include "State.hpp"
 #include "Target.hpp"
+#include "core/State.hpp"
 
 namespace boto {
 
