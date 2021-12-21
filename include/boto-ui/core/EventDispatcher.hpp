@@ -102,6 +102,10 @@ public:
    * @return false
    */
   bool isActive(std::string_view id) const { return idFocus == id; }
+  bool isActive() const { return idFocus == idCurrent; }
+
+  /// @brief Get id of currently active element
+  std::string_view currentId() const { return idCurrent; }
 
   /// @brief Gets the current command
   Command command() const { return nextCommand; }

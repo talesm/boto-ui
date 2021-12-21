@@ -113,6 +113,10 @@ public:
   {
     return dispatcher.isActive(qualifiedId);
   }
+  bool isActive() const { return dispatcher.isActive(); }
+
+  /// @brief Get id of currently active element
+  std::string_view currentId() const { return dispatcher.currentId(); }
 
   /**
    * @brief Check the mouse action/status for element in this frame
