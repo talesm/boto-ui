@@ -41,7 +41,7 @@ sliderField(Target target,
   auto adv = makeInputSize(
     p, buttons.font, buttons.scale, buttons.padding + buttons.border);
   SDL_Rect box{p.x, p.y, adv.x, adv.y};
-  auto g = labeledGroup(target, labelText, box, style.label);
+  auto g = labeledGroup(target, id, labelText, box, style.label);
   return sliderBox(g, id, value, min, max, box, style.scroll);
 }
 /// @copydoc sliderField()
