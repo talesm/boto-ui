@@ -50,20 +50,6 @@ struct ElementState
  */
 class State
 {
-  SDL_Renderer* renderer;
-  DisplayList dList;
-  EventDispatcher dispatcher;
-
-  SDL_Keysym tKeysym;
-
-  Uint32 ticksCount;
-
-  Font font;
-
-  std::vector<ElementState> elements;
-  bool levelChanged = true;
-  bool inFrame = false;
-
 public:
   /// Ctor
   State(SDL_Renderer* renderer)
@@ -78,32 +64,7 @@ public:
    * ensures the frame ended correctly.
    *
    */
-  void render()
-  {
-    SDL_assert(elements.empty());
-    dList.visit([&](const DisplayListItem& item) {
-      SDL_Color c = item.color;
-      switch (item.action) {
-      case DisplayListAction::RESET_CLIP:
-        SDL_RenderSetClipRect(renderer, nullptr);
-        break;
-      case DisplayListAction::SET_CLIP:
-        SDL_RenderSetClipRect(renderer, &item.rect);
-        break;
-      case DisplayListAction::COLOR_BOX:
-        SDL_SetRenderDrawBlendMode(renderer, item.mode);
-        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-        SDL_RenderFillRect(renderer, &item.rect);
-        break;
-      case DisplayListAction::TEXTURE_BOX:
-        SDL_SetTextureAlphaMod(item.texture, c.a);
-        SDL_SetTextureBlendMode(item.texture, item.mode);
-        SDL_SetTextureColorMod(item.texture, c.r, c.g, c.b);
-        SDL_RenderCopy(renderer, item.texture, &item.srcRect, &item.rect);
-        break;
-      }
-    });
-  }
+  void render();
 
   /**
    * @brief Handle a SDL_Event
@@ -117,8 +78,8 @@ public:
    *
    * @return EventDispatcher&
    */
-  EventDispatcher& events() { return dispatcher; }
-  const EventDispatcher& events() const { return dispatcher; }
+  EventDispatcher& eventDispatcher() { return dispatcher; }
+  const EventDispatcher& eventDispatcher() const { return dispatcher; }
 
   /**
    * @brief If a frame is in progress
@@ -162,20 +123,7 @@ public:
    * @param id the element id
    * @return TextAction
    */
-  TextAction checkText(std::string_view id) const
-  {
-    auto& state = elements.back().eventTarget.state();
-    switch (state.event) {
-    case Event::INPUT:
-      return TextAction::INPUT;
-    case Event::END_LINE:
-    case Event::SPACE:
-    case Event::BACKSPACE:
-      return TextAction::KEYDOWN;
-    default:
-      return TextAction::NONE;
-    }
-  }
+  TextAction checkText(std::string_view id) const;
 
   /**
    * @brief Get the last input text
@@ -267,6 +215,20 @@ private:
   bool isSameGroupId(std::string_view qualifiedId, std::string_view id) const;
 
   friend class Frame;
+
+  SDL_Renderer* renderer;
+  DisplayList dList;
+  EventDispatcher dispatcher;
+
+  SDL_Keysym tKeysym;
+
+  Uint32 ticksCount;
+
+  Font font;
+
+  std::vector<ElementState> elements;
+  bool levelChanged = true;
+  bool inFrame = false;
 };
 
 inline MouseAction
@@ -295,6 +257,22 @@ State::checkMouse(std::string_view id, SDL_Rect r)
     }
     return elState.status.test(Status::HOVERED) ? MouseAction::HOLD
                                                 : MouseAction::DRAG;
+  }
+}
+
+inline TextAction
+State::checkText(std::string_view id) const
+{
+  auto& state = elements.back().eventTarget.state();
+  switch (state.event) {
+  case Event::INPUT:
+    return TextAction::INPUT;
+  case Event::END_LINE:
+  case Event::SPACE:
+  case Event::BACKSPACE:
+    return TextAction::KEYDOWN;
+  default:
+    return TextAction::NONE;
   }
 }
 
@@ -333,6 +311,34 @@ State::endGroup(std::string_view id, const SDL_Rect& r)
   dispatcher.shrink(r.w, r.h);
   elements.pop_back();
   levelChanged = true;
+}
+
+inline void
+State::render()
+{
+  SDL_assert(elements.empty());
+  dList.visit([&](const DisplayListItem& item) {
+    SDL_Color c = item.color;
+    switch (item.action) {
+    case DisplayListAction::RESET_CLIP:
+      SDL_RenderSetClipRect(renderer, nullptr);
+      break;
+    case DisplayListAction::SET_CLIP:
+      SDL_RenderSetClipRect(renderer, &item.rect);
+      break;
+    case DisplayListAction::COLOR_BOX:
+      SDL_SetRenderDrawBlendMode(renderer, item.mode);
+      SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+      SDL_RenderFillRect(renderer, &item.rect);
+      break;
+    case DisplayListAction::TEXTURE_BOX:
+      SDL_SetTextureAlphaMod(item.texture, c.a);
+      SDL_SetTextureBlendMode(item.texture, item.mode);
+      SDL_SetTextureColorMod(item.texture, c.r, c.g, c.b);
+      SDL_RenderCopy(renderer, item.texture, &item.srcRect, &item.rect);
+      break;
+    }
+  });
 }
 
 inline void
