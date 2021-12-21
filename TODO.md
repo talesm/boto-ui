@@ -11,7 +11,7 @@ The goal is review and reorganize the code and make it more consistent with its 
 - [x] Unify DisplayList::Command and Shape into DisplayItem and DisplayAction
 - [x] Refactor DisplayList so it delegates the rendering to a visitor
 - [x] Wrap push and pop clip into a Proper guard type;
-- [ ] Move event related stuff to new core class EventDispatcher;
+- [x] Move event related stuff to new core class EventDispatcher;
 - [ ] When frame is created it sets a thread_local where the current target resides
 - [ ] Move nextPos, nextSize and etc to the targetStack
 - [ ] Move styling utils to targetStack (nextStyle, nextColor, etc)
