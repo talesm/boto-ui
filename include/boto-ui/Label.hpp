@@ -2,8 +2,8 @@
 #define BOTO_LABEL_HPP_
 
 #include <string_view>
+#include "Control.hpp"
 #include "EdgeSize.hpp"
-#include "Element.hpp"
 #include "Group.hpp"
 #include "LabelStyle.hpp"
 

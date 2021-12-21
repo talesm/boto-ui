@@ -2,7 +2,7 @@
 #define BOTO_PANEL_HPP_
 
 #include <string_view>
-#include "Element.hpp"
+#include "Control.hpp"
 #include "Group.hpp"
 #include "PanelStyle.hpp"
 #include "Wrapper.hpp"

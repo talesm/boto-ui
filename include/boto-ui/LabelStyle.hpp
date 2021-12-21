@@ -1,7 +1,7 @@
 #ifndef BOTO_LABELSTYLE_HPP_
 #define BOTO_LABELSTYLE_HPP_
 
-#include "ElementStyle.hpp"
+#include "ControlStyle.hpp"
 #include "Theme.hpp"
 
 namespace boto {

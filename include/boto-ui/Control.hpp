@@ -1,10 +1,10 @@
-#ifndef BOTO_BASIC_WIDGETS_HPP_
-#define BOTO_BASIC_WIDGETS_HPP_
+#ifndef BOTO_CONTROL_HPP_
+#define BOTO_CONTROL_HPP_
 
 #include <string_view>
 #include "Box.hpp"
+#include "ControlStyle.hpp"
 #include "EdgeSize.hpp"
-#include "ElementStyle.hpp"
 #include "Group.hpp"
 #include "Text.hpp"
 #include "Theme.hpp"
@@ -54,4 +54,4 @@ element(Target target,
 
 } // namespace boto
 
-#endif // BOTO_BASIC_WIDGETS_HPP_
+#endif // BOTO_CONTROL_HPP_

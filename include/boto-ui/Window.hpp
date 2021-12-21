@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string_view>
-#include "Element.hpp"
+#include "Control.hpp"
 #include "Group.hpp"
 #include "Panel.hpp"
 #include "WindowStyle.hpp"

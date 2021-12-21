@@ -2,7 +2,7 @@
 #define BOTO_HPP_
 
 #include "Button.hpp"
-#include "Element.hpp"
+#include "Control.hpp"
 #include "Font.hpp"
 #include "Frame.hpp"
 #include "Group.hpp"

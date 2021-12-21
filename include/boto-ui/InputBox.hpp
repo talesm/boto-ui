@@ -2,7 +2,7 @@
 #define BOTO_INPUTBOX_HPP
 
 #include <string_view>
-#include "Element.hpp"
+#include "Control.hpp"
 #include "Group.hpp"
 #include "InputBoxStyle.hpp"
 #include "Panel.hpp"

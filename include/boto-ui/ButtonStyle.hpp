@@ -2,7 +2,7 @@
 #define BOTO_BUTTONSTYLE_HPP
 
 #include <SDL.h>
-#include "ElementStyle.hpp"
+#include "ControlStyle.hpp"
 #include "Theme.hpp"
 
 namespace boto {

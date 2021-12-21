@@ -1,5 +1,5 @@
-#ifndef BOTO_ELEMENTSTYLE_HPP_
-#define BOTO_ELEMENTSTYLE_HPP_
+#ifndef BOTO_CONTROLSTYLE_HPP_
+#define BOTO_CONTROLSTYLE_HPP_
 
 #include <SDL.h>
 #include "BoxStyle.hpp"
@@ -100,4 +100,4 @@ struct FromTheme<Element, Theme>
 
 } // namespace boto
 
-#endif // BOTO_ELEMENTSTYLE_HPP_
+#endif // BOTO_CONTROLSTYLE_HPP_

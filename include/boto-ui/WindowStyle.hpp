@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ButtonStyle.hpp"
-#include "ElementStyle.hpp"
+#include "ControlStyle.hpp"
 #include "PanelStyle.hpp"
 #include "ScrollableStyle.hpp"
 #include "Theme.hpp"
