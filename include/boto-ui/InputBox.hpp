@@ -73,7 +73,7 @@ textBoxBase(Target target,
   }
   auto& currentColors = active ? style.active : style.normal;
   auto g = panel(
-    target, id, r, Layout::NONE, {style.padding, style.border, currentColors});
+    target, {}, r, Layout::NONE, {style.padding, style.border, currentColors});
 
   // This creates an auto scroll effect if value text don't fit in the box;
   auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});
@@ -107,25 +107,25 @@ textBoxBase(Target target,
   if (action == TextAction::KEYDOWN) {
     SDL_Keysym keysym = target.lastKeyDown();
     switch (keysym.sym) {
-      case SDLK_BACKSPACE:
-        if (!value.empty()) {
-          cursorPos -= 1;
-          maxPos -= 1;
-          return {{}, cursorPos, 1};
-        }
-        break;
-      case SDLK_LEFT:
-        if (cursorPos > 0) {
-          cursorPos -= 1;
-        }
-        break;
-      case SDLK_RIGHT:
-        if (cursorPos < maxPos) {
-          cursorPos += 1;
-        }
-        break;
-      default:
-        break;
+    case SDLK_BACKSPACE:
+      if (!value.empty()) {
+        cursorPos -= 1;
+        maxPos -= 1;
+        return {{}, cursorPos, 1};
+      }
+      break;
+    case SDLK_LEFT:
+      if (cursorPos > 0) {
+        cursorPos -= 1;
+      }
+      break;
+    case SDLK_RIGHT:
+      if (cursorPos < maxPos) {
+        cursorPos += 1;
+      }
+      break;
+    default:
+      break;
     }
   }
   return {};
