@@ -195,24 +195,9 @@ public:
   void setFont(const Font& f) { font = f; }
 
 private:
-  void beginFrame()
-  {
-    SDL_assert(inFrame == false);
-    ticksCount = SDL_GetTicks();
-    levelChanged = true;
-    inFrame = true;
-    dList.clear();
-  }
+  void beginFrame();
 
-  void endFrame()
-  {
-    SDL_assert(inFrame == true);
-    tKeysym = {};
-    dispatcher.reset();
-    inFrame = false;
-  }
-
-  bool isSameGroupId(std::string_view qualifiedId, std::string_view id) const;
+  void endFrame();
 
   friend class Frame;
 
@@ -381,6 +366,25 @@ State::event(SDL_Event& ev)
   default:
     break;
   }
+}
+
+inline void
+State::beginFrame()
+{
+  SDL_assert(inFrame == false);
+  ticksCount = SDL_GetTicks();
+  levelChanged = true;
+  inFrame = true;
+  dList.clear();
+}
+
+inline void
+State::endFrame()
+{
+  SDL_assert(inFrame == true);
+  tKeysym = {};
+  dispatcher.reset();
+  inFrame = false;
 }
 } // namespace boto
 
