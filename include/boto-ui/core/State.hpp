@@ -2,11 +2,12 @@
 #define BOTO_CORE_STATE_HPP_
 
 #include <optional>
-#include <string>
+#include <string_view>
 #include <SDL.h>
 #include "Font.hpp"
 #include "core/DisplayList.hpp"
 #include "core/EventDispatcher.hpp"
+#include "util/CookieBase.hpp"
 
 namespace boto {
 
@@ -72,6 +73,11 @@ public:
    * @param ev event
    */
   void event(SDL_Event& ev);
+
+  // Forward decl
+  class Frame;
+
+  Frame frame();
 
   /**
    * @brief Access event dispatcher
@@ -195,11 +201,12 @@ public:
   void setFont(const Font& f) { font = f; }
 
 private:
-  void beginFrame();
-
   void endFrame();
 
-  friend class Frame;
+  struct FrameGuard
+  {
+    void operator()(State* state) { state->endFrame(); }
+  };
 
   SDL_Renderer* renderer;
   DisplayList dList;
@@ -214,6 +221,22 @@ private:
   std::vector<ElementState> elements;
   bool levelChanged = true;
   bool inFrame = false;
+};
+
+class State::Frame : public CookieBase<State, State::FrameGuard>
+{
+private:
+  Frame(State* state)
+    : CookieBase(state)
+  {}
+
+  friend class State;
+
+public:
+  constexpr Frame() = default;
+
+  // TODO remove me
+  using CookieBase::get;
 };
 
 inline MouseAction
@@ -368,14 +391,15 @@ State::event(SDL_Event& ev)
   }
 }
 
-inline void
-State::beginFrame()
+inline State::Frame
+State::frame()
 {
   SDL_assert(inFrame == false);
   ticksCount = SDL_GetTicks();
   levelChanged = true;
   inFrame = true;
   dList.clear();
+  return {this};
 }
 
 inline void

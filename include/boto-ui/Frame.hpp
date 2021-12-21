@@ -12,25 +12,16 @@ namespace boto {
  */
 class Frame
 {
-  State* state;
-  SDL_Rect rect;
-  SDL_Point topLeft;
-  SDL_Point bottomRight;
+  State::Frame cookie;
+  SDL_Rect rect{0};
+  SDL_Point topLeft{0};
+  SDL_Point bottomRight{0};
   bool locked = false;
 
 public:
   /// Base ctor
-  Frame(State* state = nullptr);
-
-  Frame(const Frame&) = delete;
-
-  /// move ctor
-  Frame(Frame&& rhs) = default;
-
-  Frame& operator=(const Frame&) = delete;
-
-  /// Assignment op
-  Frame& operator=(Frame&& rhs) = default;
+  constexpr Frame() = default;
+  Frame(State* state);
 
   /**
    * @brief Ends and then renders the frame
@@ -39,19 +30,20 @@ public:
    */
   void render()
   {
-    SDL_assert(state != nullptr);
-    auto& state = *this->state;
-    end();
-    state.render();
+    if (auto* state = cookie.get()) {
+      end();
+      state->render();
+    }
   }
 
   /// Finishes the frame and unlock the state
-  void end();
+  void end() { cookie.end(); }
 
   /// Convert to target
   operator Target() &
   {
-    return {state, {}, rect, topLeft, bottomRight, locked, {0, Layout::NONE}};
+    return {
+      cookie.get(), {}, rect, topLeft, bottomRight, locked, {0, Layout::NONE}};
   }
 };
 
@@ -71,20 +63,8 @@ frame(State& state)
 }
 
 inline Frame::Frame(State* state)
-  : state(state)
-  , rect({0, 0, 0, 0})
-  , topLeft({0, 0})
-  , bottomRight({0, 0})
-{
-  state->beginFrame();
-}
-
-inline void
-Frame::end()
-{
-  state->endFrame();
-  locked = false;
-}
+  : cookie(state->frame())
+{}
 
 } // namespace boto
 
