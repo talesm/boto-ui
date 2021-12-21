@@ -54,12 +54,12 @@ add_executable(botoui-tests-core
 )
 target_link_libraries(botoui-tests-core botoui-tests)
 
-add_executable(botoui-tests-eventHandlers
-  tests/unit/eventHandlers/buttonHandler.cpp
+add_executable(botoui-tests-elementHandlers
+  tests/unit/elements/handlers/buttonHandler.cpp
 )
-target_link_libraries(botoui-tests-eventHandlers botoui-tests)
+target_link_libraries(botoui-tests-elementHandlers botoui-tests)
 
 enable_testing()
 
 add_test(NAME test-core COMMAND botoui-tests-core)
-add_test(NAME test-eventHandlers COMMAND botoui-tests-eventHandlers)
+add_test(NAME test-elementHandlers COMMAND botoui-tests-eventHandlers)

@@ -1,5 +1,5 @@
-#ifndef BOTOUI_PUSHBUTTONHANDLER_HPP
-#define BOTOUI_PUSHBUTTONHANDLER_HPP
+#ifndef BOTO_ELEMENTS_BUTTONHANDLER_HPP
+#define BOTO_ELEMENTS_BUTTONHANDLER_HPP
 
 #include <SDL_assert.h>
 #include "core/EventTargetState.hpp"
@@ -40,4 +40,4 @@ handleCheckButton(const EventTargetState& state, bool* checked)
 
 }
 
-#endif // BOTOUI_PUSHBUTTONHANDLER_HPP
+#endif // BOTO_ELEMENTS_BUTTONHANDLER_HPP

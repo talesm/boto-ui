@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "core/EventDispatcher.hpp"
 #include "core/StatusStreamAdaptor.hpp"
-#include "eventHandlers/buttonHandler.hpp"
+#include "elements/handlers/buttonHandler.hpp"
 
 using namespace std;
 using namespace boto;
