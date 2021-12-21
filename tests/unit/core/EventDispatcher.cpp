@@ -1,31 +1,9 @@
 #include "catch.hpp"
 #include "core/EventDispatcher.hpp"
+#include "core/StatusStreamAdaptor.hpp"
 
 using namespace boto;
 using namespace std;
-
-namespace std {
-std::ostream&
-operator<<(std::ostream& out, StatusFlags flag)
-{
-  if (!flag) {
-    out << "[]";
-    return out;
-  }
-  out.put('[');
-  if (flag.test(Status::HOVERED)) {
-    out.put('h');
-  }
-  if (flag.test(Status::GRABBED)) {
-    out.put('g');
-  }
-  if (flag.test(Status::FOCUSED)) {
-    out.put('f');
-  }
-  out.put(']');
-  return out;
-}
-}
 
 TEST_CASE("EventDispatcher hover handling", "[event-dispatcher]")
 {
