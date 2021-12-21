@@ -47,8 +47,19 @@ add_library(botoui-tests
 )
 target_include_directories(botoui-tests INTERFACE tests/unit/)
 target_link_libraries(botoui-tests PUBLIC botoui)
+
 add_executable(botoui-tests-core
   tests/unit/core/DisplayList.cpp
   tests/unit/core/EventDispatcher.cpp
 )
 target_link_libraries(botoui-tests-core botoui-tests)
+
+add_executable(botoui-tests-eventHandlers
+  tests/unit/eventHandlers/buttonHandler.cpp
+)
+target_link_libraries(botoui-tests-eventHandlers botoui-tests)
+
+enable_testing()
+
+add_test(NAME test-core COMMAND botoui-tests-core)
+add_test(NAME test-eventHandlers COMMAND botoui-tests-eventHandlers)

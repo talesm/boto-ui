@@ -9,6 +9,7 @@
 #include <SDL_rect.h>
 #include "core/Command.hpp"
 #include "core/Event.hpp"
+#include "core/EventTargetState.hpp"
 #include "core/Status.hpp"
 #include "util/CookieBase.hpp"
 
@@ -18,18 +19,6 @@ namespace boto {
  *
  */
 constexpr char groupNameSeparator = '/';
-
-/**
- * @brief The state of an event target
- *
- */
-struct EventTargetState
-{
-  size_t idLength;    ///< @brief just an aux. Ignore
-  SDL_Rect rect;      ///< @brief The event target area (absolute)
-  StatusFlags status; ///< @brief the event target status
-  Event event;        ///< @brief the event target event
-};
 
 /**
  * @brief Component responsible to handle and dispatch events for the UI
