@@ -295,10 +295,10 @@ State::beginGroup(std::string_view id, SDL_Rect r)
     elementState(id, r, RequestEvent::HOVER);
   } else {
     if (r.w == 0) {
-      r.w = 0xFFFF;
+      r.w = INT_MAX;
     }
     if (r.h == 0) {
-      r.h = 0xFFFF;
+      r.h = INT_MAX;
     }
     elementState(id, r);
   }
