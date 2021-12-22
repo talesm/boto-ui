@@ -11,7 +11,7 @@ namespace boto {
 struct SliderFieldStyle
 {
   SliderBoxStyle scroll;
-  ElementStyle label;
+  ControlStyle label;
 };
 struct SliderField;
 

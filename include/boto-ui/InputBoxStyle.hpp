@@ -14,8 +14,8 @@ struct InputBoxStyle
   EdgeSize border;
   Font font;
   int scale;
-  ElementPaintStyle normal;
-  ElementPaintStyle active;
+  ControlPaintStyle normal;
+  ControlPaintStyle active;
 };
 
 struct InputBoxBase;
@@ -32,18 +32,18 @@ struct FromTheme<InputBoxBase, Theme>
 {
   constexpr static InputBoxStyle get()
   {
-    auto element = themeFor<Element, Theme>();
+    auto control = themeFor<Control, Theme>();
     return {
       EdgeSize::all(2),
       EdgeSize::all(1),
-      element.font,
-      element.scale,
-      {element.paint.text,
+      control.font,
+      control.scale,
+      {control.paint.text,
        {240, 240, 240, 255},
-       BorderColorStyle::all(element.paint.text)},
-      {element.paint.text,
+       BorderColorStyle::all(control.paint.text)},
+      {control.paint.text,
        {255, 255, 255, 255},
-       BorderColorStyle::all(element.paint.text)},
+       BorderColorStyle::all(control.paint.text)},
     };
   }
 };

@@ -23,9 +23,9 @@ inline void
 label(Target target,
       std::string_view str,
       const SDL_Point& p = {0},
-      const ElementStyle& style = themeFor<Label>())
+      const ControlStyle& style = themeFor<Label>())
 {
-  element(target, str, {p.x, p.y, 0, 0}, style);
+  control(target, str, {p.x, p.y, 0, 0}, style);
 }
 /**
  * @brief A centered label
@@ -40,7 +40,7 @@ inline void
 centeredLabel(Target target,
               std::string_view str,
               SDL_Rect r,
-              const ElementStyle& style = themeFor<Label>())
+              const ControlStyle& style = themeFor<Label>())
 {
   auto textSz = measure(str, style.font, style.scale);
   SDL_Point minElementSz = elementSize(style.padding + style.border, textSz);

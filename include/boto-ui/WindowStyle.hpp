@@ -11,10 +11,10 @@ namespace boto {
 struct WindowDecorationStyle
 {
   PanelDecorationStyle panel;
-  ElementStyle title;
+  ControlStyle title;
 
   constexpr operator BoxStyle() const { return panel; }
-  constexpr operator ElementStyle() const { return title; }
+  constexpr operator ControlStyle() const { return title; }
 
   constexpr WindowDecorationStyle withPanel(
     const PanelDecorationStyle& panel) const
@@ -22,7 +22,7 @@ struct WindowDecorationStyle
     return {panel, title};
   }
 
-  constexpr WindowDecorationStyle withTitle(const ElementStyle& title) const
+  constexpr WindowDecorationStyle withTitle(const ControlStyle& title) const
   {
     return {panel, title};
   }

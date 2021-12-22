@@ -16,7 +16,7 @@ labeledGroup(Target target,
              std::string_view id,
              std::string_view labelText,
              const SDL_Rect& clientRect,
-             const ElementStyle& style = themeFor<Label>())
+             const ControlStyle& style = themeFor<Label>())
 {
   SDL_Rect r{clientRect};
   SDL_Point labelPos = {r.w + 1, 0};

@@ -14,10 +14,10 @@ struct ButtonStyle
   EdgeSize border;
   Font font;
   int scale;
-  ElementPaintStyle normal;
-  ElementPaintStyle grabbed;
-  ElementPaintStyle pressed;
-  ElementPaintStyle pressedGrabbed;
+  ControlPaintStyle normal;
+  ControlPaintStyle grabbed;
+  ControlPaintStyle pressed;
+  ControlPaintStyle pressedGrabbed;
 };
 
 struct ButtonBase;
@@ -25,7 +25,7 @@ struct Button;
 struct ToggleButton;
 struct ChoiceButton;
 
-constexpr const ElementPaintStyle&
+constexpr const ControlPaintStyle&
 decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
 {
   if (grabbing == pushed) {
@@ -42,9 +42,9 @@ struct FromTheme<ButtonBase, Theme>
 {
   constexpr static ButtonStyle get()
   {
-    auto element = themeFor<Element, Theme>();
-    ElementPaintStyle buttonBox = {
-      element.paint.text,
+    auto control = themeFor<Control, Theme>();
+    ControlPaintStyle buttonBox = {
+      control.paint.text,
       {176, 195, 222, 255},
       {
         {255, 255, 255, 255},
@@ -53,13 +53,13 @@ struct FromTheme<ButtonBase, Theme>
         {0, 0, 0, 255},
       },
     };
-    ElementPaintStyle buttonBoxGrabbed =
+    ControlPaintStyle buttonBoxGrabbed =
       buttonBox.withBackground({147, 173, 210, 255});
     return {
       EdgeSize::all(3),
       EdgeSize::all(1),
-      element.font,
-      element.scale,
+      control.font,
+      control.scale,
       buttonBox,
       buttonBoxGrabbed,
       buttonBox.withBorder(buttonBox.border.invert()),

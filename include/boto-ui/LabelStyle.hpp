@@ -10,7 +10,7 @@ struct Label;
 
 namespace style {
 template<class Theme>
-struct FromTheme<Label, Theme> : FromTheme<Element, Theme>
+struct FromTheme<Label, Theme> : FromTheme<Control, Theme>
 {};
 } // namespace style
 

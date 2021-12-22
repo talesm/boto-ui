@@ -10,7 +10,7 @@ namespace boto {
 struct InputFieldStyle
 {
   InputBoxStyle box;
-  ElementStyle label;
+  ControlStyle label;
 };
 
 struct TextField;

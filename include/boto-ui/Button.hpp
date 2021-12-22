@@ -37,7 +37,7 @@ buttonBase(Target target,
   SDL_Rect r{p.x, p.y, adv.x, adv.y};
   auto action = target.checkMouse(id, r);
 
-  element(target,
+  control(target,
           str,
           r,
           {style.padding,

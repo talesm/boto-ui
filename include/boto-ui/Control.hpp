@@ -11,10 +11,10 @@
 
 namespace boto {
 
-/// Compute element size based on its style
+/// Compute control size based on its style
 inline SDL_Point
 computeSize(std::string_view str,
-            const ElementStyle& style,
+            const ControlStyle& style,
             const SDL_Point& sz)
 {
   if (sz.x != 0 && sz.y != 0) {
@@ -31,19 +31,19 @@ computeSize(std::string_view str,
 }
 
 /**
- * @brief Adds a generic element
+ * @brief Adds a generic control
  * @ingroup elements
  *
  * @param target the parent group or frame
- * @param str the text inside the element
- * @param r the element dimensions
+ * @param str the text inside the control
+ * @param r the control dimensions
  * @param style
  */
 inline void
-element(Target target,
+control(Target target,
         std::string_view str,
         const SDL_Rect& r = {0},
-        const ElementStyle& style = themeFor<Element>())
+        const ControlStyle& style = themeFor<Control>())
 {
   auto offset = style.border + style.padding;
   auto sz = computeSize(str, style, {r.w, r.h});

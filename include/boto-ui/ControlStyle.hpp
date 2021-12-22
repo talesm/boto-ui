@@ -8,22 +8,22 @@
 
 namespace boto {
 
-// Style for element state
-struct ElementPaintStyle
+// Style for control state
+struct ControlPaintStyle
 {
   SDL_Color text;
   SDL_Color background;
   BorderColorStyle border;
 
-  constexpr ElementPaintStyle withText(SDL_Color text) const
+  constexpr ControlPaintStyle withText(SDL_Color text) const
   {
     return {text, background, border};
   }
-  constexpr ElementPaintStyle withBackground(SDL_Color background) const
+  constexpr ControlPaintStyle withBackground(SDL_Color background) const
   {
     return {text, background, border};
   }
-  constexpr ElementPaintStyle withBorder(const BorderColorStyle& border) const
+  constexpr ControlPaintStyle withBorder(const BorderColorStyle& border) const
   {
     return {text, background, border};
   }
@@ -31,44 +31,44 @@ struct ElementPaintStyle
   constexpr operator BoxPaintStyle() const { return {background, border}; }
 };
 
-struct ElementStyle
+struct ControlStyle
 {
   EdgeSize padding;
   EdgeSize border;
   Font font;
   int scale;
-  ElementPaintStyle paint;
+  ControlPaintStyle paint;
 
-  constexpr ElementStyle withPadding(EdgeSize padding) const
+  constexpr ControlStyle withPadding(EdgeSize padding) const
   {
     return {padding, border, font, scale, paint};
   }
-  constexpr ElementStyle withBorder(EdgeSize border) const
+  constexpr ControlStyle withBorder(EdgeSize border) const
   {
     return {padding, border, font, scale, paint};
   }
-  constexpr ElementStyle withPaint(const ElementPaintStyle& paint) const
+  constexpr ControlStyle withPaint(const ControlPaintStyle& paint) const
   {
     return {padding, border, font, scale, paint};
   }
-  constexpr ElementStyle withFont(const Font& font) const
+  constexpr ControlStyle withFont(const Font& font) const
   {
     return {padding, border, font, scale, paint};
   }
-  constexpr ElementStyle withScale(int scale) const
+  constexpr ControlStyle withScale(int scale) const
   {
     return {padding, border, font, scale, paint};
   }
 
-  constexpr ElementStyle withText(SDL_Color text) const
+  constexpr ControlStyle withText(SDL_Color text) const
   {
     return withPaint(paint.withText(text));
   }
-  constexpr ElementStyle withBackgroundColor(SDL_Color c) const
+  constexpr ControlStyle withBackgroundColor(SDL_Color c) const
   {
     return withPaint(paint.withBackground(c));
   }
-  constexpr ElementStyle withBorderColor(
+  constexpr ControlStyle withBorderColor(
     const BorderColorStyle& borderColor) const
   {
     return withPaint(paint.withBorder(borderColor));
@@ -77,14 +77,14 @@ struct ElementStyle
   constexpr operator TextStyle() const { return {font, paint.text, scale}; }
 };
 
-struct Element;
+struct Control;
 
 namespace style {
 
 template<class Theme>
-struct FromTheme<Element, Theme>
+struct FromTheme<Control, Theme>
 {
-  constexpr static ElementStyle get()
+  constexpr static ControlStyle get()
   {
     auto text = themeFor<Text, Theme>();
     return {
