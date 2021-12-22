@@ -3,7 +3,6 @@
 
 #include <SDL.h>
 #include "Group.hpp"
-#include "TextStyle.hpp"
 #include "Theme.hpp"
 
 namespace boto {

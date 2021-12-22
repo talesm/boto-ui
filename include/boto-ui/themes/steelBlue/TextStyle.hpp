@@ -1,5 +1,5 @@
-#ifndef BOTO_TEXTSTYLE_HPP_
-#define BOTO_TEXTSTYLE_HPP_
+#ifndef BOTO_THEMES_STEELBLUE_TEXTSTYLE_HPP_
+#define BOTO_THEMES_STEELBLUE_TEXTSTYLE_HPP_
 
 #include <SDL.h>
 #include "Font.hpp"
