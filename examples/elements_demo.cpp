@@ -145,9 +145,9 @@ main(int argc, char** argv)
     p.end();
     p = boto::window(f, "Textures", {480, 10});
     // images
-    boto::textureBox(p, texture, {0, 0, 8, 8});
-    boto::textureBox(p, texture, {0, 1, 64, 64});
-    boto::textureBox(p, texture, {0, 1, 128, 128});
+    boto::element(p, {0, 0, 8, 8}, texture);
+    boto::element(p, {0, 1, 64, 64}, texture);
+    boto::element(p, {0, 1, 128, 128}, texture);
 
     // Here we explicitly end the panel p, so we can add elements to the frame
     // directly again after that.
@@ -163,7 +163,7 @@ main(int argc, char** argv)
     }
 
     // For example, we can add this big texture
-    boto::textureBox(f, texture, {400, 300, 256, 256});
+    boto::element(f, {400, 300, 256, 256}, texture);
 
     // Render
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

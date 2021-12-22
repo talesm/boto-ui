@@ -94,7 +94,7 @@ textBoxBase(Target target,
 
   if (active && (target.getState().ticks() / 512) % 2) {
     // Show cursor
-    colorBox(
+    element(
       g, {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y}, currentColors.text);
   }
   if (action == TextAction::INPUT) {

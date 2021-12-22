@@ -96,12 +96,11 @@ presentElement(DisplayList& dList,
   auto wsz = style.border.left;
   auto ssz = style.border.bottom;
   auto clip = dList.clip(r);
-  dList.push({r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
-  dList.push({r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
-  dList.push({r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, {s.r, s.g, s.b, s.a});
-  dList.push({r.x + r.w - esz, r.y + 1, esz, r.h - 2}, {e.r, e.g, e.b, e.a});
-  dList.push({r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz},
-             {c.r, c.g, c.b, c.a});
+  dList.push({r.x + 1, r.y, r.w - 2, nsz}, n);
+  dList.push({r.x, r.y + 1, wsz, r.h - 2}, w);
+  dList.push({r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, s);
+  dList.push({r.x + r.w - esz, r.y + 1, esz, r.h - 2}, e);
+  dList.push({r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz}, c);
 }
 
 struct Element;
