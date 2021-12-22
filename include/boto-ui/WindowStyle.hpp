@@ -13,7 +13,7 @@ struct WindowDecorationStyle
   PanelDecorationStyle panel;
   ControlStyle title;
 
-  constexpr operator BoxStyle() const { return panel; }
+  constexpr operator ElementStyle() const { return panel; }
   constexpr operator ControlStyle() const { return title; }
 
   constexpr WindowDecorationStyle withPanel(
@@ -35,7 +35,8 @@ struct WindowDecorationStyle
   {
     return withPanel(panel.withBorderSize(border));
   }
-  constexpr WindowDecorationStyle withPaint(const BoxPaintStyle& paint) const
+  constexpr WindowDecorationStyle withPaint(
+    const ElementPaintStyle& paint) const
   {
     return withPanel(panel.withPaint(paint));
   }
@@ -78,7 +79,7 @@ struct WindowStyle
   {
     return withDecoration(decoration.withBorderSize(border));
   }
-  constexpr WindowStyle withPaint(const BoxPaintStyle& paint) const
+  constexpr WindowStyle withPaint(const ElementPaintStyle& paint) const
   {
     return withDecoration(decoration.withPaint(paint));
   }

@@ -39,53 +39,53 @@ struct BorderColorStyle
 };
 
 // Style for element state
-struct BoxPaintStyle
+struct ElementPaintStyle
 {
   SDL_Color background;
   BorderColorStyle border;
 
-  constexpr BoxPaintStyle withBackground(SDL_Color background) const
+  constexpr ElementPaintStyle withBackground(SDL_Color background) const
   {
     return {background, border};
   }
-  constexpr BoxPaintStyle withBorder(const BorderColorStyle& border) const
+  constexpr ElementPaintStyle withBorder(const BorderColorStyle& border) const
   {
     return {background, border};
   }
 };
 
 // Border style
-struct BoxStyle
+struct ElementStyle
 {
   EdgeSize border;
-  BoxPaintStyle paint;
+  ElementPaintStyle paint;
 
-  constexpr BoxStyle withBorderSize(const EdgeSize& border) const
+  constexpr ElementStyle withBorderSize(const EdgeSize& border) const
   {
     return {border, paint};
   }
-  constexpr BoxStyle withPaint(const BoxPaintStyle& paint) const
+  constexpr ElementStyle withPaint(const ElementPaintStyle& paint) const
   {
     return {border, paint};
   }
-  constexpr BoxStyle withBackgroundColor(SDL_Color background) const
+  constexpr ElementStyle withBackgroundColor(SDL_Color background) const
   {
     return withPaint(paint.withBackground(background));
   }
-  constexpr BoxStyle withBorderColor(const BorderColorStyle& border) const
+  constexpr ElementStyle withBorderColor(const BorderColorStyle& border) const
   {
     return withPaint(paint.withBorder(border));
   }
 };
 
-struct Box;
+struct Element;
 
 namespace style {
-/// Default box style
+/// Default element style
 template<>
-struct FromTheme<Box, SteelBlue>
+struct FromTheme<Element, SteelBlue>
 {
-  constexpr static BoxStyle get()
+  constexpr static ElementStyle get()
   {
     return {
       EdgeSize::all(1),

@@ -57,7 +57,7 @@ centeredLabel(Target target,
        {(clientSz.x - textSz.x) / 2 + style.padding.left,
         (clientSz.y - textSz.y) / 2 + style.padding.top},
        style);
-  box(target, r, style);
+  element(target, r, style);
 }
 } // namespace boto
 

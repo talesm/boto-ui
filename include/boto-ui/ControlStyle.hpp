@@ -28,7 +28,7 @@ struct ControlPaintStyle
     return {text, background, border};
   }
 
-  constexpr operator BoxPaintStyle() const { return {background, border}; }
+  constexpr operator ElementPaintStyle() const { return {background, border}; }
 };
 
 struct ControlStyle
@@ -73,7 +73,7 @@ struct ControlStyle
   {
     return withPaint(paint.withBorder(borderColor));
   }
-  constexpr operator BoxStyle() const { return {border, paint}; }
+  constexpr operator ElementStyle() const { return {border, paint}; }
   constexpr operator TextStyle() const { return {font, paint.text, scale}; }
 };
 

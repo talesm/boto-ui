@@ -14,7 +14,7 @@ namespace boto {
 struct SliderBoxBarStyle
 {
   PanelStyle panel;
-  BoxStyle cursor;
+  ElementStyle cursor;
   int minCursor;
 };
 
@@ -37,7 +37,7 @@ struct FromTheme<SliderBoxBar, Theme>
     auto buttonStyle = themeFor<Button, Theme>();
     return {
       themeFor<Panel, Theme>().withPadding(EdgeSize::all(0)),
-      themeFor<Box, Theme>()
+      themeFor<Element, Theme>()
         .withBackgroundColor(buttonStyle.normal.background)
         .withBorderSize(buttonStyle.border)
         .withBorderColor(buttonStyle.normal.border),

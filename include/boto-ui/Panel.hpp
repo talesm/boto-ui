@@ -53,7 +53,7 @@ public:
   {
     SDL_assert(wrapper);
     auto sz = wrapper.endClient();
-    box(*this, {0, 0, sz.x, sz.y}, style);
+    element(*this, {0, 0, sz.x, sz.y}, style);
     wrapper.end();
   }
 

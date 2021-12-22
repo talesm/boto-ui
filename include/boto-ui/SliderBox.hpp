@@ -16,9 +16,9 @@ inline std::optional<SDL_Point>
 sliderBoxBarCaret(Target target,
                   std::string_view id,
                   const SDL_Rect& r,
-                  const BoxStyle& style = themeFor<Box>())
+                  const ElementStyle& style = themeFor<Element>())
 {
-  box(target, r, style);
+  element(target, r, style);
   static SDL_Point mouseOffset;
   auto action = target.checkMouse(id, r);
   if (action == MouseAction::HOLD) {

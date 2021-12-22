@@ -60,7 +60,9 @@ textureBox(Target target, SDL_Texture* texture, SDL_Rect rect)
  * @param style
  */
 inline void
-box(Target target, const SDL_Rect& r, const BoxStyle& style = themeFor<Box>())
+element(Target target,
+        const SDL_Rect& r,
+        const ElementStyle& style = themeFor<Element>())
 {
   auto c = style.paint.background;
   auto e = style.paint.border.right;

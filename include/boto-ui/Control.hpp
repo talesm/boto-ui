@@ -49,7 +49,7 @@ control(Target target,
   auto sz = computeSize(str, style, {r.w, r.h});
   auto g = group(target, {}, {r.x, r.y, sz.x, sz.y}, Layout::NONE);
   text(g, str, {offset.left, offset.top}, style);
-  box(g, {0, 0, sz.x, sz.y}, style);
+  element(g, {0, 0, sz.x, sz.y}, style);
 }
 
 } // namespace boto

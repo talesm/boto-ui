@@ -13,7 +13,7 @@ struct PanelDecorationStyle
 {
   EdgeSize padding;
   EdgeSize border;
-  BoxPaintStyle paint;
+  ElementPaintStyle paint;
 
   constexpr PanelDecorationStyle withPadding(const EdgeSize& padding) const
   {
@@ -23,7 +23,7 @@ struct PanelDecorationStyle
   {
     return {padding, border, paint};
   }
-  constexpr PanelDecorationStyle withPaint(const BoxPaintStyle& paint) const
+  constexpr PanelDecorationStyle withPaint(const ElementPaintStyle& paint) const
   {
     return {padding, border, paint};
   }
@@ -37,7 +37,7 @@ struct PanelDecorationStyle
     return withPaint(paint.withBorder(border));
   }
 
-  constexpr operator BoxStyle() const { return {border, paint}; }
+  constexpr operator ElementStyle() const { return {border, paint}; }
 };
 struct PanelStyle
 {
@@ -66,7 +66,7 @@ struct PanelStyle
   {
     return withDecoration(decoration.withBorderSize(border));
   }
-  constexpr PanelStyle withPaint(const BoxPaintStyle& paint) const
+  constexpr PanelStyle withPaint(const ElementPaintStyle& paint) const
   {
     return withDecoration(decoration.withPaint(paint));
   }
@@ -100,7 +100,7 @@ struct FromTheme<PanelDecoration, Theme>
 {
   constexpr static PanelDecorationStyle get()
   {
-    auto boxStyle = themeFor<Box, Theme>();
+    auto boxStyle = themeFor<Element, Theme>();
     return {EdgeSize::all(2), boxStyle.border, boxStyle.paint};
   }
 };

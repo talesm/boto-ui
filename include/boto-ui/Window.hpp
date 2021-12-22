@@ -67,7 +67,7 @@ public:
     SDL_assert(wrapper);
     auto sz = wrapper.endClient();
     centeredLabel(wrapper, title, {0, 0, sz.x, 0}, style);
-    box(wrapper, {0, 0, sz.x, sz.y}, style);
+    element(wrapper, {0, 0, sz.x, sz.y}, style);
     wrapper.end();
   }
 
