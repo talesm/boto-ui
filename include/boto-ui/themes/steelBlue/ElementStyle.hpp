@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include "EdgeSize.hpp"
 #include "Theme.hpp"
+#include "core/DisplayList.hpp"
+#include "core/Status.hpp"
 
 namespace boto {
 
@@ -77,6 +79,30 @@ struct ElementStyle
     return withPaint(paint.withBorder(border));
   }
 };
+
+inline void
+presentElement(DisplayList& dList,
+               const SDL_Rect& r,
+               Status status,
+               const ElementStyle& style)
+{
+  auto c = style.paint.background;
+  auto e = style.paint.border.right;
+  auto n = style.paint.border.top;
+  auto w = style.paint.border.left;
+  auto s = style.paint.border.bottom;
+  auto esz = style.border.right;
+  auto nsz = style.border.top;
+  auto wsz = style.border.left;
+  auto ssz = style.border.bottom;
+  auto clip = dList.clip(r);
+  dList.push({r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
+  dList.push({r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
+  dList.push({r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, {s.r, s.g, s.b, s.a});
+  dList.push({r.x + r.w - esz, r.y + 1, esz, r.h - 2}, {e.r, e.g, e.b, e.a});
+  dList.push({r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz},
+             {c.r, c.g, c.b, c.a});
+}
 
 struct Element;
 

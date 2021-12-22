@@ -73,7 +73,9 @@ public:
     });
   }
 
-  void push(SDL_Rect rect, SDL_Color color, SDL_BlendMode mode)
+  void push(SDL_Rect rect,
+            SDL_Color color,
+            SDL_BlendMode mode = SDL_BLENDMODE_BLEND)
   {
     push(rect, color, mode, nullptr, {0});
   }
