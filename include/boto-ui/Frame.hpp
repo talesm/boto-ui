@@ -10,36 +10,47 @@ namespace boto {
  * @brief Represents a single frame on the app
  *
  */
-class Frame
+class State::Frame : public CookieBase<State, State::FrameGuard>
 {
-  State::Frame cookie;
-  SDL_Rect rect{0};
-  SDL_Point topLeft{0};
-  SDL_Point bottomRight{0};
-  bool locked = false;
-
 public:
-  /// Base ctor
   constexpr Frame() = default;
-  Frame(State* state);
+
+  // TODO remove me
+  using CookieBase::get;
 
   /**
    * @brief Ends and then renders the frame
    *
    * This is equivalent to call end(), followed by State.render().
    */
-  void render() { cookie.render(); }
-
-  /// Finishes the frame and unlock the state
-  void end() { cookie.end(); }
+  void render()
+  {
+    if (auto* state = get()) {
+      end();
+      state->render();
+    }
+  }
 
   /// Convert to target
   operator Target() &
   {
-    return {
-      cookie.get(), {}, rect, topLeft, bottomRight, locked, {0, Layout::NONE}};
+    return {get(), {}, rect, topLeft, bottomRight, locked, {0, Layout::NONE}};
   }
+
+private:
+  Frame(State* state)
+    : CookieBase(state)
+  {}
+
+  friend class State;
+
+  SDL_Rect rect{0};
+  SDL_Point topLeft{0};
+  SDL_Point bottomRight{0};
+  bool locked = false;
 };
+
+using Frame = State::Frame;
 
 /**
  * @brief Starts a new frame
@@ -53,13 +64,29 @@ public:
 inline Frame
 frame(State& state)
 {
-  return {&state};
+  return state.frame();
 }
 
-inline Frame::Frame(State* state)
-  : cookie(state->frame())
-{}
+inline State::Frame
+State::frame()
+{
+  SDL_assert(isInFrame() == false);
+  ticksCount = SDL_GetTicks();
+  levelChanged = true;
+  dList.clear();
+  lastId.clear();
+  elements.push_back({});
+  return {this};
+}
 
+inline void
+State::endFrame()
+{
+  SDL_assert(isInFrame() == true);
+  elements.pop_back();
+  tKeysym = {};
+  dispatcher.reset();
+}
 } // namespace boto
 
 #endif // _BOTO_FRAME_HPP

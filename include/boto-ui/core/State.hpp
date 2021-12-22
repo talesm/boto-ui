@@ -133,8 +133,22 @@ public:
   std::string_view currentId() const { return dispatcher.currentId(); }
 
   /**
-   * @brief Check the mouse action/status for element in this frame
+   * @brief Check for events
    *
+   * All others are deprecated
+   *
+   * @param id element id
+   * @param r the element global rect (Use Group.checkMouse() for local rect)
+   * @return Event & status for the element
+   */
+  const EventTargetState& check(std::string_view id,
+                                const SDL_Rect& r,
+                                RequestEvent req = RequestEvent::INPUT);
+
+  /**
+   * @brief Check the mouse action/status for element in this frame
+   * @deprecated use check() instead
+
    * @param id element id
    * @param r the element global rect (Use Group.checkMouse() for local rect)
    * @return MouseAction
@@ -143,6 +157,7 @@ public:
 
   /**
    * @brief Check the text action/status for element in this frame
+   * @deprecated use check() instead
    *
    * @param id the element id
    * @return TextAction
@@ -200,11 +215,6 @@ public:
 private:
   void endFrame();
 
-  // Create element
-  ElementState& elementState(std::string_view id,
-                             const SDL_Rect& r,
-                             RequestEvent req = RequestEvent::INPUT);
-
   struct FrameGuard
   {
     void operator()(State* state) { state->endFrame(); }
@@ -225,41 +235,12 @@ private:
   std::string lastId;
 };
 
-/// @brief A frame where you can add elements
-class State::Frame : public CookieBase<State, State::FrameGuard>
+inline const EventTargetState&
+State::check(std::string_view id, const SDL_Rect& r, RequestEvent req)
 {
-public:
-  constexpr Frame() = default;
-
-  // TODO remove me
-  using CookieBase::get;
-
-  /**
-   * @brief Ends and then renders the frame
-   *
-   * This is equivalent to call end(), followed by State.render().
-   */
-  void render()
-  {
-    if (auto* state = get()) {
-      end();
-      state->render();
-    }
-  }
-
-private:
-  Frame(State* state)
-    : CookieBase(state)
-  {}
-
-  friend class State;
-};
-
-inline ElementState&
-State::elementState(std::string_view id, const SDL_Rect& r, RequestEvent req)
-{
+  SDL_assert(isInFrame() == true);
   if (!id.empty() && id == lastId) {
-    return elements.back();
+    return elements.back().eventTarget.state();
   }
   if (!levelChanged) {
     elements.pop_back();
@@ -270,13 +251,13 @@ State::elementState(std::string_view id, const SDL_Rect& r, RequestEvent req)
     r.w && r.h ? dList.clip(r) : DisplayList::Clip{},
     dispatcher.check(req, r, id),
   });
-  return elements.back();
+  return elements.back().eventTarget.state();
 }
 
 inline MouseAction
 State::checkMouse(std::string_view id, SDL_Rect r)
 {
-  auto& elState = elementState(id, r).eventTarget.state();
+  auto& elState = check(id, r);
   switch (elState.event) {
   case Event::GRAB:
     return MouseAction::GRAB;
@@ -313,7 +294,7 @@ inline void
 State::beginGroup(std::string_view id, SDL_Rect r)
 {
   if (id.empty()) {
-    elementState(id, r, RequestEvent::HOVER);
+    check(id, r, RequestEvent::HOVER);
   } else {
     if (r.w == 0) {
       r.w = INT_MAX;
@@ -321,7 +302,7 @@ State::beginGroup(std::string_view id, SDL_Rect r)
     if (r.h == 0) {
       r.h = INT_MAX;
     }
-    elementState(id, r);
+    check(id, r);
   }
   levelChanged = true;
   lastId.clear();
@@ -409,26 +390,6 @@ State::event(SDL_Event& ev)
   }
 }
 
-inline State::Frame
-State::frame()
-{
-  SDL_assert(isInFrame() == false);
-  ticksCount = SDL_GetTicks();
-  levelChanged = true;
-  dList.clear();
-  lastId.clear();
-  elements.push_back({});
-  return {this};
-}
-
-inline void
-State::endFrame()
-{
-  SDL_assert(isInFrame() == true);
-  elements.pop_back();
-  tKeysym = {};
-  dispatcher.reset();
-}
 } // namespace boto
 
 #endif // BOTO_CORE_STATE_HPP_
