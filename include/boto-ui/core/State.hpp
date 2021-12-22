@@ -78,6 +78,11 @@ public:
   // Forward decl
   class Frame;
 
+  /**
+   * @brief Starts a new Frame
+   *
+   * @return Frame
+   */
   Frame frame();
 
   /**
