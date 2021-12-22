@@ -10,7 +10,23 @@ struct Font
   SDL_Texture* texture;
   int charW, charH;
   int cols;
+
+  constexpr operator bool() const { return bool(texture); }
 };
+
+/// Measure the given character
+constexpr SDL_Point
+measure(char ch, const Font& font, int scale)
+{
+  return {font.charW << scale, font.charH << scale};
+}
+
+/// Measure the given text
+constexpr SDL_Point
+measure(std::string_view text, const Font& font, int scale)
+{
+  return {int((font.charW << scale) * text.size()), font.charH << scale};
+}
 
 #include "defaultFont.h"
 

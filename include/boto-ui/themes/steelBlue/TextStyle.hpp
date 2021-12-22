@@ -1,9 +1,9 @@
 #ifndef BOTO_THEMES_STEELBLUE_TEXTSTYLE_HPP_
 #define BOTO_THEMES_STEELBLUE_TEXTSTYLE_HPP_
 
-#include <SDL.h>
 #include "Font.hpp"
 #include "Theme.hpp"
+#include "core/DisplayList.hpp"
 
 namespace boto {
 
@@ -29,6 +29,51 @@ struct TextStyle
     return {font, color, scale};
   }
 };
+
+constexpr TextStyle
+adjustDefaultFont(TextStyle style, const Font& font)
+{
+  if (!style.font) {
+    style.font = font;
+  }
+  return style;
+}
+
+inline SDL_Point
+presentCharacter(DisplayList& dList,
+                 char ch,
+                 const SDL_Point& p,
+                 Status status,
+                 const TextStyle& style)
+{
+  auto& font = style.font;
+  auto adv = measure(ch, font, style.scale);
+  SDL_Rect dstRect{p.x, p.y, adv.x, adv.y};
+  SDL_Rect srcRect{(ch % font.cols) * font.charW,
+                   (ch / font.cols) * font.charH,
+                   font.charW,
+                   font.charH};
+  dList.push(dstRect, style.color, SDL_BLENDMODE_BLEND, font.texture, srcRect);
+  return adv;
+}
+
+inline SDL_Point
+presentText(DisplayList& dList,
+            std::string_view str,
+            SDL_Point p,
+            Status status,
+            const TextStyle& style)
+{
+  SDL_Point adv = {0};
+  for (auto ch : str) {
+    auto chAdv = presentCharacter(dList, ch, {p.x + adv.x, p.y}, status, style);
+    p.x += chAdv.x;
+    if (chAdv.y > p.y) {
+      p.y = chAdv.y;
+    }
+  }
+  return adv;
+}
 
 struct Text;
 

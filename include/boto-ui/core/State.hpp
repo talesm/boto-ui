@@ -183,27 +183,6 @@ public:
    */
   bool wantsKeyboard() const { return dispatcher.wantsKeyboard(); }
 
-  /**
-   * @brief Add the given item Shape to display list
-   *
-   * @param item
-   */
-  void display(const SDL_Rect& r, SDL_Color c)
-  {
-    dList.push(r, c, SDL_BLENDMODE_BLEND);
-  }
-  void display(const SDL_Rect& r, SDL_Texture* texture, const SDL_Rect& srcRect)
-  {
-    display(r, texture, srcRect, {255, 255, 255, 255});
-  }
-  void display(const SDL_Rect& r,
-               SDL_Texture* texture,
-               const SDL_Rect& srcRect,
-               SDL_Color c)
-  {
-    dList.push(r, c, SDL_BLENDMODE_BLEND, texture, srcRect);
-  }
-
   /// Ticks count
   Uint32 ticks() const { return ticksCount; }
 
