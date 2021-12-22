@@ -2,8 +2,8 @@
 #define BOTO_SLIDERBOXSTYLE_HPP_
 
 #include <SDL.h>
-#include "BoxStyle.hpp"
 #include "ButtonStyle.hpp"
+#include "ElementStyle.hpp"
 #include "InputBoxStyle.hpp"
 #include "PanelStyle.hpp"
 #include "Theme.hpp"

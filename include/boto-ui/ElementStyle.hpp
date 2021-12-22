@@ -1,5 +1,5 @@
-#ifndef BOTO_BOXSTYLE_HPP_
-#define BOTO_BOXSTYLE_HPP_
+#ifndef BOTO_ELEMENTSTYLE_HPP_
+#define BOTO_ELEMENTSTYLE_HPP_
 
 #include <SDL.h>
 #include "EdgeSize.hpp"
@@ -99,4 +99,4 @@ struct FromTheme<Element, SteelBlue>
 } // namespace style
 } // namespace boto
 
-#endif // BOTO_BOXSTYLE_HPP_
+#endif // BOTO_ELEMENTSTYLE_HPP_

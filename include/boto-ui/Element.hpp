@@ -1,9 +1,9 @@
-#ifndef BOTO_BOX_HPP_
-#define BOTO_BOX_HPP_
+#ifndef BOTO_ELEMENT_HPP_
+#define BOTO_ELEMENT_HPP_
 
 #include <SDL.h>
-#include "BoxStyle.hpp"
 #include "EdgeSize.hpp"
+#include "ElementStyle.hpp"
 #include "Group.hpp"
 #include "Theme.hpp"
 
@@ -85,4 +85,4 @@ element(Target target,
 
 } // namespace boto
 
-#endif // BOTO_BOX_HPP_
+#endif // BOTO_ELEMENT_HPP_

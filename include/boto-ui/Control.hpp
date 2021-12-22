@@ -2,9 +2,9 @@
 #define BOTO_CONTROL_HPP_
 
 #include <string_view>
-#include "Box.hpp"
 #include "ControlStyle.hpp"
 #include "EdgeSize.hpp"
+#include "Element.hpp"
 #include "Group.hpp"
 #include "Text.hpp"
 #include "Theme.hpp"
