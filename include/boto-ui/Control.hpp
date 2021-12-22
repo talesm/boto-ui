@@ -5,9 +5,9 @@
 #include "ControlStyle.hpp"
 #include "EdgeSize.hpp"
 #include "Group.hpp"
-#include "Text.hpp"
 #include "Theme.hpp"
 #include "elements/Element.hpp"
+#include "elements/Text.hpp"
 
 namespace boto {
 
