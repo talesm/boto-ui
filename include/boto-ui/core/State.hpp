@@ -89,6 +89,14 @@ public:
   const EventDispatcher& eventDispatcher() const { return dispatcher; }
 
   /**
+   * @brief Access to display list
+   *
+   * @return DisplayList&
+   */
+  DisplayList& displayList() { return dList; }
+  const DisplayList& displayList() const { return dList; }
+
+  /**
    * @brief If a frame is in progress
    *
    * You shouldn't send events nor render during this

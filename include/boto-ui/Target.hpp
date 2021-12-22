@@ -140,6 +140,9 @@ public:
   /// Get the target's state
   State& getState() const { return *state; }
 
+  /// Get the target's displayList
+  DisplayList& getDisplayList() const { return state->displayList(); }
+
   /// Get the position where the next element can be added
   SDL_Point getCaret() const
   {

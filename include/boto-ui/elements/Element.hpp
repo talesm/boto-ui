@@ -64,23 +64,12 @@ element(Target target,
         const SDL_Rect& r,
         const ElementStyle& style = themeFor<Element>())
 {
-  auto c = style.paint.background;
-  auto e = style.paint.border.right;
-  auto n = style.paint.border.top;
-  auto w = style.paint.border.left;
-  auto s = style.paint.border.bottom;
-  auto esz = style.border.right;
-  auto nsz = style.border.top;
-  auto wsz = style.border.left;
-  auto ssz = style.border.bottom;
-  auto g = group(target, {}, r, Layout::NONE);
-  colorBox(g, {r.x + 1, r.y, r.w - 2, nsz}, {n.r, n.g, n.b, n.a});
-  colorBox(g, {r.x, r.y + 1, wsz, r.h - 2}, {w.r, w.g, w.b, w.a});
-  colorBox(g, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, {s.r, s.g, s.b, s.a});
-  colorBox(g, {r.x + r.w - esz, r.y + 1, esz, r.h - 2}, {e.r, e.g, e.b, e.a});
-  colorBox(g,
-           {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz},
-           {c.r, c.g, c.b, c.a});
+  auto caret = target.getCaret();
+  presentElement(target.getDisplayList(),
+                 {r.x + caret.x, r.y + caret.y, r.w, r.h},
+                 Status::NONE,
+                 style);
+  target.advance({r.x + r.w, r.y + r.h});
 }
 
 } // namespace boto
