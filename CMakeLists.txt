@@ -23,7 +23,7 @@ target_link_libraries(hello_demo PRIVATE botoui)
 add_executable(scrolling_demo examples/scrolling_demo.cpp)
 target_link_libraries(scrolling_demo PRIVATE botoui)
 
-add_custom_target(single_header ALL
+add_custom_target(single_header
   node ${CMAKE_CURRENT_SOURCE_DIR}/makeSingleHeader.js ${CMAKE_CURRENT_BINARY_DIR}/botoui.hpp
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/boto-ui/
   COMMENT "Generating single header file"

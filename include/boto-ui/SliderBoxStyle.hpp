@@ -3,7 +3,6 @@
 
 #include <SDL.h>
 #include "ButtonStyle.hpp"
-#include "ElementStyle.hpp"
 #include "InputBoxStyle.hpp"
 #include "PanelStyle.hpp"
 #include "Theme.hpp"

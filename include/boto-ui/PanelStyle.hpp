@@ -2,7 +2,6 @@
 #define BOTO_PANELSTYLE_HPP_
 
 #include "EdgeSize.hpp"
-#include "ElementStyle.hpp"
 #include "GroupStyle.hpp"
 #include "Theme.hpp"
 

@@ -5,7 +5,6 @@ namespace boto {
 
 namespace style {
 
-// Default theme
 struct SteelBlue;
 
 #ifndef BOTO_THEME
@@ -32,4 +31,5 @@ themeFor()
 
 } // namespace boto
 
+#include "themes/steelBlue/steelBlue.hpp"
 #endif // BOTO_THEME_HPP_
