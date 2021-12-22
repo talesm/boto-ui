@@ -223,6 +223,7 @@ private:
   std::vector<ElementState> elements;
   bool levelChanged = true;
   bool inFrame = false;
+  std::string lastId;
 };
 
 /// @brief A frame where you can add elements
@@ -245,11 +246,14 @@ public:
 inline ElementState&
 State::elementState(std::string_view id, const SDL_Rect& r, RequestEvent req)
 {
-  if (levelChanged) {
-    levelChanged = false;
-  } else {
+  if (!id.empty() && id == lastId) {
+    return elements.back();
+  }
+  if (!levelChanged) {
     elements.pop_back();
   }
+  levelChanged = false;
+  lastId = id;
   elements.emplace_back(ElementState{
     dList.clip(r),
     dispatcher.check(req, r, id),
@@ -308,6 +312,7 @@ State::beginGroup(std::string_view id, SDL_Rect r)
     elementState(id, r);
   }
   levelChanged = true;
+  lastId.clear();
 }
 
 inline void
@@ -319,6 +324,7 @@ State::endGroup(std::string_view id, const SDL_Rect& r)
   dispatcher.shrink(r.w, r.h);
   elements.pop_back();
   levelChanged = true;
+  lastId.clear();
 }
 
 inline void
@@ -399,6 +405,7 @@ State::frame()
   levelChanged = true;
   inFrame = true;
   dList.clear();
+  lastId.clear();
   return {this};
 }
 
