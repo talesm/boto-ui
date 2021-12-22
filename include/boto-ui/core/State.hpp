@@ -109,7 +109,7 @@ public:
    * @return true
    * @return false
    */
-  bool isInFrame() const { return inFrame; }
+  bool isInFrame() const { return !elements.empty(); }
 
   /**
    * @brief Check if the element was activated
@@ -222,25 +222,37 @@ private:
 
   std::vector<ElementState> elements;
   bool levelChanged = true;
-  bool inFrame = false;
   std::string lastId;
 };
 
 /// @brief A frame where you can add elements
 class State::Frame : public CookieBase<State, State::FrameGuard>
 {
+public:
+  constexpr Frame() = default;
+
+  // TODO remove me
+  using CookieBase::get;
+
+  /**
+   * @brief Ends and then renders the frame
+   *
+   * This is equivalent to call end(), followed by State.render().
+   */
+  void render()
+  {
+    if (auto* state = get()) {
+      end();
+      state->render();
+    }
+  }
+
 private:
   Frame(State* state)
     : CookieBase(state)
   {}
 
   friend class State;
-
-public:
-  constexpr Frame() = default;
-
-  // TODO remove me
-  using CookieBase::get;
 };
 
 inline ElementState&
@@ -255,7 +267,7 @@ State::elementState(std::string_view id, const SDL_Rect& r, RequestEvent req)
   levelChanged = false;
   lastId = id;
   elements.emplace_back(ElementState{
-    dList.clip(r),
+    r.w && r.h ? dList.clip(r) : DisplayList::Clip{},
     dispatcher.check(req, r, id),
   });
   return elements.back();
@@ -400,22 +412,22 @@ State::event(SDL_Event& ev)
 inline State::Frame
 State::frame()
 {
-  SDL_assert(inFrame == false);
+  SDL_assert(isInFrame() == false);
   ticksCount = SDL_GetTicks();
   levelChanged = true;
-  inFrame = true;
   dList.clear();
   lastId.clear();
+  elements.push_back({});
   return {this};
 }
 
 inline void
 State::endFrame()
 {
-  SDL_assert(inFrame == true);
+  SDL_assert(isInFrame() == true);
+  elements.pop_back();
   tKeysym = {};
   dispatcher.reset();
-  inFrame = false;
 }
 } // namespace boto
 

@@ -28,13 +28,7 @@ public:
    *
    * This is equivalent to call end(), followed by State.render().
    */
-  void render()
-  {
-    if (auto* state = cookie.get()) {
-      end();
-      state->render();
-    }
-  }
+  void render() { cookie.render(); }
 
   /// Finishes the frame and unlock the state
   void end() { cookie.end(); }
