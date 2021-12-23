@@ -1,13 +1,7 @@
 #pragma once
+#include "core/Layout.hpp"
 
 namespace boto {
-
-enum class Layout : Uint8
-{
-  NONE,
-  VERTICAL,
-  HORIZONTAL,
-};
 
 struct TargetStyle
 {

@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include "TargetStyle.hpp"
+#include "core/Container.hpp"
 #include "core/State.hpp"
 
 namespace boto {

@@ -14,7 +14,6 @@
 #include "SliderField.hpp"
 #include "Window.hpp"
 #include "Wrapper.hpp"
-#include "core/DisplayList.hpp"
 #include "core/Frame.hpp"
 #include "core/State.hpp"
 
