@@ -4,7 +4,6 @@
 #include "Button.hpp"
 #include "Control.hpp"
 #include "Font.hpp"
-#include "Frame.hpp"
 #include "Group.hpp"
 #include "InputBox.hpp"
 #include "InputField.hpp"
@@ -16,6 +15,7 @@
 #include "Window.hpp"
 #include "Wrapper.hpp"
 #include "core/DisplayList.hpp"
+#include "core/Frame.hpp"
 #include "core/State.hpp"
 
 #endif // BOTO_HPP_H

@@ -1,5 +1,5 @@
-#ifndef _BOTO_FRAME_HPP
-#define _BOTO_FRAME_HPP
+#ifndef BOTO_CORE_FRAME_HPP_
+#define BOTO_CORE_FRAME_HPP_
 
 #include "Target.hpp"
 #include "core/State.hpp"
@@ -87,4 +87,4 @@ State::endFrame()
 }
 } // namespace boto
 
-#endif // _BOTO_FRAME_HPP
+#endif // BOTO_CORE_FRAME_HPP_
