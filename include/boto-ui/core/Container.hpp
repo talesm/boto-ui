@@ -6,6 +6,7 @@
 #include <string_view>
 #include "DisplayList.hpp"
 #include "EventDispatcher.hpp"
+#include "Frame.hpp"
 #include "Layout.hpp"
 
 namespace boto {
