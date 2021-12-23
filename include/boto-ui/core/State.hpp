@@ -12,6 +12,9 @@
 
 namespace boto {
 
+// Forward decl
+class Frame;
+
 /**
  * @brief The mouse action and status for a element in a frame
  *
@@ -74,9 +77,6 @@ public:
    * @param ev event
    */
   void event(SDL_Event& ev);
-
-  // Forward decl
-  class Frame;
 
   /**
    * @brief Starts a new Frame
@@ -219,6 +219,8 @@ private:
   {
     void operator()(State* state) { state->endFrame(); }
   };
+
+  friend class Frame;
 
   SDL_Renderer* renderer;
   DisplayList dList;

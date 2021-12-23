@@ -10,7 +10,7 @@ namespace boto {
  * @brief Represents a single frame on the app
  *
  */
-class State::Frame : public CookieBase<State, State::FrameGuard>
+class Frame : public CookieBase<State, State::FrameGuard>
 {
 public:
   constexpr Frame() = default;
@@ -50,8 +50,6 @@ private:
   bool locked = false;
 };
 
-using Frame = State::Frame;
-
 /**
  * @brief Starts a new frame
  *
@@ -67,7 +65,7 @@ frame(State& state)
   return state.frame();
 }
 
-inline State::Frame
+inline Frame
 State::frame()
 {
   SDL_assert(isInFrame() == false);
