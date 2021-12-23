@@ -19,13 +19,15 @@ struct ContainerState
                  EventDispatcher& dispatcher,
                  std::string_view id,
                  const SDL_Rect& r,
-                 const SDL_Point& internalOffset,
-                 Layout layout,
+                 const SDL_Point& internalOffset = {},
+                 const SDL_Point& endPadding = {},
+                 Layout layout = Layout::NONE,
                  int elementSpacing = 0)
     : target(dispatcher.check(RequestEvent::INPUT, r, id))
     , clip(dList.clip(r))
     , offset({r.x + internalOffset.x, r.y + internalOffset.y})
     , endPos(offset)
+    , endPadding(endPadding)
     , elementSpacing(elementSpacing)
     , layout(layout)
   {}
@@ -65,10 +67,75 @@ struct ContainerState
   DisplayList::Clip clip;
   SDL_Point offset;
   SDL_Point endPos;
-  SDL_Point endPadding{0};
+  SDL_Point endPadding;
   int elementSpacing;
   Layout layout;
 };
+
+class Container : public CookieBase<Frame, Frame::ContainerPopper>
+{
+public:
+  Container() = default;
+
+  const ContainerState& state() const { return get()->containers[index]; }
+
+  Container container(std::string_view id,
+                      const SDL_Rect& r,
+                      const SDL_Point& offset = {},
+                      const SDL_Point& endPadding = {},
+                      Layout layout = Layout::NONE,
+                      int elementSpacing = 0)
+  {
+    auto frame = get();
+    SDL_assert(index == frame->containers.size() - 1);
+    return frame->container(id, r, offset, endPadding, layout, elementSpacing);
+  }
+
+private:
+  Container(Frame* frame, size_t index)
+    : CookieBase(frame)
+    , index(index)
+  {}
+
+  friend class Frame;
+
+  size_t index;
+};
+
+inline Container
+Frame::container(std::string_view id,
+                 SDL_Rect r,
+                 const SDL_Point& offset,
+                 const SDL_Point& endPadding,
+                 Layout layout,
+                 int elementSpacing)
+{
+  auto state = get();
+  if (!containers.empty()) {
+    auto caret = containers.back().caret();
+    r.x += caret.x;
+    r.y += caret.y;
+  }
+  containers.emplace_back(state->dList,
+                          state->dispatcher,
+                          id,
+                          r,
+                          offset,
+                          endPadding,
+                          layout,
+                          elementSpacing);
+  return {this, containers.size() - 1};
+}
+
+inline void
+Frame::popContainer()
+{
+  auto sz = containers.back().size();
+  containers.pop_back();
+  if (!containers.empty()) {
+    containers.back().advance(sz);
+  }
+}
 
 }
 

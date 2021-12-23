@@ -14,7 +14,7 @@ TEST_CASE("Container creation", "[container]")
 
   SECTION("Common container")
   {
-    ContainerState c{dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {}, {}};
+    ContainerState c{dList, dispatcher, "c1"sv, {1, 2, 3, 4}};
     REQUIRE(c.target.rect().x == 1);
     REQUIRE(c.target.rect().y == 2);
     REQUIRE(c.target.rect().w == 3);
@@ -31,8 +31,7 @@ TEST_CASE("Container creation", "[container]")
   }
   SECTION("Infinite container")
   {
-    ContainerState c{
-      dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}, {}, {}};
+    ContainerState c{dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}};
     REQUIRE(c.target.rect().x == 1);
     REQUIRE(c.target.rect().y == 2);
     REQUIRE(c.target.status() == Status::HOVERED);
@@ -51,7 +50,7 @@ TEST_CASE("Container creation", "[container]")
   }
   SECTION("Offset container")
   {
-    ContainerState c{dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}, {}};
+    ContainerState c{dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}};
     REQUIRE(c.target.rect().x == 1);
     REQUIRE(c.target.rect().y == 2);
     REQUIRE(c.target.rect().w == 3);
@@ -69,7 +68,7 @@ TEST_CASE("Container creation", "[container]")
   SECTION("Offset infinite container")
   {
     ContainerState c{
-      dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}, {5, 6}, {}};
+      dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}, {5, 6}};
     REQUIRE(c.target.rect().x == 1);
     REQUIRE(c.target.rect().y == 2);
     REQUIRE(c.target.status() == Status::HOVERED);
@@ -85,7 +84,7 @@ TEST_CASE("Container creation", "[container]")
   SECTION("Negative offset infinite container")
   {
     ContainerState c{
-      dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}, {-5, -6}, {}};
+      dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}, {-5, -6}};
     REQUIRE(c.target.rect().x == 1);
     REQUIRE(c.target.rect().y == 2);
     REQUIRE(c.target.status() == Status::HOVERED);
@@ -115,7 +114,7 @@ TEST_CASE("Container advance", "[container]")
   SECTION("Layout::NONE")
   {
     ContainerState c{
-      dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}, Layout::NONE};
+      dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}, {}, Layout::NONE};
     REQUIRE(c.offset.x == c.endPos.x);
     REQUIRE(c.offset.y == c.endPos.y);
     REQUIRE(c.offset.x == c.caret().x);
@@ -137,8 +136,14 @@ TEST_CASE("Container advance", "[container]")
   }
   SECTION("Layout::HORIZONTAL")
   {
-    ContainerState c{
-      dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}, Layout::HORIZONTAL, 0};
+    ContainerState c{dList,
+                     dispatcher,
+                     "c1"sv,
+                     {1, 2, 3, 4},
+                     {5, 6},
+                     {},
+                     Layout::HORIZONTAL,
+                     0};
     REQUIRE(c.offset.x == c.endPos.x);
     REQUIRE(c.offset.y == c.endPos.y);
     REQUIRE(c.offset.x == c.caret().x);
@@ -163,7 +168,7 @@ TEST_CASE("Container advance", "[container]")
   SECTION("Layout::VERTICAL")
   {
     ContainerState c{
-      dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}, Layout::VERTICAL, 0};
+      dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}, {}, Layout::VERTICAL, 0};
     REQUIRE(c.offset.x == c.endPos.x);
     REQUIRE(c.offset.y == c.endPos.y);
     REQUIRE(c.offset.x == c.caret().x);
@@ -184,5 +189,35 @@ TEST_CASE("Container advance", "[container]")
     c.advance({1, 1});
     REQUIRE(c.endPos.x == 8);
     REQUIRE(c.endPos.y == 14);
+  }
+}
+
+TEST_CASE("Frame on regular container", "[container][frame]")
+{
+  State state{nullptr};
+  Frame f = frame(state);
+
+  auto c1 = f.container("c1"sv, {1, 2, 3, 4});
+  {
+    auto& s1 = c1.state();
+    REQUIRE(s1.offset.x == 1);
+    REQUIRE(s1.offset.y == 2);
+    REQUIRE(s1.endPos.x == 1);
+    REQUIRE(s1.endPos.y == 2);
+
+    SECTION("Child inherits the offset")
+    {
+      {
+        auto c2 = c1.container("c2"sv, {0, 0, 2, 2});
+        auto& s2 = c2.state();
+        REQUIRE(s2.offset.x == 1);
+        REQUIRE(s2.offset.y == 2);
+      }
+      auto& s1 = c1.state();
+      REQUIRE(s1.offset.x == 1);
+      REQUIRE(s1.offset.y == 2);
+      REQUIRE(s1.endPos.x == 3);
+      REQUIRE(s1.endPos.y == 4);
+    }
   }
 }

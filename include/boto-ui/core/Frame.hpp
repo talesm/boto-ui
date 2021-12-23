@@ -6,6 +6,9 @@
 
 namespace boto {
 
+class ContainerState;
+class Container;
+
 /**
  * @brief Represents a single frame on the app
  *
@@ -13,7 +16,7 @@ namespace boto {
 class Frame : public CookieBase<State, State::FrameGuard>
 {
 public:
-  constexpr Frame() = default;
+  Frame() = default;
 
   // TODO remove me
   using CookieBase::get;
@@ -31,6 +34,15 @@ public:
     }
   }
 
+  DisplayList& displayList() { return get()->displayList(); }
+
+  Container container(std::string_view id,
+                      SDL_Rect r,
+                      const SDL_Point& offset = {},
+                      const SDL_Point& endPadding = {},
+                      Layout layout = Layout::NONE,
+                      int elementSpacing = 0);
+
   /// Convert to target
   operator Target() &
   {
@@ -42,12 +54,21 @@ private:
     : CookieBase(state)
   {}
 
+  void popContainer();
+
+  struct ContainerPopper
+  {
+    void operator()(Frame* frame) { frame->popContainer(); }
+  };
+
   friend class State;
+  friend class Container;
 
   SDL_Rect rect{0};
   SDL_Point topLeft{0};
   SDL_Point bottomRight{0};
   bool locked = false;
+  std::vector<ContainerState> containers;
 };
 
 /**
@@ -86,5 +107,7 @@ State::endFrame()
   dispatcher.reset();
 }
 } // namespace boto
+
+#include "Container.hpp"
 
 #endif // BOTO_CORE_FRAME_HPP_
