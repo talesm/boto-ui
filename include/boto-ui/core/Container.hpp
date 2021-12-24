@@ -32,6 +32,12 @@ struct ContainerState
     , layout(layout)
   {}
 
+  ContainerState()
+    : offset({0})
+    , endPos({0})
+    , layout(Layout::NONE)
+  {}
+
   void advance(const SDL_Point& p)
   {
     if (layout == Layout::HORIZONTAL) {
