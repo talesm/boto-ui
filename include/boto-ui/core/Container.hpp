@@ -23,7 +23,7 @@ struct ContainerState
                  const SDL_Point& endPadding = {},
                  Layout layout = Layout::NONE,
                  int elementSpacing = 0)
-    : target(dispatcher.check(RequestEvent::INPUT, r, id))
+    : eventTarget(dispatcher.check(RequestEvent::INPUT, r, id))
     , clip(dList.clip(r))
     , offset({r.x + internalOffset.x, r.y + internalOffset.y})
     , endPos(offset)
@@ -50,7 +50,7 @@ struct ContainerState
 
   SDL_Point size() const
   {
-    auto& r = target.rect();
+    auto& r = eventTarget.rect();
     return {
       std::max(0, r.w != Undefined ? r.w : endPos.x - r.x + endPadding.x),
       std::max(0, r.h != Undefined ? r.h : endPos.y - r.y + endPadding.y),
@@ -59,11 +59,11 @@ struct ContainerState
 
   bool wasUndefined() const
   {
-    auto& r = target.rect();
+    auto& r = eventTarget.rect();
     return r.w == Undefined || r.h == Undefined;
   }
 
-  EventDispatcher::EventTarget target;
+  EventDispatcher::EventTarget eventTarget;
   DisplayList::Clip clip;
   SDL_Point offset;
   SDL_Point endPos;

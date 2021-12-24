@@ -15,11 +15,11 @@ TEST_CASE("Container creation", "[container]")
   SECTION("Common container")
   {
     ContainerState c{dList, dispatcher, "c1"sv, {1, 2, 3, 4}};
-    REQUIRE(c.target.rect().x == 1);
-    REQUIRE(c.target.rect().y == 2);
-    REQUIRE(c.target.rect().w == 3);
-    REQUIRE(c.target.rect().h == 4);
-    REQUIRE(c.target.status() == Status::HOVERED);
+    REQUIRE(c.eventTarget.rect().x == 1);
+    REQUIRE(c.eventTarget.rect().y == 2);
+    REQUIRE(c.eventTarget.rect().w == 3);
+    REQUIRE(c.eventTarget.rect().h == 4);
+    REQUIRE(c.eventTarget.status() == Status::HOVERED);
     REQUIRE(c.offset.x == 1);
     REQUIRE(c.offset.y == 2);
     REQUIRE(c.endPos.x == 1);
@@ -32,9 +32,9 @@ TEST_CASE("Container creation", "[container]")
   SECTION("Infinite container")
   {
     ContainerState c{dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}};
-    REQUIRE(c.target.rect().x == 1);
-    REQUIRE(c.target.rect().y == 2);
-    REQUIRE(c.target.status() == Status::HOVERED);
+    REQUIRE(c.eventTarget.rect().x == 1);
+    REQUIRE(c.eventTarget.rect().y == 2);
+    REQUIRE(c.eventTarget.status() == Status::HOVERED);
     REQUIRE(c.offset.x == 1);
     REQUIRE(c.offset.y == 2);
     REQUIRE(c.endPos.x == 1);
@@ -51,11 +51,11 @@ TEST_CASE("Container creation", "[container]")
   SECTION("Offset container")
   {
     ContainerState c{dList, dispatcher, "c1"sv, {1, 2, 3, 4}, {5, 6}};
-    REQUIRE(c.target.rect().x == 1);
-    REQUIRE(c.target.rect().y == 2);
-    REQUIRE(c.target.rect().w == 3);
-    REQUIRE(c.target.rect().h == 4);
-    REQUIRE(c.target.status() == Status::HOVERED);
+    REQUIRE(c.eventTarget.rect().x == 1);
+    REQUIRE(c.eventTarget.rect().y == 2);
+    REQUIRE(c.eventTarget.rect().w == 3);
+    REQUIRE(c.eventTarget.rect().h == 4);
+    REQUIRE(c.eventTarget.status() == Status::HOVERED);
     REQUIRE(c.offset.x == 6);
     REQUIRE(c.offset.y == 8);
     REQUIRE(c.endPos.x == 6);
@@ -69,9 +69,9 @@ TEST_CASE("Container creation", "[container]")
   {
     ContainerState c{
       dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}, {5, 6}};
-    REQUIRE(c.target.rect().x == 1);
-    REQUIRE(c.target.rect().y == 2);
-    REQUIRE(c.target.status() == Status::HOVERED);
+    REQUIRE(c.eventTarget.rect().x == 1);
+    REQUIRE(c.eventTarget.rect().y == 2);
+    REQUIRE(c.eventTarget.status() == Status::HOVERED);
     REQUIRE(c.offset.x == 6);
     REQUIRE(c.offset.y == 8);
     REQUIRE(c.endPos.x == 6);
@@ -85,9 +85,9 @@ TEST_CASE("Container creation", "[container]")
   {
     ContainerState c{
       dList, dispatcher, "c1"sv, {1, 2, Undefined, Undefined}, {-5, -6}};
-    REQUIRE(c.target.rect().x == 1);
-    REQUIRE(c.target.rect().y == 2);
-    REQUIRE(c.target.status() == Status::HOVERED);
+    REQUIRE(c.eventTarget.rect().x == 1);
+    REQUIRE(c.eventTarget.rect().y == 2);
+    REQUIRE(c.eventTarget.status() == Status::HOVERED);
     REQUIRE(c.offset.x == -4);
     REQUIRE(c.offset.y == -4);
     REQUIRE(c.endPos.x == -4);
