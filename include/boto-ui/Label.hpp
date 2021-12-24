@@ -4,7 +4,6 @@
 #include <string_view>
 #include "Control.hpp"
 #include "EdgeSize.hpp"
-#include "Group.hpp"
 #include "LabelStyle.hpp"
 
 namespace boto {
@@ -25,7 +24,7 @@ label(Target target,
       const SDL_Point& p = {0},
       const ControlStyle& style = themeFor<Label>())
 {
-  control(target, str, {p.x, p.y, 0, 0}, style);
+  control(target, {}, str, {p.x, p.y, 0, 0}, RequestEvent::HOVER, style);
 }
 /**
  * @brief A centered label

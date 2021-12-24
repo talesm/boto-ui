@@ -114,6 +114,8 @@ public:
     return frame->element(r, req);
   }
 
+  using CookieBase::get;
+
 private:
   Container(Frame* frame, size_t index)
     : CookieBase(frame)

@@ -3,7 +3,7 @@
 
 namespace boto {
 
-enum class Layout : Uint8
+enum class Layout
 {
   NONE,
   VERTICAL,

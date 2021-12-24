@@ -83,7 +83,7 @@ struct ElementStyle
 inline void
 presentElement(DisplayList& dList,
                const SDL_Rect& r,
-               Status status,
+               StatusFlags status,
                const ElementStyle& style)
 {
   auto c = style.paint.background;

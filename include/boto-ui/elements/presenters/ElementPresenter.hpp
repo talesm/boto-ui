@@ -8,7 +8,7 @@ namespace boto {
 inline void
 presentElement(DisplayList& dList,
                const SDL_Rect& r,
-               Status status,
+               StatusFlags status,
                SDL_Color color)
 {
   dList.push(r, color);
@@ -17,7 +17,7 @@ presentElement(DisplayList& dList,
 inline void
 presentElement(DisplayList& dList,
                const SDL_Rect& r,
-               Status status,
+               StatusFlags status,
                SDL_Texture* texture)
 {
   dList.push(
@@ -25,7 +25,7 @@ presentElement(DisplayList& dList,
 }
 
 inline void
-presentElement(DisplayList& dList, const SDL_Rect& r, Status status)
+presentElement(DisplayList& dList, const SDL_Rect& r, StatusFlags status)
 {
   presentElement(dList, r, status, themeFor<Element>());
 }

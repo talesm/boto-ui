@@ -4,7 +4,6 @@
 #include <string_view>
 #include "ControlStyle.hpp"
 #include "EdgeSize.hpp"
-#include "Group.hpp"
 #include "Theme.hpp"
 #include "elements/Element.hpp"
 #include "elements/Text.hpp"
@@ -41,15 +40,33 @@ computeSize(std::string_view str,
  */
 inline void
 control(Target target,
+        std::string_view id,
+        std::string_view str,
+        const SDL_Rect& r = {0},
+        RequestEvent req = RequestEvent::INPUT,
+        const ControlStyle& style = themeFor<Control>())
+{
+  auto sz = computeSize(str, style, {r.w, r.h});
+  auto& el = target.check(id, {r.x, r.y, sz.x, sz.y}, req);
+
+  auto& dList = target.getDisplayList();
+  auto clip = dList.clip(el.rect);
+  auto offset = style.border + style.padding;
+  presentText(
+    dList,
+    str,
+    {offset.left + el.rect.x, offset.top + el.rect.y},
+    el.status,
+    adjustDefaultFont(static_cast<TextStyle>(style), target.getFont()));
+  presentElement(dList, el.rect, el.status, style);
+}
+inline void
+control(Target target,
         std::string_view str,
         const SDL_Rect& r = {0},
         const ControlStyle& style = themeFor<Control>())
 {
-  auto offset = style.border + style.padding;
-  auto sz = computeSize(str, style, {r.w, r.h});
-  auto g = group(target, {}, {r.x, r.y, sz.x, sz.y}, Layout::NONE);
-  text(g, str, {offset.left, offset.top}, style);
-  element(g, {0, 0, sz.x, sz.y}, style);
+  return control(target, str, str, r, RequestEvent::INPUT, style);
 }
 
 } // namespace boto

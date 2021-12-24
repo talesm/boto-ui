@@ -1,8 +1,8 @@
 #ifndef BOTO_CORE_FRAME_HPP_
 #define BOTO_CORE_FRAME_HPP_
 
-#include "Target.hpp"
-#include "core/State.hpp"
+#include "Layout.hpp"
+#include "State.hpp"
 
 namespace boto {
 
@@ -67,10 +67,11 @@ public:
 
   const Font& getFont() const { return get()->getFont(); }
 
-  /// Convert to target
-  operator Target() &
+  const ContainerState* getTop() const
   {
-    return {get(), {}, rect, topLeft, bottomRight, locked, {0, Layout::NONE}};
+    if (containers.empty())
+      return nullptr;
+    return &containers.back();
   }
 
 private:

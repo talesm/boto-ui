@@ -2,7 +2,6 @@
 #define BOTO_ELEMENTS_TEXT_HPP_
 
 #include <SDL.h>
-#include "Group.hpp"
 #include "Theme.hpp"
 #include "presenters/TextPresenter.hpp"
 
@@ -23,13 +22,11 @@ character(Target target,
           const SDL_Point& p,
           const TextStyle& style = themeFor<Text>())
 {
-  auto& state = target.getState();
-  auto caret = target.getCaret();
-  target.advance(presentCharacter(target.getDisplayList(),
-                                  ch,
-                                  {p.x + caret.x, p.y + caret.y},
-                                  Status::NONE,
-                                  adjustDefaultFont(style, state.getFont())));
+  auto st = adjustDefaultFont(style, target.getFont());
+  auto sz = measure(ch, st.font, 0);
+  auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
+  presentCharacter(
+    target.getDisplayList(), ch, {el.rect.x, el.rect.y}, Status::NONE, st);
 }
 
 /**
@@ -47,13 +44,11 @@ text(Target target,
      const SDL_Point& p,
      const TextStyle& style = themeFor<Text>())
 {
-  auto& state = target.getState();
-  auto caret = target.getCaret();
-  target.advance(presentText(target.getDisplayList(),
-                             str,
-                             {p.x + caret.x, p.y + caret.y},
-                             Status::NONE,
-                             adjustDefaultFont(style, state.getFont())));
+  auto st = adjustDefaultFont(style, target.getFont());
+  auto sz = measure(str, st.font, 0);
+  auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
+  presentText(
+    target.getDisplayList(), str, {el.rect.x, el.rect.y}, Status::NONE, st);
 }
 } // namespace boto
 

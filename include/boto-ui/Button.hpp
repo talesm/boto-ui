@@ -3,8 +3,7 @@
 
 #include <string_view>
 #include "ButtonStyle.hpp"
-#include "Group.hpp"
-#include "Panel.hpp"
+#include "Control.hpp"
 
 namespace boto {
 

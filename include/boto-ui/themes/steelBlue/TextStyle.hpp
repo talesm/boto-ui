@@ -43,7 +43,7 @@ inline SDL_Point
 presentCharacter(DisplayList& dList,
                  char ch,
                  const SDL_Point& p,
-                 Status status,
+                 StatusFlags status,
                  const TextStyle& style)
 {
   auto& font = style.font;
@@ -61,7 +61,7 @@ inline SDL_Point
 presentText(DisplayList& dList,
             std::string_view str,
             SDL_Point p,
-            Status status,
+            StatusFlags status,
             const TextStyle& style)
 {
   SDL_Point adv = {0};
