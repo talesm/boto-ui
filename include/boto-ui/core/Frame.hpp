@@ -34,6 +34,7 @@ public:
     }
   }
 
+  const DisplayList& displayList() const { return get()->displayList(); }
   DisplayList& displayList() { return get()->displayList(); }
 
   Container container(std::string_view id,
@@ -51,6 +52,20 @@ public:
   {
     return element({}, r, req);
   };
+
+  /**
+   * @brief Returns the last text input
+   *
+   * You probably will want to check for focus before calling this
+   * @return std::string_view
+   */
+  std::string_view input() const { return get()->lastText(); };
+
+  SDL_Keysym lastKeyDown() const { return get()->lastKeyDown(); }
+
+  SDL_Point pointerPosition() const { return get()->lastMousePos(); }
+
+  const Font& getFont() const { return get()->getFont(); }
 
   /// Convert to target
   operator Target() &
