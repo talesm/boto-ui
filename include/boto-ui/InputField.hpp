@@ -11,14 +11,13 @@ namespace boto {
 
 /// Create a group that labels its items
 /// @ingroup groups
-inline Group
+inline auto
 labeledGroup(Target target,
              std::string_view id,
              std::string_view labelText,
-             const SDL_Rect& clientRect,
+             SDL_Rect r,
              const ControlStyle& style = themeFor<Label>())
 {
-  SDL_Rect r{clientRect};
   SDL_Point labelPos = {r.w + 1, 0};
   r.w += measure(labelText, style.font, style.scale).x + 1;
 

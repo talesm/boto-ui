@@ -8,74 +8,37 @@
 namespace boto {
 
 // Style for panels
-struct PanelDecorationStyle
+struct PanelStyle
 {
   EdgeSize padding;
   EdgeSize border;
   ElementPaintStyle paint;
+  GroupStyle client;
 
-  constexpr PanelDecorationStyle withPadding(const EdgeSize& padding) const
+  constexpr PanelStyle withPadding(const EdgeSize& padding) const
   {
-    return {padding, border, paint};
+    return {padding, border, paint, client};
   }
-  constexpr PanelDecorationStyle withBorderSize(const EdgeSize& border) const
+  constexpr PanelStyle withBorderSize(const EdgeSize& border) const
   {
-    return {padding, border, paint};
+    return {padding, border, paint, client};
   }
-  constexpr PanelDecorationStyle withPaint(const ElementPaintStyle& paint) const
+  constexpr PanelStyle withPaint(const ElementPaintStyle& paint) const
   {
-    return {padding, border, paint};
+    return {padding, border, paint, client};
   }
-  constexpr PanelDecorationStyle withBackgroundColor(SDL_Color background) const
+  constexpr PanelStyle withBackgroundColor(SDL_Color background) const
   {
     return withPaint(paint.withBackground(background));
   }
-  constexpr PanelDecorationStyle withBorderColor(
-    const BorderColorStyle& border) const
+  constexpr PanelStyle withBorderColor(const BorderColorStyle& border) const
   {
     return withPaint(paint.withBorder(border));
   }
 
-  constexpr operator ElementStyle() const { return {border, paint}; }
-};
-struct PanelStyle
-{
-  PanelDecorationStyle decoration;
-  GroupStyle client;
-
-  constexpr operator GroupStyle() const { return client; }
-  constexpr operator PanelDecorationStyle() const { return decoration; }
-
-  constexpr PanelStyle withDecoration(
-    const PanelDecorationStyle& decoration) const
-  {
-    return {decoration, client};
-  }
-
   constexpr PanelStyle withClient(const GroupStyle& client) const
   {
-    return {decoration, client};
-  }
-
-  constexpr PanelStyle withPadding(const EdgeSize& padding) const
-  {
-    return withDecoration(decoration.withPadding(padding));
-  }
-  constexpr PanelStyle withBorder(const EdgeSize& border) const
-  {
-    return withDecoration(decoration.withBorderSize(border));
-  }
-  constexpr PanelStyle withPaint(const ElementPaintStyle& paint) const
-  {
-    return withDecoration(decoration.withPaint(paint));
-  }
-  constexpr PanelStyle withBackgroundColor(SDL_Color background) const
-  {
-    return withDecoration(decoration.withBackgroundColor(background));
-  }
-  constexpr PanelStyle withBorderColor(const BorderColorStyle& border) const
-  {
-    return withDecoration(decoration.withBorderColor(border));
+    return {padding, border, paint, client};
   }
 
   constexpr PanelStyle withElementSpacing(int elementSpacing) const
@@ -87,28 +50,26 @@ struct PanelStyle
   {
     return withClient(client.withLayout(layout));
   }
+
+  constexpr operator ElementStyle() const { return {border, paint}; }
+
+  constexpr operator GroupStyle() const { return client; }
 };
 
-struct PanelDecoration;
 struct Panel;
 
 namespace style {
 /// Default panel style
 template<class Theme>
-struct FromTheme<PanelDecoration, Theme>
-{
-  constexpr static PanelDecorationStyle get()
-  {
-    auto boxStyle = themeFor<Element, Theme>();
-    return {EdgeSize::all(2), boxStyle.border, boxStyle.paint};
-  }
-};
-template<class Theme>
 struct FromTheme<Panel, Theme>
 {
   constexpr static PanelStyle get()
   {
-    return {themeFor<PanelDecoration, Theme>(), themeFor<Group, Theme>()};
+    auto boxStyle = themeFor<Element, Theme>();
+    return {EdgeSize::all(2),
+            boxStyle.border,
+            boxStyle.paint,
+            themeFor<Group, Theme>()};
   }
 };
 }

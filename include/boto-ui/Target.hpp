@@ -54,6 +54,27 @@ public:
   }
 
   /**
+   * @brief Create container
+   *
+   * @param id element id
+   * @param r the element local rect
+   * @param offset the offset
+   * @param endPadding the endPadding
+   * @param layout the layout
+   * @param elementSpacing the spacing between its sub elements
+   * @return Container
+   */
+  Container container(std::string_view id,
+                      const SDL_Rect& r,
+                      const SDL_Point& offset = {},
+                      const SDL_Point& endPadding = {},
+                      Layout layout = Layout::NONE,
+                      int elementSpacing = 0)
+  {
+    return frame->container(id, r, offset, endPadding, layout, elementSpacing);
+  }
+
+  /**
    * @brief Check the mouse action/status for element in this group
    *
    * @param id element id
@@ -182,6 +203,8 @@ public:
 
   /// Get Font
   const Font& getFont() const { return frame->getFont(); }
+
+  int getTicks() const { return frame->getTicks(); }
 
 private:
   Frame* frame;

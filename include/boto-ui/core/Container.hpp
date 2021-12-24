@@ -63,6 +63,13 @@ struct ContainerState
     };
   }
 
+  SDL_Rect rect() const
+  {
+    auto& r = eventTarget.rect();
+    auto sz = size();
+    return {r.x, r.y, sz.x, sz.y};
+  }
+
   bool wasUndefined() const
   {
     auto& r = eventTarget.rect();
@@ -169,7 +176,11 @@ Frame::container(std::string_view id,
 inline void
 Frame::popContainer()
 {
-  auto sz = containers.back().size();
+  auto& c = containers.back();
+  auto sz = c.size();
+  if (c.wasUndefined()) {
+    get()->dispatcher.shrink(sz.x, sz.y);
+  }
   containers.pop_back();
   if (!containers.empty()) {
     containers.back().advance(sz);

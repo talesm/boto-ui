@@ -10,42 +10,40 @@
 namespace boto {
 
 /**
- * @brief A grouping of elements
- *
- * This externally viewed as a single widget, so it can be used to create
- * composed elements
- *
- */
-// class Group
-// {
-// public:
-//   Group
-// };
-
-/**
  * @brief Create group
  * @ingroup groups
  *
  * @param target the parent group or frame
  * @param id the group id
- * @param scrollOffset the scroll offset
+ * @param offset the scroll offset
  * @param r the group dimensions
  * @param layout the layout
  * @param style the group style
  * @return Container
  */
-inline Group
+inline Container
+group(Target target,
+      std::string_view id,
+      const SDL_Rect& r,
+      const SDL_Point& offset,
+      const SDL_Point& endPadding = {},
+      const GroupStyle& style = themeFor<Group>())
+{
+  return target.container(
+    id, r, offset, endPadding, style.layout, style.elementSpacing);
+}
+inline Container
 group(Target target,
       std::string_view id,
       const SDL_Rect& r = {0},
       const GroupStyle& style = themeFor<Group>())
 {
-  return {target, id, {0, 0}, r, style};
+  return target.container(id, r, {}, {}, style.layout, style.elementSpacing);
 }
 
 /// @copydoc group
 /// @ingroup groups
-inline Group
+inline Container
 group(Target target,
       std::string_view id,
       const SDL_Rect& r,
@@ -57,27 +55,28 @@ group(Target target,
 
 /// @copydoc group
 /// @ingroup groups
-inline Group
+inline Container
 offsetGroup(Target target,
             std::string_view id,
-            const SDL_Point& scrollOffset,
+            const SDL_Point& offset,
             const SDL_Rect& r,
             const GroupStyle& style = themeFor<Group>())
 {
-  return {target, id, scrollOffset, r, style};
+  return target.container(
+    id, r, offset, {}, style.layout, style.elementSpacing);
 }
 
 /// @copydoc group
 /// @ingroup groups
-inline Group
+inline Container
 offsetGroup(Target target,
             std::string_view id,
-            const SDL_Point& scrollOffset,
+            const SDL_Point& offset,
             const SDL_Rect& r,
             Layout layout,
             const GroupStyle& style = themeFor<Group>())
 {
-  return offsetGroup(target, id, scrollOffset, r, style.withLayout(layout));
+  return offsetGroup(target, id, offset, r, style.withLayout(layout));
 }
 
 } // namespace boto

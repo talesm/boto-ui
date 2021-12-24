@@ -62,18 +62,18 @@ textBoxBase(Target target,
   static size_t cursorPos = 0;
   static size_t maxPos = 0;
   r = makeInputRect(r, style);
-  if (target.checkMouse(id, r) == MouseAction::GRAB) {
+  auto g = panel(
+    target, id, r, Layout::NONE, {style.padding, style.border, style.normal});
+  auto& state = g.state().eventTarget.state();
+  if (state.event == Event::GRAB) {
     maxPos = cursorPos = value.size();
   }
 
   auto action = target.checkText(id);
-  bool active = action == TextAction::NONE ? target.isActive(id) : true;
+  bool active = state.status.test(Status::FOCUSED);
   if (active && cursorPos > value.size()) {
     maxPos = cursorPos = value.size();
   }
-  auto& currentColors = active ? style.active : style.normal;
-  auto g = panel(
-    target, {}, r, Layout::NONE, {style.padding, style.border, currentColors});
 
   // This creates an auto scroll effect if value text don't fit in the box;
   auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});
@@ -90,13 +90,18 @@ textBoxBase(Target target,
       deltaX = 0;
     }
   }
+  auto& currentColors = active ? style.active : style.normal;
   text(g, value, {-deltaX, 0}, {style.font, currentColors.text, style.scale});
 
-  if (active && (target.getState().ticks() / 512) % 2) {
+  if (active && (target.getTicks() / 512) % 2) {
     // Show cursor
     element(
       g, {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y}, currentColors.text);
   }
+
+  // if (active) {
+  // element()...
+  // }
   if (action == TextAction::INPUT) {
     auto insert = target.lastText();
     auto index = cursorPos;

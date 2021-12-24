@@ -74,6 +74,8 @@ public:
     return &containers.back();
   }
 
+  int getTicks() const { return get()->ticks(); }
+
 private:
   Frame(State* state)
     : CookieBase(state)

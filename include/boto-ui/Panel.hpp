@@ -2,77 +2,38 @@
 #define BOTO_PANEL_HPP_
 
 #include <string_view>
-#include "Control.hpp"
 #include "Group.hpp"
 #include "PanelStyle.hpp"
 #include "Wrapper.hpp"
+#include "core/Container.hpp"
+#include "elements/presenters/ElementPresenter.hpp"
 
 namespace boto {
 
-/// A panel class @see panel()
-template<class CLIENT>
-class PanelImpl : public Targetable<PanelImpl<CLIENT>>
+struct PanelPresenter
 {
-  PanelDecorationStyle style;
-  Wrapper<CLIENT> wrapper;
-
-public:
-  /// Ctor
-  template<class FUNC>
-  PanelImpl(Target parent,
-            std::string_view id,
-            const SDL_Rect& r,
-            FUNC initializer,
-            const PanelDecorationStyle& style)
-    : style(style)
-    , wrapper(parent, id, r, style.padding + style.border, initializer)
-  {}
-  /// Move ctor
-  PanelImpl(PanelImpl&& rhs)
-    : style(rhs.style)
-    , wrapper(std::move(rhs.wrapper))
-  {}
-
-  /// Move copy operator
-  PanelImpl& operator=(PanelImpl&& rhs)
+  ElementStyle style;
+  void operator()(Container& c)
   {
-    this->~PanelImpl();
-    new (this) PanelImpl(std::move(rhs));
-    return *this;
+    auto& state = c.state();
+    presentElement(
+      c.get()->displayList(), state.rect(), state.eventTarget.status(), style);
   }
-
-  ~PanelImpl()
-  {
-    if (wrapper) {
-      end();
-    }
-  }
-
-  /// Finished the group
-  void end()
-  {
-    SDL_assert(wrapper);
-    auto sz = wrapper.endClient();
-    element(*this, {0, 0, sz.x, sz.y}, style);
-    wrapper.end();
-  }
-
-  /// Return a target element for this
-  operator Target() & { return wrapper; }
-
-  /// return true if it can accept elements
-  operator bool() const { return wrapper; }
 };
+
+using PanelImpl = Wrapper<Container, PanelPresenter>;
 
 /// Return the adjusted size for a given panel
 inline SDL_Point
 makePanelSize(SDL_Point defaultSize, Target target)
 {
-  if (defaultSize.x == 0 && target.getLayout() == Layout::VERTICAL) {
-    defaultSize.x = target.width();
+  if (defaultSize.x == 0) {
+    defaultSize.x =
+      target.getLayout() == Layout::VERTICAL ? target.width() : Undefined;
   }
-  if (defaultSize.y == 0 && target.getLayout() == Layout::HORIZONTAL) {
-    defaultSize.y = target.height();
+  if (defaultSize.y == 0) {
+    defaultSize.y =
+      target.getLayout() == Layout::HORIZONTAL ? target.height() : Undefined;
   }
   return defaultSize;
 }
@@ -96,23 +57,26 @@ makePanelRect(const SDL_Rect& r, Target target)
  * @param style the style
  * @return PanelT
  */
-inline PanelImpl<Group>
+inline PanelImpl
 panel(Target target,
       std::string_view id,
       const SDL_Rect& r = {0},
       const PanelStyle& style = themeFor<Panel>())
 {
-  return {
-    target,
-    id,
-    makePanelRect(r, target),
-    [style](auto t, auto r) { return group(t, "client", r, style); },
-    style,
+  auto edge = style.padding + style.border;
+  return PanelImpl{
+    group(target,
+          id,
+          makePanelRect(r, target),
+          {edge.left, edge.top},
+          {edge.right, edge.bottom},
+          style),
+    PanelPresenter{style},
   };
 }
 /// @copydoc panel
 /// @ingroup groups
-inline PanelImpl<Group>
+inline PanelImpl
 panel(Target target,
       std::string_view id,
       const SDL_Rect& r,
