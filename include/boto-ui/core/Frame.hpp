@@ -43,6 +43,15 @@ public:
                       Layout layout = Layout::NONE,
                       int elementSpacing = 0);
 
+  EventTargetState element(std::string_view id,
+                           SDL_Rect r,
+                           RequestEvent req = RequestEvent::INPUT);
+
+  EventTargetState element(SDL_Rect r, RequestEvent req = RequestEvent::GRAB)
+  {
+    return element({}, r, req);
+  };
+
   /// Convert to target
   operator Target() &
   {

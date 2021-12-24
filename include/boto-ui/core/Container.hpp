@@ -91,6 +91,23 @@ public:
     return frame->container(id, r, offset, endPadding, layout, elementSpacing);
   }
 
+  EventTargetState element(std::string_view id,
+                           const SDL_Rect& r,
+                           RequestEvent req = RequestEvent::GRAB)
+  {
+    auto frame = get();
+    SDL_assert(index == frame->containers.size() - 1);
+    return frame->element(id, r, req);
+  }
+
+  EventTargetState element(const SDL_Rect& r,
+                           RequestEvent req = RequestEvent::GRAB)
+  {
+    auto frame = get();
+    SDL_assert(index == frame->containers.size() - 1);
+    return frame->element(r, req);
+  }
+
 private:
   Container(Frame* frame, size_t index)
     : CookieBase(frame)
@@ -101,6 +118,20 @@ private:
 
   size_t index;
 };
+
+inline EventTargetState
+Frame::element(std::string_view id, SDL_Rect r, RequestEvent req)
+{
+  auto state = get();
+  if (!containers.empty()) {
+    auto& c = containers.back();
+    auto caret = c.caret();
+    r.x += caret.x;
+    r.y += caret.y;
+    c.advance({r.w, r.h});
+  }
+  return state->dispatcher.check(req, r, id).state();
+}
 
 inline Container
 Frame::container(std::string_view id,
