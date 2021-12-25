@@ -127,10 +127,14 @@ TEST_CASE("Container advance", "[container]")
     REQUIRE(c.endPos.y == 9);
 
     c.advance({2, 2});
+    REQUIRE(c.offset.x == c.caret().x);
+    REQUIRE(c.offset.y == c.caret().y);
     REQUIRE(c.endPos.x == 8);
     REQUIRE(c.endPos.y == 10);
 
     c.advance({1, 1});
+    REQUIRE(c.offset.x == c.caret().x);
+    REQUIRE(c.offset.y == c.caret().y);
     REQUIRE(c.endPos.x == 8);
     REQUIRE(c.endPos.y == 10);
   }
@@ -150,18 +154,22 @@ TEST_CASE("Container advance", "[container]")
     REQUIRE(c.offset.y == c.caret().y);
 
     c.advance({1, 1});
-    REQUIRE(c.offset.x == c.caret().x);
+    REQUIRE(c.endPos.x == c.caret().x);
     REQUIRE(c.offset.y == c.caret().y);
     REQUIRE(c.endPos.x == 7);
     REQUIRE(c.endPos.y == 9);
 
     c.advance({2, 2});
+    REQUIRE(c.endPos.x == c.caret().x);
+    REQUIRE(c.offset.y == c.caret().y);
     REQUIRE(c.endPos.x == 9);
     REQUIRE(c.endPos.y == 10);
 
     c.elementSpacing = 2;
 
     c.advance({1, 1});
+    REQUIRE(c.endPos.x == c.caret().x);
+    REQUIRE(c.offset.y == c.caret().y);
     REQUIRE(c.endPos.x == 12);
     REQUIRE(c.endPos.y == 10);
   }
@@ -176,17 +184,21 @@ TEST_CASE("Container advance", "[container]")
 
     c.advance({1, 1});
     REQUIRE(c.offset.x == c.caret().x);
-    REQUIRE(c.offset.y == c.caret().y);
+    REQUIRE(c.endPos.y == c.caret().y);
     REQUIRE(c.endPos.x == 7);
     REQUIRE(c.endPos.y == 9);
 
     c.advance({2, 2});
+    REQUIRE(c.offset.x == c.caret().x);
+    REQUIRE(c.endPos.y == c.caret().y);
     REQUIRE(c.endPos.x == 8);
     REQUIRE(c.endPos.y == 11);
 
     c.elementSpacing = 2;
 
     c.advance({1, 1});
+    REQUIRE(c.offset.x == c.caret().x);
+    REQUIRE(c.endPos.y == c.caret().y);
     REQUIRE(c.endPos.x == 8);
     REQUIRE(c.endPos.y == 14);
   }

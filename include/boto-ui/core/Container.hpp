@@ -52,7 +52,13 @@ struct ContainerState
     }
   }
 
-  const SDL_Point& caret() const { return offset; }
+  SDL_Point caret() const
+  {
+    return {
+      layout == Layout::HORIZONTAL ? endPos.x : offset.x,
+      layout == Layout::VERTICAL ? endPos.y : offset.y,
+    };
+  }
 
   SDL_Point size() const
   {
