@@ -1,24 +1,23 @@
 #pragma once
 
-#include <functional>
 #include "Target.hpp"
 
 namespace boto {
 
 /// A class to make wrapper elements
 template<class CONTAINER, class FINALIZER>
-class Wrapper
+class Decorator
 {
 public:
-  Wrapper(CONTAINER&& c, FINALIZER&& finalizer)
+  Decorator(CONTAINER&& c, FINALIZER&& finalizer)
     : container(std::move(c))
     , finalizer(std::forward<FINALIZER>(finalizer))
   {}
-  Wrapper(const Wrapper&) = delete;
-  Wrapper(Wrapper&& rhs) = default;
-  Wrapper& operator=(const Wrapper& rhs) = delete;
-  Wrapper& operator=(Wrapper&& rhs) = default;
-  ~Wrapper() { end(); }
+  Decorator(const Decorator&) = delete;
+  Decorator(Decorator&& rhs) = default;
+  Decorator& operator=(const Decorator& rhs) = delete;
+  Decorator& operator=(Decorator&& rhs) = default;
+  ~Decorator() { end(); }
 
   operator Target() & { return container; }
   operator bool() const { return container; }

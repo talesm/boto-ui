@@ -21,7 +21,7 @@ struct PanelPresenter
   }
 };
 
-using PanelImpl = Wrapper<Container, PanelPresenter>;
+using PanelImpl = Decorator<Container, PanelPresenter>;
 
 /// Return the adjusted size for a given panel
 inline SDL_Point

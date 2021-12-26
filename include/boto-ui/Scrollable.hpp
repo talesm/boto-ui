@@ -11,7 +11,7 @@ namespace boto {
 class Scrollable : public Targetable<Scrollable>
 {
   ScrollableStyle style;
-  Wrapper<Group> wrapper;
+  Decorator<Group> wrapper;
   SDL_Point* scrollOffset;
 
 public:

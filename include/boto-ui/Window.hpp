@@ -15,7 +15,7 @@ class WindowImpl : public Targetable<WindowImpl<CLIENT>>
 {
   WindowDecorationStyle style;
   std::string_view title;
-  Wrapper<CLIENT> wrapper;
+  Decorator<CLIENT> wrapper;
 
   constexpr EdgeSize makeWrapperPadding()
   {
