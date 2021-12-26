@@ -2,9 +2,9 @@
 #define BOTO_PANEL_HPP_
 
 #include <string_view>
+#include "Decorator.hpp"
 #include "Group.hpp"
 #include "PanelStyle.hpp"
-#include "Wrapper.hpp"
 #include "core/Container.hpp"
 #include "elements/presenters/ElementPresenter.hpp"
 

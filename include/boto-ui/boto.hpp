@@ -13,7 +13,6 @@
 // #include "SliderBox.hpp"
 // #include "SliderField.hpp"
 // #include "Window.hpp"
-// #include "Wrapper.hpp"
 #include "core/Frame.hpp"
 #include "core/State.hpp"
 
