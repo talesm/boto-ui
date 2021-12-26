@@ -10,73 +10,73 @@
 namespace boto {
 
 /// An window class @see window()
-template<class CLIENT>
-class WindowImpl : public Targetable<WindowImpl<CLIENT>>
-{
-  WindowDecorationStyle style;
-  std::string_view title;
-  Decorator<CLIENT> wrapper;
+// template<class CLIENT>
+// class WindowImpl : public Targetable<WindowImpl<CLIENT>>
+// {
+//   WindowDecorationStyle style;
+//   std::string_view title;
+//   Decorator<CLIENT> wrapper;
 
-  constexpr EdgeSize makeWrapperPadding()
-  {
-    EdgeSize padding = style.panel.border + style.panel.padding;
-    padding.top += (8 << style.title.scale) + style.title.padding.top +
-                   style.title.padding.bottom + style.title.border.top +
-                   style.title.border.bottom;
-    return padding;
-  }
+//   constexpr EdgeSize makeWrapperPadding()
+//   {
+//     EdgeSize padding = style.panel.border + style.panel.padding;
+//     padding.top += (8 << style.title.scale) + style.title.padding.top +
+//                    style.title.padding.bottom + style.title.border.top +
+//                    style.title.border.bottom;
+//     return padding;
+//   }
 
-public:
-  /// Window ctor
-  template<class FUNC>
-  WindowImpl(Target parent,
-             std::string_view id,
-             std::string_view title,
-             const SDL_Rect& r,
-             FUNC initializer,
-             const WindowDecorationStyle& style)
-    : style(style)
-    , title(title)
-    , wrapper(parent, id, r, makeWrapperPadding(), initializer)
-  {}
-  /// Move ctor
-  WindowImpl(WindowImpl&& rhs)
-    : style(rhs.style)
-    , title(rhs.title)
-    , wrapper(std::move(rhs.wrapper))
-  {}
+// public:
+//   /// Window ctor
+//   template<class FUNC>
+//   WindowImpl(Target parent,
+//              std::string_view id,
+//              std::string_view title,
+//              const SDL_Rect& r,
+//              FUNC initializer,
+//              const WindowDecorationStyle& style)
+//     : style(style)
+//     , title(title)
+//     , wrapper(parent, id, r, makeWrapperPadding(), initializer)
+//   {}
+//   /// Move ctor
+//   WindowImpl(WindowImpl&& rhs)
+//     : style(rhs.style)
+//     , title(rhs.title)
+//     , wrapper(std::move(rhs.wrapper))
+//   {}
 
-  /// Move assignment operator
-  WindowImpl& operator=(WindowImpl&& rhs)
-  {
-    this->~WindowImpl();
-    new (this) WindowImpl(std::move(rhs));
-    return *this;
-  }
+//   /// Move assignment operator
+//   WindowImpl& operator=(WindowImpl&& rhs)
+//   {
+//     this->~WindowImpl();
+//     new (this) WindowImpl(std::move(rhs));
+//     return *this;
+//   }
 
-  ~WindowImpl()
-  {
-    if (wrapper) {
-      end();
-    }
-  }
+//   ~WindowImpl()
+//   {
+//     if (wrapper) {
+//       end();
+//     }
+//   }
 
-  /// Finishes the window
-  void end()
-  {
-    SDL_assert(wrapper);
-    auto sz = wrapper.endClient();
-    centeredLabel(wrapper, title, {0, 0, sz.x, 0}, style);
-    element(wrapper, {0, 0, sz.x, sz.y}, style);
-    wrapper.end();
-  }
+//   /// Finishes the window
+//   void end()
+//   {
+//     SDL_assert(wrapper);
+//     auto sz = wrapper.endClient();
+//     centeredLabel(wrapper, title, {0, 0, sz.x, 0}, style);
+//     element(wrapper, {0, 0, sz.x, sz.y}, style);
+//     wrapper.end();
+//   }
 
-  /// Returns a target object to this
-  operator Target() & { return wrapper; }
+//   /// Returns a target object to this
+//   operator Target() & { return wrapper; }
 
-  /// Returns true if it can accept elements
-  operator bool() const { return wrapper; }
-};
+//   /// Returns true if it can accept elements
+//   operator bool() const { return wrapper; }
+// };
 
 /// Makes window size accordingly to parameters
 inline SDL_Point
@@ -99,6 +99,8 @@ makeWindowRect(const SDL_Rect& r, Target target)
   return {r.x, r.y, sz.x, sz.y};
 }
 
+using WindowImpl = Wrapper<PanelImpl, Container>;
+
 /**
  * @brief adds an window element
  * @ingroup groups
@@ -111,26 +113,27 @@ makeWindowRect(const SDL_Rect& r, Target target)
  * @param style the style
  * @return group
  */
-inline WindowImpl<Group>
+inline WindowImpl
 window(Target target,
        std::string_view id,
        std::string_view title,
-       const SDL_Rect& r = {0},
+       SDL_Rect r = {0},
        const WindowStyle& style = themeFor<Window>())
 {
-  return {
-    target,
-    id,
-    title,
-    makeWindowRect(r, target),
-    [style](auto t, auto r) { return group(t, "client", r, style); },
-    style,
-  };
+  r = makeWindowRect(r, target);
+  PanelImpl superElement =
+    panel(target, id, r, style.panel.withLayout(Layout::VERTICAL));
+  auto clRect = clientRect(style.panel.border, r);
+  centeredLabel(superElement, title, {clRect.x, clRect.y, clRect.w, 8}, style);
+  clRect.y += 8;
+  clRect.h -= 8;
+  Container subElement = group(superElement, id, clRect, style);
+  return {std::move(superElement), std::move(subElement)};
 }
 
 /// @copydoc window()
 /// @ingroup groups
-inline WindowImpl<Group>
+inline WindowImpl
 window(Target target,
        std::string_view id,
        const SDL_Rect& r = {0},
@@ -141,7 +144,7 @@ window(Target target,
 
 /// @copydoc window()
 /// @ingroup groups
-inline WindowImpl<Group>
+inline WindowImpl
 window(Target target,
        std::string_view id,
        std::string_view title,
@@ -154,7 +157,7 @@ window(Target target,
 
 /// @copydoc window()
 /// @ingroup groups
-inline WindowImpl<Group>
+inline WindowImpl
 window(Target target,
        std::string_view id,
        const SDL_Rect& r,
@@ -163,6 +166,8 @@ window(Target target,
 {
   return window(target, id, id, r, layout);
 }
+
+using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
 
 /**
  * @brief adds a scrollable window
@@ -179,28 +184,29 @@ window(Target target,
  * @param style
  * @return group
  */
-inline WindowImpl<Scrollable>
+inline ScrollableWindowImpl
 scrollableWindow(
   Target target,
   std::string_view id,
   std::string_view title,
   SDL_Point* scrollOffset,
-  const SDL_Rect& r = {0},
+  SDL_Rect r = {0},
   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
 {
-  return {target,
-          id,
-          title,
-          makeScrollableRect(r, target),
-          [=](auto t, auto r) {
-            return scrollable(t, "client", scrollOffset, r, style);
-          },
-          style};
+  r = makeWindowRect(r, target);
+  WindowImpl superElement = window(target, id, r, style.decoration);
+
+  auto clRect = clientRect(style.decoration.panel.border, r);
+  clRect.y += 8;
+  clRect.h -= 8;
+  ScrollableImpl subElement =
+    scrollable(superElement, id, scrollOffset, clRect, style);
+  return {std::move(superElement), std::move(subElement)};
 }
 
 /// @copydoc scrollableWindow()
 /// @ingroup groups
-inline WindowImpl<Scrollable>
+inline ScrollableWindowImpl
 scrollableWindow(
   Target target,
   std::string_view id,
@@ -213,7 +219,7 @@ scrollableWindow(
 
 /// @copydoc scrollableWindow()
 /// @ingroup groups
-inline WindowImpl<Scrollable>
+inline ScrollableWindowImpl
 scrollableWindow(
   Target target,
   std::string_view id,
@@ -229,7 +235,7 @@ scrollableWindow(
 
 /// @copydoc scrollableWindow()
 /// @ingroup groups
-inline WindowImpl<Scrollable>
+inline ScrollableWindowImpl
 scrollableWindow(
   Target target,
   std::string_view id,

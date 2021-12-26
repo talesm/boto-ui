@@ -7,60 +7,46 @@
 #include "Wrapper.hpp"
 
 namespace boto {
-struct ScrollablePresenter
+SDL_Rect
+decorateBars(Target target,
+             SDL_Rect r,
+             SDL_Point* scrollOffset,
+             const SliderBoxStyle& style,
+             bool fixedHorizontal,
+             bool fixedVertical)
 {
-  SliderBoxStyle sliderStyle;
-  SDL_Point scrollBarsPadding;
-  SDL_Point* scrollOffset;
-
-  /// Finished the group
-  void operator()(Target target)
-  {
-    SDL_Point sz{target.size()}; //{wrapper.width(), wrapper.height()};
-    if (scrollBarsPadding.x > 0) {
-      sliderBoxV(target,
-                 "vertical",
-                 &scrollOffset->y,
+  SDL_Point scrollbarsPadding =
+    evalScrollbarSpace(style, fixedHorizontal, fixedVertical);
+  if (scrollbarsPadding.x > 0) {
+    r.w -= scrollbarsPadding.x;
+    sliderBoxV(target,
+               "vertical",
+               &scrollOffset->y,
+               0,
+               r.h,
+               {
+                 r.w,
                  0,
-                 sz.y,
-                 {
-                   sz.x - scrollBarsPadding.x,
-                   0,
-                   scrollBarsPadding.x,
-                   sz.y,
-                 });
-    }
-    if (scrollBarsPadding.y > 0) {
-      sliderBox(target,
-                "horizontal",
-                &scrollOffset->x,
+                 scrollbarsPadding.x,
+                 r.h,
+               });
+  }
+  if (scrollbarsPadding.y > 0) {
+    r.h -= scrollbarsPadding.y;
+    sliderBox(target,
+              "horizontal",
+              &scrollOffset->x,
+              0,
+              r.w,
+              {
                 0,
-                sz.x,
-                {
-                  0,
-                  sz.y - scrollBarsPadding.y,
-                  sz.x - scrollBarsPadding.x,
-                  scrollBarsPadding.y,
-                });
-    }
+                r.h,
+                r.w,
+                scrollbarsPadding.y,
+              });
   }
-};
-
-class Scrollable
-{
-public:
-  operator Target() { return client; }
-
-  void end()
-  {
-    client.end();
-    container.end();
-  }
-
-private:
-  Wrapper<CONTAINER, ScrollablePresenter> container;
-  DisplayList::Clip client;
-};
+  return r;
+}
 
 /// Eval the scrollable size according with parameters
 inline SDL_Point
@@ -84,6 +70,8 @@ makeScrollableRect(const SDL_Rect& r, Target target)
   return {r.x, r.y, sz.x, sz.y};
 }
 
+using ScrollableImpl = Wrapper<Container, Container>;
+
 /**
  * @brief add a scrollable group
  * @ingroup groups
@@ -92,23 +80,34 @@ makeScrollableRect(const SDL_Rect& r, Target target)
  * @param id the id
  * @param scrollOffset the scrolling control variable
  * @param r the relative position and the size. If size is 0 it will use a
- * default size. Notice that this is different from group() and panel() behavior
+ * default size. Notice that this is different from group() and panel()
+ * behavior
  * @param layout
  * @param style
  * @return group
  */
-inline Scrollable
+inline ScrollableImpl
 scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
-           const SDL_Rect& r = {0},
+           SDL_Rect r = {0},
            const ScrollableStyle& style = themeFor<Scrollable>())
 {
-  return {target, id, scrollOffset, makeScrollableRect(r, target), style};
+  r = makeScrollableRect(r, target);
+  auto superElement = target.container(id, r, {}, {}, Layout::NONE, 0);
+  r = decorateBars(superElement,
+                   r,
+                   scrollOffset,
+                   style.slider,
+                   style.fixHorizontal,
+                   style.fixVertical);
+  auto subElement =
+    group(superElement, "client", r, *scrollOffset, {}, style.client);
+  return {std::move(superElement), std::move(subElement)};
 }
 /// @copydoc scrollable()
 /// @ingroup groups
-inline Scrollable
+inline ScrollableImpl
 scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
@@ -116,9 +115,10 @@ scrollable(Target target,
            Layout layout,
            const ScrollableStyle& style = themeFor<Scrollable>())
 {
-  return {target, id, scrollOffset, makeScrollableRect(r, target), style};
+  return scrollable(target, id, scrollOffset, r, style.withLayout(layout));
 }
 
+using ScrollablePanelImpl = Wrapper<PanelImpl, Container>;
 /**
  * @{
  * @brief add a scrollable panel
@@ -134,24 +134,44 @@ scrollable(Target target,
  * @param style
  * @return group
  */
-inline PanelImpl<Scrollable>
+inline ScrollablePanelImpl
 scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,
-                const SDL_Rect& r = {0},
+                SDL_Rect r = {0},
                 const ScrollablePanelStyle& style = themeFor<ScrollablePanel>())
 {
-  return {target,
-          id,
-          makeScrollableRect(r, target),
-          [=](auto t, auto r) {
-            return scrollable(t, "client", scrollOffset, r, style);
-          },
-          style};
+  r = makeScrollableRect(r, target);
+  auto& client = style.client;
+  auto superElement = panel(target,
+                            id,
+                            r,
+                            client.withElementSpacing(0)
+                              .withLayout(Layout::NONE)
+                              .withPadding(EdgeSize::all(0)));
+  r = decorateBars(superElement,
+                   clientRect(client.border, r),
+                   scrollOffset,
+                   style.slider,
+                   style.fixHorizontal,
+                   style.fixVertical);
+  auto subElement = group(superElement,
+                          "client",
+                          r,
+                          {
+                            client.padding.left + scrollOffset->x,
+                            client.padding.top + scrollOffset->y,
+                          },
+                          {
+                            client.padding.right,
+                            client.padding.bottom,
+                          },
+                          client);
+  return {std::move(superElement), std::move(subElement)};
 }
 /// @copydoc scrollablePanel()
 /// @ingroup groups
-inline PanelImpl<Scrollable>
+inline ScrollablePanelImpl
 scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,

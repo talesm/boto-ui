@@ -8,88 +8,52 @@
 
 namespace boto {
 
-struct WindowDecorationStyle
-{
-  PanelDecorationStyle panel;
-  ControlStyle title;
-
-  constexpr operator ElementStyle() const { return panel; }
-  constexpr operator ControlStyle() const { return title; }
-
-  constexpr WindowDecorationStyle withPanel(
-    const PanelDecorationStyle& panel) const
-  {
-    return {panel, title};
-  }
-
-  constexpr WindowDecorationStyle withTitle(const ControlStyle& title) const
-  {
-    return {panel, title};
-  }
-
-  constexpr WindowDecorationStyle withPadding(const EdgeSize& padding) const
-  {
-    return withPanel(panel.withPadding(padding));
-  }
-  constexpr WindowDecorationStyle withBorderSize(const EdgeSize& border) const
-  {
-    return withPanel(panel.withBorderSize(border));
-  }
-  constexpr WindowDecorationStyle withPaint(
-    const ElementPaintStyle& paint) const
-  {
-    return withPanel(panel.withPaint(paint));
-  }
-  constexpr WindowDecorationStyle withBackgroundColor(
-    SDL_Color background) const
-  {
-    return withPanel(panel.withBackgroundColor(background));
-  }
-  constexpr WindowDecorationStyle withBorderColor(
-    const BorderColorStyle& border) const
-  {
-    return withPanel(panel.withBorderColor(border));
-  }
-};
-
 struct WindowStyle
 {
-  WindowDecorationStyle decoration;
+  PanelStyle panel;
+  ControlStyle title;
   GroupStyle client;
 
   constexpr operator GroupStyle() const { return client; }
-  constexpr operator WindowDecorationStyle() const { return decoration; }
 
-  constexpr WindowStyle withDecoration(
-    const WindowDecorationStyle& decoration) const
+  constexpr operator ElementStyle() const { return panel; }
+
+  constexpr operator ControlStyle() const { return title; }
+
+  constexpr WindowStyle withPanel(const PanelStyle& panel) const
   {
-    return {decoration, client};
+    return {panel, title, client};
+  }
+
+  constexpr WindowStyle withTitle(const ControlStyle& title) const
+  {
+    return {panel, title, client};
   }
 
   constexpr WindowStyle withClient(const GroupStyle& client) const
   {
-    return {decoration, client};
+    return {panel, title, client};
   }
 
   constexpr WindowStyle withPadding(const EdgeSize& padding) const
   {
-    return withDecoration(decoration.withPadding(padding));
+    return withPanel(panel.withPadding(padding));
   }
-  constexpr WindowStyle withBorder(const EdgeSize& border) const
+  constexpr WindowStyle withBorderSize(const EdgeSize& border) const
   {
-    return withDecoration(decoration.withBorderSize(border));
+    return withPanel(panel.withBorderSize(border));
   }
   constexpr WindowStyle withPaint(const ElementPaintStyle& paint) const
   {
-    return withDecoration(decoration.withPaint(paint));
+    return withPanel(panel.withPaint(paint));
   }
   constexpr WindowStyle withBackgroundColor(SDL_Color background) const
   {
-    return withDecoration(decoration.withBackgroundColor(background));
+    return withPanel(panel.withBackgroundColor(background));
   }
   constexpr WindowStyle withBorderColor(const BorderColorStyle& border) const
   {
-    return withDecoration(decoration.withBorderColor(border));
+    return withPanel(panel.withBorderColor(border));
   }
 
   constexpr WindowStyle withElementSpacing(int elementSpacing) const
@@ -105,13 +69,13 @@ struct WindowStyle
 
 struct ScrollableWindowStyle
 {
-  WindowDecorationStyle decoration;
+  WindowStyle decoration;
   ScrollableStyle scrollable;
-  constexpr operator WindowDecorationStyle() const { return decoration; }
+  constexpr operator WindowStyle() const { return decoration; }
   constexpr operator ScrollableStyle() const { return scrollable; }
 
   constexpr ScrollableWindowStyle withDecoration(
-    const WindowDecorationStyle& decoration) const
+    const WindowStyle& decoration) const
   {
     return {decoration, scrollable};
   }
@@ -141,27 +105,19 @@ namespace style {
 
 /// Default panel style
 template<class Theme>
-struct FromTheme<WindowDecoration, Theme>
-{
-  constexpr static WindowDecorationStyle get()
-  {
-    auto buttomStyle = themeFor<Button, Theme>();
-    auto labelStyle = themeFor<Label, Theme>();
-    return {
-      themeFor<PanelDecoration, Theme>(),
-      labelStyle.withBorder(EdgeSize::all(1))
-        .withBorderColor(BorderColorStyle::all(labelStyle.paint.text))
-        .withBackgroundColor(buttomStyle.normal.background),
-    };
-  }
-};
-
-template<class Theme>
 struct FromTheme<Window, Theme>
 {
   constexpr static WindowStyle get()
   {
-    return {themeFor<WindowDecoration, Theme>(), themeFor<Group, Theme>()};
+    auto buttomStyle = themeFor<Button, Theme>();
+    auto labelStyle = themeFor<Label, Theme>();
+    return {
+      themeFor<Panel, Theme>(),
+      labelStyle.withBorder(EdgeSize::all(1))
+        .withBorderColor(BorderColorStyle::all(labelStyle.paint.text))
+        .withBackgroundColor(buttomStyle.normal.background),
+      themeFor<Group, Theme>(),
+    };
   }
 };
 
@@ -171,7 +127,7 @@ struct FromTheme<ScrollableWindow, Theme>
   constexpr static ScrollableWindowStyle get()
   {
     return {
-      themeFor<WindowDecoration, Theme>().withPadding({0, 0, 255, 255}),
+      themeFor<Window, Theme>().withPadding({0, 0, 255, 255}),
       themeFor<Scrollable, Theme>(),
     };
   }
