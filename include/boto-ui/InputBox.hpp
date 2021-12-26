@@ -69,7 +69,6 @@ textBoxBase(Target target,
     maxPos = cursorPos = value.size();
   }
 
-  auto action = target.checkText(id);
   bool active = state.status.test(Status::FOCUSED);
   if (active && cursorPos > value.size()) {
     maxPos = cursorPos = value.size();
@@ -92,46 +91,26 @@ textBoxBase(Target target,
   }
   auto& currentColors = active ? style.active : style.normal;
   text(g, value, {-deltaX, 0}, {style.font, currentColors.text, style.scale});
+  if (!active) {
+    return {};
+  }
 
-  if (active && (target.getTicks() / 512) % 2) {
+  if ((target.getTicks() / 512) % 2) {
     // Show cursor
     element(
       g, {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y}, currentColors.text);
   }
-
-  // if (active) {
-  // element()...
-  // }
-  if (action == TextAction::INPUT) {
+  if (state.event == Event::INPUT) {
     auto insert = target.lastText();
     auto index = cursorPos;
     cursorPos += insert.size();
     maxPos += insert.size();
     return {insert, index, 0};
   }
-  if (action == TextAction::KEYDOWN) {
-    SDL_Keysym keysym = target.lastKeyDown();
-    switch (keysym.sym) {
-    case SDLK_BACKSPACE:
-      if (!value.empty()) {
-        cursorPos -= 1;
-        maxPos -= 1;
-        return {{}, cursorPos, 1};
-      }
-      break;
-    case SDLK_LEFT:
-      if (cursorPos > 0) {
-        cursorPos -= 1;
-      }
-      break;
-    case SDLK_RIGHT:
-      if (cursorPos < maxPos) {
-        cursorPos += 1;
-      }
-      break;
-    default:
-      break;
-    }
+  if (state.event == Event::BACKSPACE && !value.empty()) {
+    cursorPos -= 1;
+    maxPos -= 1;
+    return {{}, cursorPos, 1};
   }
   return {};
 }
