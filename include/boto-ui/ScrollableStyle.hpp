@@ -47,31 +47,40 @@ struct ScrollableStyle
 
 struct ScrollablePanelStyle
 {
-  PanelDecorationStyle decoration;
-  ScrollableStyle scrollable;
-  constexpr operator PanelDecorationStyle() const { return decoration; }
-  constexpr operator ScrollableStyle() const { return scrollable; }
+  bool fixHorizontal;
+  bool fixVertical;
+  SliderBoxStyle slider;
+  PanelStyle client;
+  constexpr operator PanelStyle() const { return client; }
 
-  constexpr ScrollablePanelStyle withDecoration(
-    const PanelDecorationStyle& decoration) const
+  constexpr ScrollablePanelStyle withFixHorizontal(bool fixHorizontal) const
   {
-    return {decoration, scrollable};
+    return {fixHorizontal, fixVertical, slider, client};
   }
 
-  constexpr ScrollablePanelStyle withScrollable(
-    const ScrollableStyle& scrollable) const
+  constexpr ScrollablePanelStyle withFixVertical(bool fixVertical) const
   {
-    return {decoration, scrollable};
+    return {fixHorizontal, fixVertical, slider, client};
   }
 
-  constexpr ScrollablePanelStyle withClient(const GroupStyle& client) const
+  constexpr ScrollablePanelStyle withSlider(SliderBoxStyle slider) const
   {
-    return withScrollable(scrollable.withClient(client));
+    return {fixHorizontal, fixVertical, slider, client};
+  }
+
+  constexpr ScrollablePanelStyle withClient(const PanelStyle& client) const
+  {
+    return {fixHorizontal, fixVertical, slider, client};
+  }
+
+  constexpr ScrollablePanelStyle withElementSpacing(int elementSpacing) const
+  {
+    return withClient(client.withElementSpacing(elementSpacing));
   }
 
   constexpr ScrollablePanelStyle withLayout(Layout layout) const
   {
-    return withScrollable(scrollable.withLayout(layout));
+    return withClient(client.withLayout(layout));
   }
 };
 
@@ -100,27 +109,31 @@ struct FromTheme<ScrollablePanel, Theme>
   constexpr static ScrollablePanelStyle get()
   {
     return {
-      themeFor<PanelDecoration, Theme>().withPadding({0, 0, 255, 255}),
-      themeFor<Scrollable, Theme>(),
+      false,                        // Fix horizontal
+      false,                        // Fix vertical
+      themeFor<SliderBox, Theme>(), // scrollable
+      themeFor<Panel, Theme>().withPadding({0, 0, 255, 255}),
     };
   }
 };
 } // namespace style
 
-constexpr EdgeSize
-evalPadding(const ScrollableStyle& style)
+constexpr SDL_Point
+evalScrollbarSpace(const SliderBoxStyle& style,
+                   bool fixedHorizontal,
+                   bool fixedVertical)
 {
-  EdgeSize padding{0, 0};
-  auto buttonStyle = style.slider.buttons;
-  if (!style.fixHorizontal) {
-    padding.right = buttonStyle.padding.left + buttonStyle.padding.right +
-                    buttonStyle.border.left + buttonStyle.border.right + 8;
+  SDL_Point p{0};
+  auto buttonStyle = style.buttons;
+  if (!fixedHorizontal) {
+    p.x = buttonStyle.padding.left + buttonStyle.padding.right +
+          buttonStyle.border.left + buttonStyle.border.right + 8;
   }
-  if (!style.fixVertical) {
-    padding.bottom = buttonStyle.padding.top + buttonStyle.padding.bottom +
-                     buttonStyle.border.top + buttonStyle.border.bottom + 8;
+  if (!fixedVertical) {
+    p.y = buttonStyle.padding.top + buttonStyle.padding.bottom +
+          buttonStyle.border.top + buttonStyle.border.bottom + 8;
   }
-  return padding;
+  return p;
 }
 
 } // namespace boto

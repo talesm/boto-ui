@@ -7,87 +7,59 @@
 #include "Wrapper.hpp"
 
 namespace boto {
-/// Scrollable class. @see scrollable() and scrollablePanel()
-class Scrollable : public Targetable<Scrollable>
+struct ScrollablePresenter
 {
-  ScrollableStyle style;
-  Decorator<Group> wrapper;
+  SliderBoxStyle sliderStyle;
+  SDL_Point scrollBarsPadding;
   SDL_Point* scrollOffset;
 
-public:
-  /// Ctor
-  Scrollable(Target parent,
-             std::string_view id,
-             SDL_Point* scrollOffset,
-             const SDL_Rect& r,
-             const ScrollableStyle& style)
-    : style(style)
-    , wrapper(parent,
-              id,
-              r,
-              evalPadding(style),
-              [=](auto t, auto r) {
-                return offsetGroup(t, "client", *scrollOffset, r, style);
-              })
-    , scrollOffset(scrollOffset)
-  {}
-  /// Move ctor
-  Scrollable(Scrollable&&) = default;
-
-  /// Move assign operator
-  Scrollable& operator=(Scrollable&&) = default;
-
-  ~Scrollable()
-  {
-    if (wrapper) {
-      end();
-    }
-  }
-
   /// Finished the group
-  void end()
+  void operator()(Target target)
   {
-    SDL_Point clientSize{0}; //{wrapper.width(), wrapper.height()};
-    {
-      Target client{wrapper};
-      clientSize = {client.contentWidth(), client.contentHeight()};
-    }
-    SDL_Point wrapperSize = wrapper.endClient();
-    auto padding = evalPadding(style);
-    if (padding.right > 0) {
-      sliderBoxV(wrapper,
+    SDL_Point sz{target.size()}; //{wrapper.width(), wrapper.height()};
+    if (scrollBarsPadding.x > 0) {
+      sliderBoxV(target,
                  "vertical",
                  &scrollOffset->y,
                  0,
-                 clientSize.y,
+                 sz.y,
                  {
-                   wrapperSize.x - padding.right,
+                   sz.x - scrollBarsPadding.x,
                    0,
-                   padding.right,
-                   wrapperSize.y,
+                   scrollBarsPadding.x,
+                   sz.y,
                  });
     }
-    if (padding.bottom > 0) {
-      sliderBox(wrapper,
+    if (scrollBarsPadding.y > 0) {
+      sliderBox(target,
                 "horizontal",
                 &scrollOffset->x,
                 0,
-                clientSize.x,
+                sz.x,
                 {
                   0,
-                  wrapperSize.y - padding.bottom,
-                  wrapperSize.x - padding.right,
-                  padding.bottom,
+                  sz.y - scrollBarsPadding.y,
+                  sz.x - scrollBarsPadding.x,
+                  scrollBarsPadding.y,
                 });
     }
-    wrapper.end();
+  }
+};
+
+class Scrollable
+{
+public:
+  operator Target() { return client; }
+
+  void end()
+  {
+    client.end();
+    container.end();
   }
 
-  /// Return true if it can accept elements
-  operator bool() const { return wrapper; }
-
-  /// Returns target object
-  operator Target() { return wrapper; }
+private:
+  Wrapper<CONTAINER, ScrollablePresenter> container;
+  DisplayList::Clip client;
 };
 
 /// Eval the scrollable size according with parameters
@@ -141,7 +113,7 @@ scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
            const SDL_Rect& r,
-           Layout layout = Layout::VERTICAL,
+           Layout layout,
            const ScrollableStyle& style = themeFor<Scrollable>())
 {
   return {target, id, scrollOffset, makeScrollableRect(r, target), style};

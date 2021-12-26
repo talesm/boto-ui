@@ -154,7 +154,7 @@ sliderBox(Target target,
     r.h = buttonHeight;
   }
   bool action = false;
-  Group g = group(target, id, r, Layout::NONE);
+  auto g = group(target, id, r, Layout::NONE);
   if (button(g, "prev", "<")) {
     *value = std::clamp(*value - 1, min, max);
     action = true;
