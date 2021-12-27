@@ -12,13 +12,14 @@ The goal is review and reorganize the code and make it more consistent with its 
 - [x] Refactor DisplayList so it delegates the rendering to a visitor
 - [x] Wrap push and pop clip into a Proper guard type;
 - [x] Move event related stuff to new core class EventDispatcher;
-- [ ] When frame is created it sets a thread_local where the current target resides
+- [ ] ~~When frame is created it sets a thread_local where the current target resides~~
+- [ ] Create Theme class, that stores all styles
 - [ ] Move nextPos, nextSize and etc to the targetStack
 - [ ] Move styling utils to targetStack (nextStyle, nextColor, etc)
 - [ ] Simplify target to use a functor to decide how to advance
 - [ ] Refactor Style hierarchy with 4 fundamental Style concepts (Box, Text, Element and Control) and the respective render* functions to them
 - [x] Move current main back to a branch;
-- [ ] Group source files into subdirectories;
+- [x] Group source files into subdirectories;
 
 Wishlist
 --------
