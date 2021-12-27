@@ -1,11 +1,24 @@
 #pragma once
 
-#include "TargetStyle.hpp"
 #include "Theme.hpp"
+#include "core/Layout.hpp"
 
 namespace boto {
 
-using GroupStyle = TargetStyle;
+struct GroupStyle
+{
+  int elementSpacing;
+  Layout layout;
+
+  constexpr GroupStyle withElementSpacing(int elementSpacing) const
+  {
+    return {elementSpacing, layout};
+  }
+  constexpr GroupStyle withLayout(Layout layout) const
+  {
+    return {elementSpacing, layout};
+  }
+};
 
 class Group;
 

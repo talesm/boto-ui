@@ -11,7 +11,6 @@
 #include "PanelStyle.hpp"
 #include "SliderBoxStyle.hpp"
 #include "SliderFieldStyle.hpp"
-#include "TargetStyle.hpp"
 #include "TextStyle.hpp"
 #include "WindowStyle.hpp"
 
