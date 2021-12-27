@@ -1,6 +1,5 @@
 #include "catch.hpp"
-#include "core/Frame.hpp"
-#include "core/State.hpp"
+#include "core/Container.hpp"
 
 using namespace boto;
 

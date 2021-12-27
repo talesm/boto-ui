@@ -159,6 +159,16 @@ public:
   const Font& getFont() const { return font; }
   void setFont(const Font& f) { font = f; }
 
+  struct FrameGuard
+  {
+    void operator()(State* state) { state->endFrame(); }
+  };
+
+  struct ContainerGuard
+  {
+    void operator()(State* state) { state->popContainer(); }
+  };
+
 private:
   void endFrame();
   void popContainer();
@@ -186,17 +196,6 @@ private:
     return &containers.back();
   }
 
-  struct FrameGuard
-  {
-    void operator()(State* state) { state->endFrame(); }
-  };
-
-  struct ContainerGuard
-  {
-    void operator()(State* state) { state->popContainer(); }
-  };
-
-  friend class Frame;
   friend class Container;
   friend class Target;
 
@@ -284,5 +283,7 @@ State::event(SDL_Event& ev)
 }
 
 } // namespace boto
+#include "Container.hpp"
+#include "Frame.hpp"
 
 #endif // BOTO_CORE_STATE_HPP_

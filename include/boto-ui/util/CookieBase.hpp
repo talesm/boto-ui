@@ -24,10 +24,10 @@ protected:
     : component(component)
   {}
 
-  Component* get() const { return component.get(); }
-
 public:
   constexpr CookieBase() = default;
+
+  Component* get() const { return component.get(); }
 
   /// True if the cookie still valid
   operator bool() const { return bool(component); }

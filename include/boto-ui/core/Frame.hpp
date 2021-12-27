@@ -10,13 +10,16 @@ namespace boto {
  * @brief Represents a single frame on the app
  *
  */
-class Frame : public CookieBase<State, State::FrameGuard>
+class Frame
 {
 public:
+  /// Ctors
   Frame() = default;
+  Frame(CookieBase<State, State::FrameGuard> cookie)
+    : cookie(std::move(cookie))
+  {}
 
-  // TODO remove me
-  using CookieBase::get;
+  State* get() const { return cookie.get(); }
 
   /**
    * @brief Ends and then renders the frame
@@ -31,18 +34,10 @@ public:
     }
   }
 
-  /**
-   * @brief Returns the last text input
-   *
-   * You probably will want to check for focus before calling this
-   * @return std::string_view
-   */
+  void end() { cookie.end(); }
 
 private:
-  Frame(State* state)
-    : CookieBase(state){};
-
-  friend class State;
+  CookieBase<State, State::FrameGuard> cookie;
 };
 
 /**
@@ -79,7 +74,5 @@ State::endFrame()
   dispatcher.reset();
 }
 } // namespace boto
-
-#include "Container.hpp"
 
 #endif // BOTO_CORE_FRAME_HPP_
