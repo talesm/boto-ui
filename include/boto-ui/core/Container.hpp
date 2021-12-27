@@ -91,10 +91,17 @@ struct ContainerState
   Layout layout;
 };
 
-class Container : public CookieBase<State, State::ContainerGuard>
+class Container
 {
 public:
   Container() = default;
+
+  Container(CookieBase<State, State::ContainerGuard> cookie, size_t index)
+    : cookie(std::move(cookie))
+    , index(index)
+  {}
+
+  auto get() const { return cookie.get(); }
 
   const ContainerState& state() const { return get()->containers[index]; }
 
@@ -127,16 +134,8 @@ public:
     return s->element(r, req);
   }
 
-  using CookieBase::get;
-
 private:
-  Container(State* s, size_t index)
-    : CookieBase(s)
-    , index(index)
-  {}
-
-  friend class State;
-
+  CookieBase<State, State::ContainerGuard> cookie;
   size_t index;
 };
 
