@@ -91,10 +91,6 @@ private:
   friend class State;
   friend class Container;
 
-  SDL_Rect rect{0};
-  SDL_Point topLeft{0};
-  SDL_Point bottomRight{0};
-  bool locked = false;
   std::vector<ContainerState> containers;
 };
 
