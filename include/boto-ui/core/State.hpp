@@ -109,60 +109,7 @@ public:
    * @return true
    * @return false
    */
-  bool isInFrame() const { return !elements.empty(); }
-
-  /**
-   * @brief Check if the element was activated
-   *
-   * The activation is done when you click (mouse button down) with the mouse on
-   * the element and last until you click outside of it.
-   *
-   * Other ways of activate might exist.
-   *
-   * @param qualifiedId the element id
-   * @return true
-   * @return false
-   */
-  bool isActive(std::string_view qualifiedId) const
-  {
-    return dispatcher.isActive(qualifiedId);
-  }
-  bool isActive() const { return dispatcher.isActive(); }
-
-  /// @brief Get id of currently active element
-  std::string_view currentId() const { return dispatcher.currentId(); }
-
-  /**
-   * @brief Check for events
-   *
-   * All others are deprecated
-   *
-   * @param id element id
-   * @param r the element global rect (Use Group.checkMouse() for local rect)
-   * @return Event & status for the element
-   */
-  const EventTargetState& check(std::string_view id,
-                                const SDL_Rect& r,
-                                RequestEvent req = RequestEvent::INPUT);
-
-  /**
-   * @brief Check the mouse action/status for element in this frame
-   * @deprecated use check() instead
-
-   * @param id element id
-   * @param r the element global rect (Use Group.checkMouse() for local rect)
-   * @return MouseAction
-   */
-  MouseAction checkMouse(std::string_view id, SDL_Rect r);
-
-  /**
-   * @brief Check the text action/status for element in this frame
-   * @deprecated use check() instead
-   *
-   * @param id the element id
-   * @return TextAction
-   */
-  TextAction checkText(std::string_view id) const;
+  bool isInFrame() const { return inFrame; }
 
   /**
    * @brief Get the last input text
@@ -206,9 +153,6 @@ public:
   /// Ticks count
   Uint32 ticks() const { return ticksCount; }
 
-  // These are experimental and should not be used
-  void beginGroup(std::string_view id, SDL_Rect r);
-  void endGroup(std::string_view id, const SDL_Rect& r);
   const Font& getFont() const { return font; }
   void setFont(const Font& f) { font = f; }
 
@@ -231,101 +175,13 @@ private:
   Uint32 ticksCount;
 
   Font font;
-
-  std::vector<ElementState> elements;
-  bool levelChanged = true;
-  std::string lastId;
+  bool inFrame = false;
 };
-
-inline const EventTargetState&
-State::check(std::string_view id, const SDL_Rect& r, RequestEvent req)
-{
-  SDL_assert(isInFrame() == true);
-  if (!id.empty() && id == lastId) {
-    return elements.back().eventTarget.state();
-  }
-  if (!levelChanged) {
-    elements.pop_back();
-  }
-  levelChanged = false;
-  lastId = id;
-  elements.emplace_back(ElementState{
-    r.w && r.h ? dList.clip(r) : DisplayList::Clip{},
-    dispatcher.check(req, r, id),
-  });
-  return elements.back().eventTarget.state();
-}
-
-inline MouseAction
-State::checkMouse(std::string_view id, SDL_Rect r)
-{
-  auto& elState = check(id, r);
-  switch (elState.event) {
-  case Event::GRAB:
-    return MouseAction::GRAB;
-  case Event::ACTION:
-    return MouseAction::ACTION;
-  case Event::CANCEL:
-    return MouseAction::CANCEL;
-  default:
-    if (!elState.status.test(Status::GRABBED)) {
-      return MouseAction::NONE;
-    }
-    return elState.status.test(Status::HOVERED) ? MouseAction::HOLD
-                                                : MouseAction::DRAG;
-  }
-}
-
-inline TextAction
-State::checkText(std::string_view id) const
-{
-  auto& state = elements.back().eventTarget.state();
-  switch (state.event) {
-  case Event::INPUT:
-    return TextAction::INPUT;
-  case Event::END_LINE:
-  case Event::SPACE:
-  case Event::BACKSPACE:
-    return TextAction::KEYDOWN;
-  default:
-    return TextAction::NONE;
-  }
-}
-
-inline void
-State::beginGroup(std::string_view id, SDL_Rect r)
-{
-  if (id.empty()) {
-    check(id, r, RequestEvent::HOVER);
-  } else {
-    if (r.w == 0) {
-      r.w = INT_MAX;
-    }
-    if (r.h == 0) {
-      r.h = INT_MAX;
-    }
-    check(id, r);
-  }
-  levelChanged = true;
-  lastId.clear();
-}
-
-inline void
-State::endGroup(std::string_view id, const SDL_Rect& r)
-{
-  if (!levelChanged) {
-    elements.pop_back();
-  }
-  dispatcher.shrink(r.w, r.h);
-  elements.pop_back();
-  levelChanged = true;
-  lastId.clear();
-}
 
 inline void
 State::render()
 {
-  SDL_assert(elements.empty());
+  SDL_assert(!isInFrame());
   dList.visit([&](const DisplayListItem& item) {
     SDL_Color c = item.color;
     switch (item.action) {

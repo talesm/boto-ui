@@ -118,10 +118,8 @@ State::frame()
 {
   SDL_assert(isInFrame() == false);
   ticksCount = SDL_GetTicks();
-  levelChanged = true;
   dList.clear();
-  lastId.clear();
-  elements.push_back({});
+  inFrame = true;
   return {this};
 }
 
@@ -129,7 +127,7 @@ inline void
 State::endFrame()
 {
   SDL_assert(isInFrame() == true);
-  elements.pop_back();
+  inFrame = false;
   tKeysym = {};
   dispatcher.reset();
 }
