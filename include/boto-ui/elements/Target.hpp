@@ -19,16 +19,21 @@ class Target
 public:
   Target()
     : state(nullptr)
+    , stackSize(0)
   {}
 
   /// Ctor
   Target(Frame& frame)
     : state(frame.get())
-  {}
+    , stackSize(0)
+  {
+    SDL_assert(state->containers.size() == 0);
+  }
 
   /// Ctor
   Target(Container& container)
     : state(container.get())
+    , stackSize(state->containers.size())
   {}
 
   /**
@@ -43,6 +48,7 @@ public:
                                 const SDL_Rect& r,
                                 RequestEvent req = RequestEvent::INPUT)
   {
+    SDL_assert(state->containers.size() == stackSize);
     if (id.empty()) {
       lastElementState = state->element(r, req);
       lastElementId = {};
@@ -71,6 +77,7 @@ public:
                       Layout layout = Layout::NONE,
                       int elementSpacing = 0)
   {
+    SDL_assert(state->containers.size() == stackSize);
     return state->container(id, r, offset, endPadding, layout, elementSpacing);
   }
 
@@ -208,6 +215,7 @@ public:
 
 private:
   State* state;
+  size_t stackSize;
   std::string_view lastElementId;
   EventTargetState lastElementState;
 };
