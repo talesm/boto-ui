@@ -150,7 +150,7 @@ scrollablePanel(Target target,
                               .withLayout(Layout::NONE)
                               .withPadding(EdgeSize::all(0)));
   r = decorateBars(superElement,
-                   clientRect(client.border, r),
+                   clientRect(client.decoration.border, r),
                    scrollOffset,
                    style.slider,
                    style.fixHorizontal,

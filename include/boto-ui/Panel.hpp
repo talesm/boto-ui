@@ -13,6 +13,7 @@ namespace boto {
 struct PanelPresenter
 {
   ElementStyle style;
+  DisplayList::Clip clip;
   void operator()(Container& c)
   {
     auto& state = c.state();
@@ -63,14 +64,13 @@ panel(Target target,
       const SDL_Rect& r = {0},
       const PanelStyle& style = themeFor<Panel>())
 {
-  auto edge = style.padding + style.border;
+  auto g = group(target,
+                 id,
+                 makePanelRect(r, target),
+                 style.padding + style.decoration.border,
+                 style);
   return PanelImpl{
-    group(target,
-          id,
-          makePanelRect(r, target),
-          {edge.left, edge.top},
-          {edge.right, edge.bottom},
-          style),
+    std::move(g),
     PanelPresenter{style},
   };
 }

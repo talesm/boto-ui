@@ -37,9 +37,11 @@ sliderField(Target target,
             const SDL_Point& p = {0},
             const SliderFieldStyle& style = themeFor<SliderField>())
 {
-  auto& buttons = style.scroll.buttons;
-  auto adv = makeInputSize(
-    p, buttons.font, buttons.scale, buttons.padding + buttons.border);
+  auto& buttons = style.scroll.buttons.normal;
+  auto adv = makeInputSize(p,
+                           buttons.text.font,
+                           buttons.text.scale,
+                           buttons.padding + buttons.decoration.border);
   SDL_Rect box{p.x, p.y, adv.x, adv.y};
   auto g = labeledGroup(target, id, labelText, box, style.label);
   return sliderBox(g, id, value, min, max, box, style.scroll);

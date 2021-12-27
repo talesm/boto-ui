@@ -19,7 +19,7 @@ labeledGroup(Target target,
              const ControlStyle& style = themeFor<Label>())
 {
   SDL_Point labelPos = {r.w + 1, 0};
-  r.w += measure(labelText, style.font, style.scale).x + 1;
+  r.w += measure(labelText, style.text.font, style.text.scale).x + 1;
 
   auto g = group(target, id, r, Layout::NONE);
   label(g, labelText, labelPos, style);
@@ -37,7 +37,7 @@ textField(Target target,
           const SDL_Point& p = {0},
           const InputFieldStyle& style = themeFor<TextField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
   return textBox(g, id, value, maxSize, box, style.box);
 }
@@ -65,7 +65,7 @@ textField(Target target,
           const SDL_Point& p = {0},
           const InputFieldStyle& style = themeFor<TextField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
   return textBox(g, id, value, box, style.box);
 }
@@ -92,7 +92,7 @@ numberField(Target target,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<IntField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
   return numberBox(g, id, value, box, style.box);
 }
@@ -119,7 +119,7 @@ numberField(Target target,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<DoubleField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
   return numberBox(g, id, value, box, style.box);
 }
@@ -146,7 +146,7 @@ numberField(Target target,
             const SDL_Point& p = {0},
             const InputFieldStyle& style = themeFor<FloatField>())
 {
-  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box)};
+  SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
   return numberBox(g, id, value, box, style.box);
 }

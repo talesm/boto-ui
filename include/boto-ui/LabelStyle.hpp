@@ -10,8 +10,16 @@ struct Label;
 
 namespace style {
 template<class Theme>
-struct FromTheme<Label, Theme> : FromTheme<Control, Theme>
-{};
+struct FromTheme<Label, Theme>
+{
+  constexpr static ControlStyle get()
+  {
+    return themeFor<Control, Theme>()
+      .withBorderSize(EdgeSize::all(0))
+      .withPadding(EdgeSize::all(2))
+      .withBackgroundColor({});
+  }
+};
 } // namespace style
 
 } // namespace boto

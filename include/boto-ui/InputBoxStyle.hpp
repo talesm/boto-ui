@@ -10,12 +10,8 @@ namespace boto {
 /// Input box style
 struct InputBoxStyle
 {
-  EdgeSize padding;
-  EdgeSize border;
-  Font font;
-  int scale;
-  ControlPaintStyle normal;
-  ControlPaintStyle active;
+  ControlStyle normal;
+  ControlStyle active;
 };
 
 struct InputBoxBase;
@@ -32,18 +28,9 @@ struct FromTheme<InputBoxBase, Theme>
 {
   constexpr static InputBoxStyle get()
   {
-    auto control = themeFor<Control, Theme>();
     return {
-      EdgeSize::all(2),
-      EdgeSize::all(1),
-      control.font,
-      control.scale,
-      {control.paint.text,
-       {240, 240, 240, 255},
-       BorderColorStyle::all(control.paint.text)},
-      {control.paint.text,
-       {255, 255, 255, 255},
-       BorderColorStyle::all(control.paint.text)},
+      themeFor<Control, Theme>().withBackgroundColor({240, 240, 240, 255}),
+      themeFor<Control, Theme>().withBackgroundColor({255, 255, 255, 255}),
     };
   }
 };

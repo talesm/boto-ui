@@ -10,14 +10,10 @@ namespace boto {
 // Style for button
 struct ButtonStyle
 {
-  EdgeSize padding;
-  EdgeSize border;
-  Font font;
-  int scale;
-  ControlPaintStyle normal;
-  ControlPaintStyle grabbed;
-  ControlPaintStyle pressed;
-  ControlPaintStyle pressedGrabbed;
+  ControlStyle normal;
+  ControlStyle grabbed;
+  ControlStyle pressed;
+  ControlStyle pressedGrabbed;
 };
 
 struct ButtonBase;
@@ -25,7 +21,7 @@ struct Button;
 struct ToggleButton;
 struct ChoiceButton;
 
-constexpr const ControlPaintStyle&
+constexpr const ControlStyle&
 decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
 {
   if (grabbing == pushed) {
@@ -42,28 +38,22 @@ struct FromTheme<ButtonBase, Theme>
 {
   constexpr static ButtonStyle get()
   {
-    auto control = themeFor<Control, Theme>();
-    ControlPaintStyle buttonBox = {
-      control.paint.text,
-      {176, 195, 222, 255},
-      {
-        {255, 255, 255, 255},
-        {255, 255, 255, 255},
-        {0, 0, 0, 255},
-        {0, 0, 0, 255},
-      },
-    };
-    ControlPaintStyle buttonBoxGrabbed =
-      buttonBox.withBackground({147, 173, 210, 255});
+    auto buttonBox = themeFor<Control, Theme>()
+                       .withBorder(EdgeSize::all(2))
+                       .withBackgroundColor({176, 195, 222, 255})
+                       .withBorderColor({
+                         {255, 255, 255, 255},
+                         {255, 255, 255, 255},
+                         {0, 0, 0, 255},
+                         {0, 0, 0, 255},
+                       });
+    auto buttonBoxGrabbed = buttonBox.withBackgroundColor({147, 173, 210, 255});
     return {
-      EdgeSize::all(3),
-      EdgeSize::all(1),
-      control.font,
-      control.scale,
       buttonBox,
       buttonBoxGrabbed,
-      buttonBox.withBorder(buttonBox.border.invert()),
-      buttonBoxGrabbed.withBorder(buttonBox.border.invert()),
+      buttonBox.withBorderColor(buttonBox.decoration.paint.border.invert()),
+      buttonBoxGrabbed.withBorderColor(
+        buttonBox.decoration.paint.border.invert()),
     };
   }
 };

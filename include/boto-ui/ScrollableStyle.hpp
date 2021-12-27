@@ -82,6 +82,29 @@ struct ScrollablePanelStyle
   {
     return withClient(client.withLayout(layout));
   }
+
+  constexpr ScrollablePanelStyle withPadding(const EdgeSize& padding) const
+  {
+    return withClient(client.withPadding(padding));
+  }
+  constexpr ScrollablePanelStyle withBorderSize(const EdgeSize& border) const
+  {
+    return withClient(client.withBorderSize(border));
+  }
+  constexpr ScrollablePanelStyle withDecoration(
+    const ElementStyle& decoration) const
+  {
+    return withClient(client.withDecoration(decoration));
+  }
+  constexpr ScrollablePanelStyle withBackgroundColor(SDL_Color background) const
+  {
+    return withClient(client.withBackgroundColor(background));
+  }
+  constexpr ScrollablePanelStyle withBorderColor(
+    const BorderColorStyle& border) const
+  {
+    return withClient(client.withBorderColor(border));
+  }
 };
 
 struct Scrollable;
@@ -124,14 +147,16 @@ evalScrollbarSpace(const SliderBoxStyle& style,
                    bool fixedVertical)
 {
   SDL_Point p{0};
-  auto buttonStyle = style.buttons;
+  auto buttonStyle = style.buttons.normal;
   if (!fixedHorizontal) {
     p.x = buttonStyle.padding.left + buttonStyle.padding.right +
-          buttonStyle.border.left + buttonStyle.border.right + 8;
+          buttonStyle.decoration.border.left +
+          buttonStyle.decoration.border.right + 8;
   }
   if (!fixedVertical) {
     p.y = buttonStyle.padding.top + buttonStyle.padding.bottom +
-          buttonStyle.border.top + buttonStyle.border.bottom + 8;
+          buttonStyle.decoration.border.top +
+          buttonStyle.decoration.border.bottom + 8;
   }
   return p;
 }

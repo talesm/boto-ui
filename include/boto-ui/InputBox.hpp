@@ -36,10 +36,12 @@ makeInputSize(SDL_Point defaultSz,
 
 /// Eval the input rec, accordingly to parameters
 inline SDL_Rect
-makeInputRect(SDL_Rect r, const InputBoxStyle& style)
+makeInputRect(SDL_Rect r, const ControlStyle& style)
 {
-  auto sz = makeInputSize(
-    {r.w, r.h}, style.font, style.scale, style.padding + style.border);
+  auto sz = makeInputSize({r.w, r.h},
+                          style.text.font,
+                          style.text.scale,
+                          style.padding + style.decoration.border);
   return {r.x, r.y, sz.x, sz.y};
 }
 
@@ -61,9 +63,9 @@ textBoxBase(Target target,
 {
   static size_t cursorPos = 0;
   static size_t maxPos = 0;
-  r = makeInputRect(r, style);
-  auto g = panel(
-    target, id, r, Layout::NONE, {style.padding, style.border, style.normal});
+  r = makeInputRect(r, style.normal);
+  auto g =
+    panel(target, id, r, {style.normal.decoration, {0}, {0, Layout::NONE}});
   auto& state = g.state().eventTarget.state();
   if (state.event == Event::GRAB) {
     maxPos = cursorPos = value.size();
@@ -73,10 +75,13 @@ textBoxBase(Target target,
   if (active && cursorPos > value.size()) {
     maxPos = cursorPos = value.size();
   }
+  auto& currentStyle = active ? style.active : style.normal;
 
   // This creates an auto scroll effect if value text don't fit in the box;
-  auto clientSz = clientSize(style.padding + EdgeSize::all(1), {r.w, r.h});
-  auto contentSz = measure(value, style.font, style.scale);
+  auto clientSz =
+    clientSize(currentStyle.padding + EdgeSize::all(1), {r.w, r.h});
+  auto contentSz =
+    measure(value, currentStyle.text.font, currentStyle.text.scale);
   int deltaX = contentSz.x - clientSz.x;
   if (deltaX < 0) {
     deltaX = 0;
@@ -89,16 +94,16 @@ textBoxBase(Target target,
       deltaX = 0;
     }
   }
-  auto& currentColors = active ? style.active : style.normal;
-  text(g, value, {-deltaX, 0}, {style.font, currentColors.text, style.scale});
+  text(g, value, {-deltaX, 0}, currentStyle.text);
   if (!active) {
     return {};
   }
 
   if ((target.getTicks() / 512) % 2) {
     // Show cursor
-    element(
-      g, {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y}, currentColors.text);
+    element(g,
+            {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y},
+            currentStyle.text.color);
   }
   if (state.event == Event::INPUT) {
     auto insert = target.lastText();
@@ -193,7 +198,7 @@ public:
                    const InputBoxStyle& style)
     : target(target)
     , id(id)
-    , rect(makeInputRect(r, style))
+    , rect(makeInputRect(r, style.normal))
     , style(style)
   {
     bool clicked = target.checkMouse(id, rect) == MouseAction::GRAB;

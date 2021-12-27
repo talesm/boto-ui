@@ -133,21 +133,23 @@ sliderBox(Target target,
           SDL_Rect r = {0},
           const SliderBoxStyle& style = themeFor<SliderBox>())
 {
+  auto& buttonStyle = style.buttons.normal;
   if (r.w == 0) {
     r.w = makeInputSize({r.w, r.h},
-                        style.buttons.font,
+                        buttonStyle.text.font,
                         0,
-                        style.buttons.border + style.buttons.padding)
+                        buttonStyle.decoration.border + buttonStyle.padding)
             .x;
   }
-  auto& buttonStyle = style.buttons;
   int buttonWidth = buttonStyle.padding.left + buttonStyle.padding.right +
-                    buttonStyle.border.left + buttonStyle.border.right + 8;
+                    buttonStyle.decoration.border.left +
+                    buttonStyle.decoration.border.right + 8;
   if (r.w < buttonWidth * 2) {
     r.w = buttonWidth * 2;
   }
   int buttonHeight = buttonStyle.padding.top + buttonStyle.padding.bottom +
-                     buttonStyle.border.top + buttonStyle.border.bottom + 8;
+                     buttonStyle.decoration.border.top +
+                     buttonStyle.decoration.border.bottom + 8;
   if (buttonHeight < r.h) {
     buttonHeight = r.h;
   } else {
@@ -186,21 +188,23 @@ sliderBoxV(Target target,
            SDL_Rect r = {0},
            const SliderBoxStyle& style = themeFor<SliderBox>())
 {
+  auto& buttonStyle = style.buttons.normal;
   if (r.h == 0) {
     r.h = makeInputSize({0},
-                        style.buttons.font,
+                        buttonStyle.text.font,
                         0,
-                        style.buttons.border + style.buttons.padding)
+                        buttonStyle.decoration.border + buttonStyle.padding)
             .x;
   }
-  auto& buttonStyle = style.buttons;
   int buttonWidth = buttonStyle.padding.left + buttonStyle.padding.right +
-                    buttonStyle.border.left + buttonStyle.border.right + 8;
+                    buttonStyle.decoration.border.left +
+                    buttonStyle.decoration.border.right + 8;
   if (r.w < buttonWidth) {
     r.w = buttonWidth;
   }
   int buttonHeight = buttonStyle.padding.top + buttonStyle.padding.bottom +
-                     buttonStyle.border.top + buttonStyle.border.bottom + 8;
+                     buttonStyle.decoration.border.top +
+                     buttonStyle.decoration.border.bottom + 8;
   if (buttonHeight * 2 > r.h) {
     r.h = buttonHeight * 2;
   }

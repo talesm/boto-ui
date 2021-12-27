@@ -153,14 +153,14 @@ main(int argc, char** argv)
     // directly again after that.
     p.end();
 
-    static SDL_Point scrollOffset2{0};
-    if (auto w = boto::scrollableWindow(
-          f, "Scroll Window", &scrollOffset2, {320, 30, 150, 0})) {
-      for (int i = 0; i < 10; ++i) {
-        boto::label(w, "Some label");
-      }
-      boto::button(w, "button");
-    }
+    // static SDL_Point scrollOffset2{0};
+    // if (auto w = boto::scrollableWindow(
+    //       f, "Scroll Window", &scrollOffset2, {320, 30, 150, 0})) {
+    //   for (int i = 0; i < 10; ++i) {
+    //     boto::label(w, "Some label");
+    //   }
+    //   boto::button(w, "button");
+    // }
 
     // For example, we can add this big texture
     boto::element(f, {400, 300, 256, 256}, texture);

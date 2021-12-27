@@ -2,6 +2,7 @@
 
 #include <string_view>
 #include <SDL_rect.h>
+#include "EdgeSize.hpp"
 #include "GroupStyle.hpp"
 #include "Target.hpp"
 #include "core/Container.hpp"
@@ -31,6 +32,21 @@ group(Target target,
 {
   return target.container(
     id, r, offset, endPadding, style.layout, style.elementSpacing);
+}
+
+inline Container
+group(Target target,
+      std::string_view id,
+      const SDL_Rect& r,
+      const EdgeSize& padding,
+      const GroupStyle& style = themeFor<Group>())
+{
+  return target.container(id,
+                          r,
+                          {padding.left, padding.top},
+                          {padding.right, padding.bottom},
+                          style.layout,
+                          style.elementSpacing);
 }
 inline Container
 group(Target target,

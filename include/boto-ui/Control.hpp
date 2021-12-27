@@ -19,8 +19,9 @@ computeSize(std::string_view str,
   if (sz.x != 0 && sz.y != 0) {
     return sz;
   }
-  auto clientSz = measure(str, style.font, style.scale);
-  auto elementSz = elementSize(style.padding + style.border, clientSz);
+  auto clientSz = measure(str, style.text.font, style.text.scale);
+  auto elementSz =
+    elementSize(style.padding + style.decoration.border, clientSz);
   if (sz.x != 0) {
     elementSz.x = sz.x;
   } else if (sz.y != 0) {
@@ -38,7 +39,7 @@ computeSize(std::string_view str,
  * @param r the control dimensions
  * @param style
  */
-inline void
+inline const EventTargetState&
 control(Target target,
         std::string_view id,
         std::string_view str,
@@ -51,14 +52,14 @@ control(Target target,
 
   auto& dList = target.getDisplayList();
   auto clip = dList.clip(el.rect);
-  auto offset = style.border + style.padding;
-  presentText(
-    dList,
-    str,
-    {offset.left + el.rect.x, offset.top + el.rect.y},
-    el.status,
-    adjustDefaultFont(static_cast<TextStyle>(style), target.getFont()));
+  auto offset = style.decoration.border + style.padding;
+  presentText(dList,
+              str,
+              {offset.left + el.rect.x, offset.top + el.rect.y},
+              el.status,
+              adjustDefaultFont(style.text, target.getFont()));
   presentElement(dList, el.rect, el.status, style);
+  return el;
 }
 inline void
 control(Target target,
@@ -66,7 +67,7 @@ control(Target target,
         const SDL_Rect& r = {0},
         const ControlStyle& style = themeFor<Control>())
 {
-  return control(target, str, str, r, RequestEvent::INPUT, style);
+  control(target, str, str, r, RequestEvent::INPUT, style);
 }
 
 } // namespace boto

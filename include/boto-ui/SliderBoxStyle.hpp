@@ -33,13 +33,13 @@ struct FromTheme<SliderBoxBar, Theme>
 {
   constexpr static SliderBoxBarStyle get()
   {
-    auto buttonStyle = themeFor<Button, Theme>();
+    auto buttonStyle = themeFor<Button, Theme>().normal.decoration;
     return {
       themeFor<Panel, Theme>().withPadding(EdgeSize::all(0)),
       themeFor<Element, Theme>()
-        .withBackgroundColor(buttonStyle.normal.background)
+        .withBackgroundColor(buttonStyle.paint.background)
         .withBorderSize(buttonStyle.border)
-        .withBorderColor(buttonStyle.normal.border),
+        .withBorderColor(buttonStyle.paint.border),
       buttonStyle.border.left + buttonStyle.border.right + 2,
     };
   }

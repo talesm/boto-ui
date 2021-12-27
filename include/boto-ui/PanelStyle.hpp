@@ -10,35 +10,35 @@ namespace boto {
 // Style for panels
 struct PanelStyle
 {
+  ElementStyle decoration;
   EdgeSize padding;
-  EdgeSize border;
-  ElementPaintStyle paint;
   GroupStyle client;
+
+  constexpr PanelStyle withDecoration(const ElementStyle& decoration) const
+  {
+    return {decoration, padding, client};
+  }
 
   constexpr PanelStyle withPadding(const EdgeSize& padding) const
   {
-    return {padding, border, paint, client};
+    return {decoration, padding, client};
   }
   constexpr PanelStyle withBorderSize(const EdgeSize& border) const
   {
-    return {padding, border, paint, client};
-  }
-  constexpr PanelStyle withPaint(const ElementPaintStyle& paint) const
-  {
-    return {padding, border, paint, client};
+    return withDecoration(decoration.withBorderSize(border));
   }
   constexpr PanelStyle withBackgroundColor(SDL_Color background) const
   {
-    return withPaint(paint.withBackground(background));
+    return withDecoration(decoration.withBackgroundColor(background));
   }
   constexpr PanelStyle withBorderColor(const BorderColorStyle& border) const
   {
-    return withPaint(paint.withBorder(border));
+    return withDecoration(decoration.withBorderColor(border));
   }
 
   constexpr PanelStyle withClient(const GroupStyle& client) const
   {
-    return {padding, border, paint, client};
+    return {decoration, padding, client};
   }
 
   constexpr PanelStyle withElementSpacing(int elementSpacing) const
@@ -51,7 +51,7 @@ struct PanelStyle
     return withClient(client.withLayout(layout));
   }
 
-  constexpr operator ElementStyle() const { return {border, paint}; }
+  constexpr operator ElementStyle() const { return decoration; }
 
   constexpr operator GroupStyle() const { return client; }
 };
@@ -66,10 +66,11 @@ struct FromTheme<Panel, Theme>
   constexpr static PanelStyle get()
   {
     auto boxStyle = themeFor<Element, Theme>();
-    return {EdgeSize::all(2),
-            boxStyle.border,
-            boxStyle.paint,
-            themeFor<Group, Theme>()};
+    return {
+      boxStyle,
+      EdgeSize::all(2),
+      themeFor<Group, Theme>(),
+    };
   }
 };
 }

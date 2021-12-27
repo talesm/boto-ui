@@ -31,20 +31,20 @@ buttonBase(Target target,
   if (str.empty()) {
     str = id;
   }
-  auto adv = elementSize(style.padding + style.border,
-                         measure(str, style.font, style.scale));
-  SDL_Rect r{p.x, p.y, adv.x, adv.y};
-  auto action = target.checkMouse(id, r);
+  auto sz =
+    elementSize(style.normal.padding + style.normal.decoration.border,
+                measure(str, style.normal.text.font, style.normal.text.scale));
+  SDL_Rect r{p.x, p.y, sz.x, sz.y};
+  auto state = target.check(id, r, RequestEvent::INPUT);
 
-  control(target,
-          str,
-          r,
-          {style.padding,
-           style.border,
-           style.font,
-           style.scale,
-           decideButtonColors(style, pushed, action == MouseAction::HOLD)});
-  return action == MouseAction::ACTION;
+  control(
+    target,
+    {},
+    str,
+    r,
+    RequestEvent::NONE,
+    decideButtonColors(style, pushed, state.status.test(Status::GRABBED)));
+  return state.event == Event::ACTION;
 }
 
 /**

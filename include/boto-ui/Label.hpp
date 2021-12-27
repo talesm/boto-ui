@@ -41,15 +41,17 @@ centeredLabel(Target target,
               SDL_Rect r,
               const ControlStyle& style = themeFor<Label>())
 {
-  auto textSz = measure(str, style.font, style.scale);
-  SDL_Point minElementSz = elementSize(style.padding + style.border, textSz);
+  auto textSz = measure(str, style.text.font, style.text.scale);
+  SDL_Point minElementSz =
+    elementSize(style.padding + style.decoration.border, textSz);
   if (r.w == 0) {
     r.w = minElementSz.x;
   }
   if (r.h == 0) {
     r.h = minElementSz.y;
   }
-  SDL_Point clientSz = clientSize(style.padding + style.border, {r.w, r.h});
+  SDL_Point clientSz =
+    clientSize(style.padding + style.decoration.border, {r.w, r.h});
 
   text(target,
        str,

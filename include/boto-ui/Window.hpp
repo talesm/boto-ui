@@ -123,7 +123,7 @@ window(Target target,
   r = makeWindowRect(r, target);
   PanelImpl superElement =
     panel(target, id, r, style.panel.withLayout(Layout::VERTICAL));
-  auto clRect = clientRect(style.panel.border, r);
+  auto clRect = clientRect(style.panel.decoration.border, r);
   centeredLabel(superElement, title, {clRect.x, clRect.y, clRect.w, 8}, style);
   clRect.y += 8;
   clRect.h -= 8;
@@ -169,81 +169,82 @@ window(Target target,
 
 using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
 
-/**
- * @brief adds a scrollable window
- * @ingroup groups
- *
- * This is mostly the same than scrollable(), except it accepts more styling
- * options, like border and background color and has a title
- * @param target the parent group or frame
- * @param id the id
- * @param scrollOffset the scrolling control variable
- * @param r the relative position and the size. If size is 0 it will use a
- * default size. Notice that this is different from group() and panel() behavior
- * @param layout
- * @param style
- * @return group
- */
-inline ScrollableWindowImpl
-scrollableWindow(
-  Target target,
-  std::string_view id,
-  std::string_view title,
-  SDL_Point* scrollOffset,
-  SDL_Rect r = {0},
-  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
-{
-  r = makeWindowRect(r, target);
-  WindowImpl superElement = window(target, id, r, style.decoration);
+// /**
+//  * @brief adds a scrollable window
+//  * @ingroup groups
+//  *
+//  * This is mostly the same than scrollable(), except it accepts more styling
+//  * options, like border and background color and has a title
+//  * @param target the parent group or frame
+//  * @param id the id
+//  * @param scrollOffset the scrolling control variable
+//  * @param r the relative position and the size. If size is 0 it will use a
+//  * default size. Notice that this is different from group() and panel()
+//  behavior
+//  * @param layout
+//  * @param style
+//  * @return group
+//  */
+// inline ScrollableWindowImpl
+// scrollableWindow(
+//   Target target,
+//   std::string_view id,
+//   std::string_view title,
+//   SDL_Point* scrollOffset,
+//   SDL_Rect r = {0},
+//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+// {
+//   r = makeWindowRect(r, target);
+//   WindowImpl superElement = window(target, id, r, style);
 
-  auto clRect = clientRect(style.decoration.panel.border, r);
-  clRect.y += 8;
-  clRect.h -= 8;
-  ScrollableImpl subElement =
-    scrollable(superElement, id, scrollOffset, clRect, style);
-  return {std::move(superElement), std::move(subElement)};
-}
+//   auto clRect = clientRect(style.panel.client.decoration.border, r);
+//   clRect.y += 8;
+//   clRect.h -= 8;
+//   ScrollableImpl subElement =
+//     scrollable(superElement, id, scrollOffset, clRect, style.panel);
+//   return {std::move(superElement), std::move(subElement)};
+// }
 
-/// @copydoc scrollableWindow()
-/// @ingroup groups
-inline ScrollableWindowImpl
-scrollableWindow(
-  Target target,
-  std::string_view id,
-  SDL_Point* scrollOffset,
-  const SDL_Rect& r = {0},
-  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
-{
-  return scrollableWindow(target, id, id, scrollOffset, r, style);
-}
+// /// @copydoc scrollableWindow()
+// /// @ingroup groups
+// inline ScrollableWindowImpl
+// scrollableWindow(
+//   Target target,
+//   std::string_view id,
+//   SDL_Point* scrollOffset,
+//   const SDL_Rect& r = {0},
+//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+// {
+//   return scrollableWindow(target, id, id, scrollOffset, r, style);
+// }
 
-/// @copydoc scrollableWindow()
-/// @ingroup groups
-inline ScrollableWindowImpl
-scrollableWindow(
-  Target target,
-  std::string_view id,
-  std::string_view title,
-  SDL_Point* scrollOffset,
-  const SDL_Rect& r,
-  Layout layout,
-  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
-{
-  return scrollableWindow(
-    target, id, title, scrollOffset, r, style.withLayout(layout));
-}
+// /// @copydoc scrollableWindow()
+// /// @ingroup groups
+// inline ScrollableWindowImpl
+// scrollableWindow(
+//   Target target,
+//   std::string_view id,
+//   std::string_view title,
+//   SDL_Point* scrollOffset,
+//   const SDL_Rect& r,
+//   Layout layout,
+//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+// {
+//   return scrollableWindow(
+//     target, id, title, scrollOffset, r, style.withLayout(layout));
+// }
 
-/// @copydoc scrollableWindow()
-/// @ingroup groups
-inline ScrollableWindowImpl
-scrollableWindow(
-  Target target,
-  std::string_view id,
-  SDL_Point* scrollOffset,
-  const SDL_Rect& r,
-  Layout layout,
-  const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
-{
-  return scrollableWindow(target, id, id, scrollOffset, r, layout);
-}
+// /// @copydoc scrollableWindow()
+// /// @ingroup groups
+// inline ScrollableWindowImpl
+// scrollableWindow(
+//   Target target,
+//   std::string_view id,
+//   SDL_Point* scrollOffset,
+//   const SDL_Rect& r,
+//   Layout layout,
+//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+// {
+//   return scrollableWindow(target, id, id, scrollOffset, r, layout);
+// }
 } // namespace boto

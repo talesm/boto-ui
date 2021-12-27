@@ -6,73 +6,56 @@
 
 namespace boto {
 
-// Style for control state
-struct ControlPaintStyle
-{
-  SDL_Color text;
-  SDL_Color background;
-  BorderColorStyle border;
-
-  constexpr ControlPaintStyle withText(SDL_Color text) const
-  {
-    return {text, background, border};
-  }
-  constexpr ControlPaintStyle withBackground(SDL_Color background) const
-  {
-    return {text, background, border};
-  }
-  constexpr ControlPaintStyle withBorder(const BorderColorStyle& border) const
-  {
-    return {text, background, border};
-  }
-
-  constexpr operator ElementPaintStyle() const { return {background, border}; }
-};
-
 struct ControlStyle
 {
+  ElementStyle decoration;
   EdgeSize padding;
-  EdgeSize border;
-  Font font;
-  int scale;
-  ControlPaintStyle paint;
+  TextStyle text;
 
+  constexpr ControlStyle withDecoration(const ElementStyle& decoration) const
+  {
+    return {decoration, padding, text};
+  }
   constexpr ControlStyle withPadding(EdgeSize padding) const
   {
-    return {padding, border, font, scale, paint};
+    return {decoration, padding, text};
+  }
+  constexpr ControlStyle withText(const TextStyle& text) const
+  {
+    return {decoration, padding, text};
   }
   constexpr ControlStyle withBorder(EdgeSize border) const
   {
-    return {padding, border, font, scale, paint};
-  }
-  constexpr ControlStyle withPaint(const ControlPaintStyle& paint) const
-  {
-    return {padding, border, font, scale, paint};
+    return withDecoration(decoration.withBorderSize(border));
   }
   constexpr ControlStyle withFont(const Font& font) const
   {
-    return {padding, border, font, scale, paint};
+    return withText(text.withFont(font));
   }
   constexpr ControlStyle withScale(int scale) const
   {
-    return {padding, border, font, scale, paint};
+    return withText(text.withScale(scale));
   }
 
-  constexpr ControlStyle withText(SDL_Color text) const
+  constexpr ControlStyle withText(SDL_Color color) const
   {
-    return withPaint(paint.withText(text));
+    return withText(text.withColor(color));
   }
   constexpr ControlStyle withBackgroundColor(SDL_Color c) const
   {
-    return withPaint(paint.withBackground(c));
+    return withDecoration(decoration.withBackgroundColor(c));
   }
   constexpr ControlStyle withBorderColor(
     const BorderColorStyle& borderColor) const
   {
-    return withPaint(paint.withBorder(borderColor));
+    return withDecoration(decoration.withBorderColor(borderColor));
   }
-  constexpr operator ElementStyle() const { return {border, paint}; }
-  constexpr operator TextStyle() const { return {font, paint.text, scale}; }
+  constexpr ControlStyle withBorderSize(EdgeSize border) const
+  {
+    return withDecoration(decoration.withBorderSize(border));
+  }
+  constexpr operator ElementStyle() const { return decoration; }
+  constexpr operator TextStyle() const { return text; }
 };
 
 struct Control;
@@ -84,13 +67,10 @@ struct FromTheme<Control, Theme>
 {
   constexpr static ControlStyle get()
   {
-    auto text = themeFor<Text, Theme>();
     return {
-      EdgeSize::all(2),
-      EdgeSize::all(0),
-      text.font,
-      text.scale,
-      {text.color},
+      themeFor<Element, Theme>(),
+      EdgeSize::all(1),
+      themeFor<Text, Theme>(),
     };
   }
 };
