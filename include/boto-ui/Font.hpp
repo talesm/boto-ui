@@ -1,6 +1,7 @@
 #ifndef BOTO_FONT_HPP
 #define BOTO_FONT_HPP
 
+#include <string_view>
 #include <SDL.h>
 
 namespace boto {

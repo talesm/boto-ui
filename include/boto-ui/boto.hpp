@@ -1,19 +1,19 @@
 #ifndef BOTO_HPP_
 #define BOTO_HPP_
 
-#include "Button.hpp"
-#include "Control.hpp"
 #include "Font.hpp"
-#include "Group.hpp"
-#include "InputBox.hpp"
-#include "InputField.hpp"
-#include "Label.hpp"
-#include "Panel.hpp"
-#include "Scrollable.hpp"
-#include "SliderBox.hpp"
-#include "SliderField.hpp"
-#include "Window.hpp"
 #include "core/Frame.hpp"
 #include "core/State.hpp"
+#include "elements/Button.hpp"
+#include "elements/Control.hpp"
+#include "elements/Group.hpp"
+#include "elements/InputBox.hpp"
+#include "elements/InputField.hpp"
+#include "elements/Label.hpp"
+#include "elements/Panel.hpp"
+#include "elements/Scrollable.hpp"
+#include "elements/SliderBox.hpp"
+#include "elements/SliderField.hpp"
+#include "elements/Window.hpp"
 
 #endif // BOTO_HPP_H
