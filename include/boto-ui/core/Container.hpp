@@ -6,8 +6,8 @@
 #include <string_view>
 #include "DisplayList.hpp"
 #include "EventDispatcher.hpp"
-#include "Frame.hpp"
 #include "Layout.hpp"
+#include "State.hpp"
 
 namespace boto {
 
@@ -91,7 +91,7 @@ struct ContainerState
   Layout layout;
 };
 
-class Container : public CookieBase<Frame, Frame::ContainerPopper>
+class Container : public CookieBase<State, State::ContainerGuard>
 {
 public:
   Container() = default;
@@ -105,45 +105,44 @@ public:
                       Layout layout = Layout::NONE,
                       int elementSpacing = 0)
   {
-    auto frame = get();
-    SDL_assert(index == frame->containers.size() - 1);
-    return frame->container(id, r, offset, endPadding, layout, elementSpacing);
+    auto s = get();
+    SDL_assert(index == s->containers.size() - 1);
+    return s->container(id, r, offset, endPadding, layout, elementSpacing);
   }
 
   EventTargetState element(std::string_view id,
                            const SDL_Rect& r,
                            RequestEvent req = RequestEvent::GRAB)
   {
-    auto frame = get();
-    SDL_assert(index == frame->containers.size() - 1);
-    return frame->element(id, r, req);
+    auto s = get();
+    SDL_assert(index == s->containers.size() - 1);
+    return s->element(id, r, req);
   }
 
   EventTargetState element(const SDL_Rect& r,
                            RequestEvent req = RequestEvent::GRAB)
   {
-    auto frame = get();
-    SDL_assert(index == frame->containers.size() - 1);
-    return frame->element(r, req);
+    auto s = get();
+    SDL_assert(index == s->containers.size() - 1);
+    return s->element(r, req);
   }
 
   using CookieBase::get;
 
 private:
-  Container(Frame* frame, size_t index)
-    : CookieBase(frame)
+  Container(State* s, size_t index)
+    : CookieBase(s)
     , index(index)
   {}
 
-  friend class Frame;
+  friend class State;
 
   size_t index;
 };
 
 inline EventTargetState
-Frame::element(std::string_view id, SDL_Rect r, RequestEvent req)
+State::element(std::string_view id, SDL_Rect r, RequestEvent req)
 {
-  auto state = get();
   if (!containers.empty()) {
     auto& c = containers.back();
     auto caret = c.caret();
@@ -151,41 +150,34 @@ Frame::element(std::string_view id, SDL_Rect r, RequestEvent req)
     r.y += caret.y;
     c.advance({r.w, r.h});
   }
-  return state->dispatcher.check(req, r, id).state();
+  return dispatcher.check(req, r, id).state();
 }
 
 inline Container
-Frame::container(std::string_view id,
+State::container(std::string_view id,
                  SDL_Rect r,
                  const SDL_Point& offset,
                  const SDL_Point& endPadding,
                  Layout layout,
                  int elementSpacing)
 {
-  auto state = get();
   if (!containers.empty()) {
     auto caret = containers.back().caret();
     r.x += caret.x;
     r.y += caret.y;
   }
-  containers.emplace_back(state->dList,
-                          state->dispatcher,
-                          id,
-                          r,
-                          offset,
-                          endPadding,
-                          layout,
-                          elementSpacing);
+  containers.emplace_back(
+    dList, dispatcher, id, r, offset, endPadding, layout, elementSpacing);
   return {this, containers.size() - 1};
 }
 
 inline void
-Frame::popContainer()
+State::popContainer()
 {
   auto& c = containers.back();
   auto sz = c.size();
   if (c.wasUndefined()) {
-    get()->dispatcher.shrink(sz.x, sz.y);
+    dispatcher.shrink(sz.x, sz.y);
   }
   containers.pop_back();
   if (!containers.empty()) {

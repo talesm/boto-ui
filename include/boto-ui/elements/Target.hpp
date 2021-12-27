@@ -17,17 +17,17 @@ class Target
 
 public:
   Target()
-    : frame(nullptr)
+    : state(nullptr)
   {}
 
   /// Ctor
   Target(Frame& frame)
-    : frame(&frame)
+    : state(frame.get())
   {}
 
   /// Ctor
   Target(Container& container)
-    : frame(container.get())
+    : state(container.get())
   {}
 
   /**
@@ -43,10 +43,10 @@ public:
                                 RequestEvent req = RequestEvent::INPUT)
   {
     if (id.empty()) {
-      lastElementState = frame->element(r, req);
+      lastElementState = state->element(r, req);
       lastElementId = {};
     } else if (id != lastElementId) {
-      lastElementState = frame->element(id, r, req);
+      lastElementState = state->element(id, r, req);
       lastElementId = id;
     }
     return lastElementState;
@@ -70,7 +70,7 @@ public:
                       Layout layout = Layout::NONE,
                       int elementSpacing = 0)
   {
-    return frame->container(id, r, offset, endPadding, layout, elementSpacing);
+    return state->container(id, r, offset, endPadding, layout, elementSpacing);
   }
 
   /**
@@ -112,7 +112,7 @@ public:
    *
    * @return std::string_view
    */
-  std::string_view input() const { return frame->input(); }
+  std::string_view input() const { return state->input(); }
   /**
    * @brief Get the last key down
    *
@@ -121,7 +121,7 @@ public:
    *
    * @return std::string_view
    */
-  SDL_Keysym lastKeyDown() const { return frame->lastKeyDown(); }
+  SDL_Keysym lastKeyDown() const { return state->lastKeyDown(); }
 
   /**
    * @brief Last mouse position
@@ -130,19 +130,19 @@ public:
    */
   SDL_Point pointerPosition() const
   {
-    auto pos = frame->pointerPosition();
+    auto pos = state->pointerPosition();
     pos.x -= lastElementState.rect.x;
     pos.x -= lastElementState.rect.y;
     return pos;
   }
 
   /// Get the target's displayList
-  DisplayList& getDisplayList() const { return frame->displayList(); }
+  DisplayList& getDisplayList() const { return state->displayList(); }
 
   /// Get the position where the next element can be added
   SDL_Point getCaret() const
   {
-    if (auto* c = frame->getTop())
+    if (auto* c = state->getTop())
       return c->caret();
     return {};
   }
@@ -155,7 +155,7 @@ public:
   /// Return the layout
   Layout getLayout() const
   {
-    if (auto* c = frame->getTop())
+    if (auto* c = state->getTop())
       return c->layout;
     return Layout::NONE;
   }
@@ -170,7 +170,7 @@ public:
    */
   const SDL_Rect& getRect() const
   {
-    if (auto* c = frame->getTop())
+    if (auto* c = state->getTop())
       return c->eventTarget.rect();
     static SDL_Rect defaultRect{0, 0, Undefined, Undefined};
     return defaultRect;
@@ -180,7 +180,7 @@ public:
   SDL_Point size() const
   {
 
-    if (auto* c = frame->getTop())
+    if (auto* c = state->getTop())
       return c->size();
     return {Undefined, Undefined};
   }
@@ -198,15 +198,15 @@ public:
   // int contentHeight() const { return bottomRight->y - topLeft->y; }
 
   /// Returns true if this is valid
-  operator bool() const { return frame; }
+  operator bool() const { return state; }
 
   /// Get Font
-  const Font& getFont() const { return frame->getFont(); }
+  const Font& getFont() const { return state->getFont(); }
 
-  int ticks() const { return frame->ticks(); }
+  int ticks() const { return state->ticks(); }
 
 private:
-  Frame* frame;
+  State* state;
   std::string_view lastElementId;
   EventTargetState lastElementState;
 };

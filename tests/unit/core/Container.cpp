@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "core/Container.hpp"
+#include "elements/Target.hpp"
 
 using namespace boto;
 using namespace std::literals;
@@ -209,7 +210,7 @@ TEST_CASE("Frame on regular container", "[container][frame]")
   State state{nullptr};
   Frame f = frame(state);
 
-  auto c1 = f.container("c1"sv, {1, 2, 3, 4});
+  auto c1 = Target{f}.container("c1"sv, {1, 2, 3, 4});
   {
     auto& s1 = c1.state();
     REQUIRE(s1.offset.x == 1);
@@ -238,7 +239,7 @@ TEST_CASE("Frame with regular checking", "[container][frame]")
   State state{nullptr};
   Frame f = frame(state);
 
-  auto c1 = f.container("c1"sv, {1, 2, 3, 4});
+  auto c1 = Target{f}.container("c1"sv, {1, 2, 3, 4});
   {
     auto& s1 = c1.state();
     REQUIRE(s1.offset.x == 1);

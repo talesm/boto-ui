@@ -13,7 +13,10 @@
 namespace boto {
 
 // Forward decl
+class ContainerState;
+class Container;
 class Frame;
+class Target;
 
 /**
  * @brief The mouse action and status for a element in a frame
@@ -158,13 +161,44 @@ public:
 
 private:
   void endFrame();
+  void popContainer();
+
+  Container container(std::string_view id,
+                      SDL_Rect r,
+                      const SDL_Point& offset = {},
+                      const SDL_Point& endPadding = {},
+                      Layout layout = Layout::NONE,
+                      int elementSpacing = 0);
+
+  EventTargetState element(std::string_view id,
+                           SDL_Rect r,
+                           RequestEvent req = RequestEvent::INPUT);
+
+  EventTargetState element(SDL_Rect r, RequestEvent req = RequestEvent::GRAB)
+  {
+    return element({}, r, req);
+  }
+
+  const ContainerState* getTop() const
+  {
+    if (containers.empty())
+      return nullptr;
+    return &containers.back();
+  }
 
   struct FrameGuard
   {
     void operator()(State* state) { state->endFrame(); }
   };
 
+  struct ContainerGuard
+  {
+    void operator()(State* state) { state->popContainer(); }
+  };
+
   friend class Frame;
+  friend class Container;
+  friend class Target;
 
   SDL_Renderer* renderer;
   DisplayList dList;
@@ -176,6 +210,7 @@ private:
 
   Font font;
   bool inFrame = false;
+  std::vector<ContainerState> containers;
 };
 
 inline void

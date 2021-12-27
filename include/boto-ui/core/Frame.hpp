@@ -6,9 +6,6 @@
 
 namespace boto {
 
-class ContainerState;
-class Container;
-
 /**
  * @brief Represents a single frame on the app
  *
@@ -34,64 +31,18 @@ public:
     }
   }
 
-  const DisplayList& displayList() const { return get()->displayList(); }
-  DisplayList& displayList() { return get()->displayList(); }
-
-  Container container(std::string_view id,
-                      SDL_Rect r,
-                      const SDL_Point& offset = {},
-                      const SDL_Point& endPadding = {},
-                      Layout layout = Layout::NONE,
-                      int elementSpacing = 0);
-
-  EventTargetState element(std::string_view id,
-                           SDL_Rect r,
-                           RequestEvent req = RequestEvent::INPUT);
-
-  EventTargetState element(SDL_Rect r, RequestEvent req = RequestEvent::GRAB)
-  {
-    return element({}, r, req);
-  };
-
   /**
    * @brief Returns the last text input
    *
    * You probably will want to check for focus before calling this
    * @return std::string_view
    */
-  std::string_view input() const { return get()->input(); };
-
-  SDL_Keysym lastKeyDown() const { return get()->lastKeyDown(); }
-
-  SDL_Point pointerPosition() const { return get()->pointerPosition(); }
-
-  const Font& getFont() const { return get()->getFont(); }
-
-  const ContainerState* getTop() const
-  {
-    if (containers.empty())
-      return nullptr;
-    return &containers.back();
-  }
-
-  int ticks() const { return get()->ticks(); }
 
 private:
   Frame(State* state)
-    : CookieBase(state)
-  {}
-
-  void popContainer();
-
-  struct ContainerPopper
-  {
-    void operator()(Frame* frame) { frame->popContainer(); }
-  };
+    : CookieBase(state){};
 
   friend class State;
-  friend class Container;
-
-  std::vector<ContainerState> containers;
 };
 
 /**
