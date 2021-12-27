@@ -3,6 +3,7 @@
 
 #include <string_view>
 #include "ContainerState.hpp"
+#include "Frame.hpp"
 #include "Layout.hpp"
 #include "State.hpp"
 
@@ -26,34 +27,36 @@ public:
 
   const ContainerState& state() const { return get()->containers[index]; }
 
-  Container container(std::string_view id,
-                      const SDL_Rect& r,
-                      const SDL_Point& offset = {},
-                      const SDL_Point& endPadding = {},
-                      Layout layout = Layout::NONE,
-                      int elementSpacing = 0)
+  Container(Frame& frame,
+            std::string_view id,
+            const SDL_Rect& r,
+            const SDL_Point& offset = {},
+            const SDL_Point& endPadding = {},
+            Layout layout = Layout::NONE,
+            int elementSpacing = 0)
+    : Container(
+        frame.get()
+          ->container(id, r, offset, endPadding, layout, elementSpacing))
   {
-    auto s = get();
-    SDL_assert(index == s->containers.size() - 1);
-    return s->container(id, r, offset, endPadding, layout, elementSpacing);
+    SDL_assert(cookie.get()->containers.size() - 1 == index);
   }
 
-  EventTargetState element(std::string_view id,
-                           const SDL_Rect& r,
-                           RequestEvent req = RequestEvent::GRAB)
+  Container(Container& c,
+            std::string_view id,
+            const SDL_Rect& r,
+            const SDL_Point& offset = {},
+            const SDL_Point& endPadding = {},
+            Layout layout = Layout::NONE,
+            int elementSpacing = 0)
+    : Container(
+        c.get()->container(id, r, offset, endPadding, layout, elementSpacing))
   {
-    auto s = get();
-    SDL_assert(index == s->containers.size() - 1);
-    return s->element(id, r, req);
+    SDL_assert(cookie.get()->containers.size() - 1 == index);
   }
 
-  EventTargetState element(const SDL_Rect& r,
-                           RequestEvent req = RequestEvent::GRAB)
-  {
-    auto s = get();
-    SDL_assert(index == s->containers.size() - 1);
-    return s->element(r, req);
-  }
+  void end() { cookie.end(); }
+
+  operator bool() const { return bool(cookie); }
 
 private:
   CookieBase<State, State::ContainerGuard> cookie;

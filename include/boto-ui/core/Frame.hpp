@@ -36,6 +36,8 @@ public:
 
   void end() { cookie.end(); }
 
+  operator bool() const { return bool(cookie); }
+
 private:
   CookieBase<State, State::FrameGuard> cookie;
 };
