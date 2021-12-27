@@ -4,7 +4,6 @@
 #include <string_view>
 #include "Group.hpp"
 #include "InputBox.hpp"
-#include "InputFieldStyle.hpp"
 #include "Label.hpp"
 
 namespace boto {

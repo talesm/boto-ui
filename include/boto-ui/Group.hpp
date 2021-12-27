@@ -3,7 +3,6 @@
 #include <string_view>
 #include <SDL_rect.h>
 #include "EdgeSize.hpp"
-#include "GroupStyle.hpp"
 #include "Target.hpp"
 #include "core/Container.hpp"
 #include "core/State.hpp"

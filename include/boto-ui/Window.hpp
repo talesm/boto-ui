@@ -4,7 +4,6 @@
 #include "Control.hpp"
 #include "Group.hpp"
 #include "Panel.hpp"
-#include "WindowStyle.hpp"
 #include "Wrapper.hpp"
 
 namespace boto {

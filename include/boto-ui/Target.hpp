@@ -3,7 +3,6 @@
 
 #include <string_view>
 #include <SDL.h>
-#include "TargetStyle.hpp"
 #include "core/EventTargetState.hpp"
 #include "core/Frame.hpp"
 

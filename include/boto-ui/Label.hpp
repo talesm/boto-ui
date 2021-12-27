@@ -4,7 +4,6 @@
 #include <string_view>
 #include "Control.hpp"
 #include "EdgeSize.hpp"
-#include "LabelStyle.hpp"
 
 namespace boto {
 

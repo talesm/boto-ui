@@ -2,7 +2,6 @@
 #define BOTO_BUTTON_HPP
 
 #include <string_view>
-#include "ButtonStyle.hpp"
 #include "Control.hpp"
 
 namespace boto {

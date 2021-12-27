@@ -2,6 +2,8 @@
 #define BOTO_CONTROLSTYLE_HPP_
 
 #include <SDL.h>
+#include "ElementStyle.hpp"
+#include "TextStyle.hpp"
 #include "Theme.hpp"
 
 namespace boto {

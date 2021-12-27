@@ -6,7 +6,6 @@
 #include <SDL.h>
 #include "Button.hpp"
 #include "Group.hpp"
-#include "SliderBoxStyle.hpp"
 #include "Target.hpp"
 
 namespace boto {

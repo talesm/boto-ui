@@ -2,7 +2,6 @@
 
 #include <string_view>
 #include "Panel.hpp"
-#include "ScrollableStyle.hpp"
 #include "SliderBox.hpp"
 #include "Wrapper.hpp"
 

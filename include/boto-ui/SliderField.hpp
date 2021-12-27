@@ -7,7 +7,6 @@
 #include "InputBox.hpp"
 #include "InputField.hpp"
 #include "SliderBox.hpp"
-#include "SliderFieldStyle.hpp"
 #include "Target.hpp"
 
 namespace boto {
