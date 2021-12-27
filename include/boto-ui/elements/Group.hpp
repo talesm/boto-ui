@@ -3,9 +3,9 @@
 #include <string_view>
 #include <SDL_rect.h>
 #include "EdgeSize.hpp"
-#include "Target.hpp"
 #include "core/Container.hpp"
 #include "core/State.hpp"
+#include "core/Target.hpp"
 
 namespace boto {
 

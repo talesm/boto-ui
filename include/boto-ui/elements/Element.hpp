@@ -1,8 +1,8 @@
 #ifndef BOTO_ELEMENT_HPP_
 #define BOTO_ELEMENT_HPP_
 
-#include "Target.hpp"
 #include "Theme.hpp"
+#include "core/Target.hpp"
 #include "presenters/ElementPresenter.hpp"
 
 namespace boto {

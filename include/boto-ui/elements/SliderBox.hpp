@@ -6,7 +6,7 @@
 #include <SDL.h>
 #include "Button.hpp"
 #include "Group.hpp"
-#include "Target.hpp"
+#include "core/Target.hpp"
 
 namespace boto {
 
