@@ -24,14 +24,14 @@ sliderBoxBarCaret(Target target,
     return {{0, 0}};
   }
   if (action == MouseAction::GRAB) {
-    auto pos = target.lastMousePos();
+    auto pos = target.pointerPosition();
     mouseOffset = {pos.x - r.x, pos.y - r.y};
     return {{0, 0}};
   }
   if (action != MouseAction::DRAG) {
     return {};
   }
-  auto pos = target.lastMousePos();
+  auto pos = target.pointerPosition();
   SDL_Point delta{pos.x - r.x - mouseOffset.x, pos.y - r.y - mouseOffset.y};
   if (delta.x > 0 ? pos.x < r.x : pos.x > r.x) {
     delta.x = 0;
@@ -95,7 +95,7 @@ sliderBoxBar(Target target,
   if (action != MouseAction::ACTION) {
     return false;
   }
-  SDL_Point mPos = target.lastMousePos();
+  SDL_Point mPos = target.pointerPosition();
   int delta = std::max(distance / 8, 1);
   bool downward = orientation == HORIZONTAL ? mPos.x - r.x < cursorRect.x
                                             : mPos.y - r.y < cursorRect.y;

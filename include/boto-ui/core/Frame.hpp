@@ -59,11 +59,11 @@ public:
    * You probably will want to check for focus before calling this
    * @return std::string_view
    */
-  std::string_view input() const { return get()->lastText(); };
+  std::string_view input() const { return get()->input(); };
 
   SDL_Keysym lastKeyDown() const { return get()->lastKeyDown(); }
 
-  SDL_Point pointerPosition() const { return get()->lastMousePos(); }
+  SDL_Point pointerPosition() const { return get()->pointerPosition(); }
 
   const Font& getFont() const { return get()->getFont(); }
 
@@ -74,7 +74,7 @@ public:
     return &containers.back();
   }
 
-  int getTicks() const { return get()->ticks(); }
+  int ticks() const { return get()->ticks(); }
 
 private:
   Frame(State* state)

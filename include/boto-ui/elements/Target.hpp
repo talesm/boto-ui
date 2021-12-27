@@ -112,7 +112,7 @@ public:
    *
    * @return std::string_view
    */
-  std::string_view lastText() const { return frame->input(); }
+  std::string_view input() const { return frame->input(); }
   /**
    * @brief Get the last key down
    *
@@ -128,7 +128,7 @@ public:
    *
    * @return SDL_Point the last mouse pos
    */
-  SDL_Point lastMousePos() const
+  SDL_Point pointerPosition() const
   {
     auto pos = frame->pointerPosition();
     pos.x -= lastElementState.rect.x;
@@ -203,7 +203,7 @@ public:
   /// Get Font
   const Font& getFont() const { return frame->getFont(); }
 
-  int getTicks() const { return frame->getTicks(); }
+  int ticks() const { return frame->ticks(); }
 
 private:
   Frame* frame;

@@ -119,7 +119,7 @@ public:
    *
    * @return std::string_view
    */
-  std::string_view lastText() const { return dispatcher.input(); }
+  std::string_view input() const { return dispatcher.input(); }
 
   /**
    * @brief Get the last key
@@ -136,7 +136,7 @@ public:
    *
    * @return SDL_Point the last mouse pos
    */
-  SDL_Point lastMousePos() const { return dispatcher.pointerPosition(); }
+  SDL_Point pointerPosition() const { return dispatcher.pointerPosition(); }
 
   /**
    * @brief If true, the state wants the mouse events

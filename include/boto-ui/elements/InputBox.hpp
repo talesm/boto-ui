@@ -98,14 +98,14 @@ textBoxBase(Target target,
     return {};
   }
 
-  if ((target.getTicks() / 512) % 2) {
+  if ((target.ticks() / 512) % 2) {
     // Show cursor
     element(g,
             {int(cursorPos) * 8 - deltaX, 0, 1, clientSz.y},
             currentStyle.text.color);
   }
   if (state.event == Event::INPUT) {
-    auto insert = target.lastText();
+    auto insert = target.input();
     auto index = cursorPos;
     cursorPos += insert.size();
     maxPos += insert.size();
