@@ -19,12 +19,6 @@ class Container;
 class Frame;
 class Target;
 
-template<>
-struct StyleTypeT<BOTO_THEME, Font>
-{
-  using type = Font;
-};
-
 /**
  * @brief The mouse action and status for a element in a frame
  *

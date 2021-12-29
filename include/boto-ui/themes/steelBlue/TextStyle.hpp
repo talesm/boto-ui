@@ -30,15 +30,6 @@ struct TextStyle
   }
 };
 
-constexpr TextStyle
-adjustDefaultFont(TextStyle style, const Font& font)
-{
-  if (!style.font) {
-    style.font = font;
-  }
-  return style;
-}
-
 inline SDL_Point
 presentCharacter(DisplayList& dList,
                  char ch,
@@ -83,7 +74,7 @@ struct StyleFor<SteelBlue, Text>
 {
   static TextStyle get(Theme& theme)
   {
-    return {{nullptr, 8, 8, 16}, {45, 72, 106, 255}, 0};
+    return {theme.of<Font>(), {45, 72, 106, 255}, 0};
   }
 };
 } // namespace boto

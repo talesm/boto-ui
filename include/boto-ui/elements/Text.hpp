@@ -18,11 +18,10 @@ namespace boto {
 inline void
 character(Target target, char ch, const SDL_Point& p, const TextStyle& style)
 {
-  auto st = adjustDefaultFont(style, target.getFont());
-  auto sz = measure(ch, st.font, 0);
+  auto sz = measure(ch, style.font, 0);
   auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
   presentCharacter(
-    target.getDisplayList(), ch, {el.rect.x, el.rect.y}, Status::NONE, st);
+    target.getDisplayList(), ch, {el.rect.x, el.rect.y}, Status::NONE, style);
 }
 inline void
 character(Target target, char ch, const SDL_Point& p)
@@ -45,11 +44,10 @@ text(Target target,
      const SDL_Point& p,
      const TextStyle& style)
 {
-  auto st = adjustDefaultFont(style, target.getFont());
-  auto sz = measure(str, st.font, 0);
+  auto sz = measure(str, style.font, 0);
   auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
   presentText(
-    target.getDisplayList(), str, {el.rect.x, el.rect.y}, Status::NONE, st);
+    target.getDisplayList(), str, {el.rect.x, el.rect.y}, Status::NONE, style);
 }
 inline void
 text(Target target, std::string_view str, const SDL_Point& p)

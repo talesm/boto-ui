@@ -7,12 +7,6 @@
 
 namespace boto {
 
-template<class STYLE, class FONT>
-STYLE
-adjustDefaultFont(STYLE style, FONT f)
-{
-  return style;
-}
 // TODO generic default character & default text()
 } // namespace boto
 

@@ -56,7 +56,7 @@ control(Target target,
               str,
               {offset.left + el.rect.x, offset.top + el.rect.y},
               el.status,
-              adjustDefaultFont(style.text, target.getFont()));
+              style.text);
   presentElement(dList, el.rect, el.status, style);
   return el;
 }

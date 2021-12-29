@@ -3,6 +3,7 @@
 
 #include <string_view>
 #include <SDL.h>
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -41,6 +42,12 @@ loadDefaultFont(SDL_Renderer* renderer)
   SDL_FreeSurface(surface);
   return {texture, 8, 8, 16};
 }
+
+template<class THEME>
+struct StyleTypeT<THEME, Font>
+{
+  using type = Font;
+};
 
 } // namespace boto
 
