@@ -14,9 +14,9 @@ The goal is review and reorganize the code and make it more consistent with its 
 - [x] Move event related stuff to new core class EventDispatcher;
 - [ ] ~~When frame is created it sets a thread_local where the current target resides~~
 - [x] Create Theme class, that stores all styles
-- [ ] Make Theme accessible through State and Target:
-  - [ ] Add a bridge to old format (themeFor())
-  - [ ] Replace all themeFor to (state|target).styleFor() calls;
+- [x] Make Theme accessible through State and Target:
+  - [x] Add a bridge to old format (themeFor())
+  - [x] Replace all themeFor to (state|target).styleFor() calls;
 - [ ] Move nextPos, nextSize and etc to the state
   - [ ] Check for Clear on element push or pop.
   - [ ] Make all widgets to check for these. (Or at least the hello example)

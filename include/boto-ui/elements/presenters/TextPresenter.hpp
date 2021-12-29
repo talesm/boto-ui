@@ -3,7 +3,7 @@
 
 #include <string_view>
 #include "Font.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 

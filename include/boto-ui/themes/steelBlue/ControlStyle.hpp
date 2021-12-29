@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include "ElementStyle.hpp"
 #include "TextStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -62,21 +62,18 @@ struct ControlStyle
 
 struct Control;
 
-namespace style {
-
-template<class Theme>
-struct FromTheme<Control, Theme>
+template<>
+struct StyleFor<SteelBlue, Control>
 {
-  constexpr static ControlStyle get()
+  static ControlStyle get(Theme& theme)
   {
     return {
-      themeFor<Element, Theme>(),
+      theme.of<Element>(),
       EdgeSize::all(1),
-      themeFor<Text, Theme>(),
+      theme.of<Text>(),
     };
   }
 };
-} // namespace style
 
 } // namespace boto
 

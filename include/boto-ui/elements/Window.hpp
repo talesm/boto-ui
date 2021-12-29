@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string_view>
-#include "Control.hpp"
-#include "Group.hpp"
 #include "Panel.hpp"
 #include "Wrapper.hpp"
 

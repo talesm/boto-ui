@@ -1,7 +1,7 @@
 #pragma once
 #include "PanelStyle.hpp"
 #include "SliderBoxStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -110,36 +110,33 @@ struct ScrollablePanelStyle
 struct Scrollable;
 struct ScrollablePanel;
 
-namespace style {
-
-template<class Theme>
-struct FromTheme<Scrollable, Theme>
+template<>
+struct StyleFor<SteelBlue, Scrollable>
 {
-  constexpr static ScrollableStyle get()
+  static ScrollableStyle get(Theme& theme)
   {
     return {
-      false,                        // Fix horizontal
-      false,                        // Fix vertical
-      themeFor<SliderBox, Theme>(), // scrollable
-      themeFor<Group, Theme>(),     // group
+      false,                 // Fix horizontal
+      false,                 // Fix vertical
+      theme.of<SliderBox>(), // scrollable
+      theme.of<Group>(),     // group
     };
   }
 };
 
-template<class Theme>
-struct FromTheme<ScrollablePanel, Theme>
+template<>
+struct StyleFor<SteelBlue, ScrollablePanel>
 {
-  constexpr static ScrollablePanelStyle get()
+  static ScrollablePanelStyle get(Theme& theme)
   {
     return {
-      false,                        // Fix horizontal
-      false,                        // Fix vertical
-      themeFor<SliderBox, Theme>(), // scrollable
-      themeFor<Panel, Theme>().withPadding({0, 0, 255, 255}),
+      false,                 // Fix horizontal
+      false,                 // Fix vertical
+      theme.of<SliderBox>(), // scrollable
+      theme.of<Panel>().withPadding({0, 0, 255, 255}),
     };
   }
 };
-} // namespace style
 
 constexpr SDL_Point
 evalScrollbarSpace(const SliderBoxStyle& style,

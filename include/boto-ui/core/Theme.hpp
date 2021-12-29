@@ -47,7 +47,7 @@ public:
   using Tag = T*;
 
   template<class T>
-  const auto& of()
+  const StyleType<THEME, T>& of()
   {
     auto it = styles.find(tag<T>());
     if (it == styles.end()) {

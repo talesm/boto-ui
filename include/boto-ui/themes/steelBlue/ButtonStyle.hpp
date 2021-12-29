@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 #include "ControlStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -31,14 +31,12 @@ decideButtonColors(const ButtonStyle& style, bool pushed, bool grabbing)
   }
 }
 
-namespace style {
-
-template<class Theme>
-struct FromTheme<ButtonBase, Theme>
+template<>
+struct StyleFor<SteelBlue, ButtonBase>
 {
-  constexpr static ButtonStyle get()
+  static ButtonStyle get(Theme& theme)
   {
-    auto buttonBox = themeFor<Control, Theme>()
+    auto buttonBox = theme.of<Control>()
                        .withBorder(EdgeSize::all(2))
                        .withBackgroundColor({176, 195, 222, 255})
                        .withBorderColor({
@@ -58,16 +56,15 @@ struct FromTheme<ButtonBase, Theme>
   }
 };
 
-template<class Theme>
-struct FromTheme<Button, Theme> : FromTheme<ButtonBase, Theme>
+template<>
+struct StyleFor<SteelBlue, Button> : StyleFor<SteelBlue, ButtonBase>
 {};
-template<class Theme>
-struct FromTheme<ToggleButton, Theme> : FromTheme<ButtonBase, Theme>
+template<>
+struct StyleFor<SteelBlue, ToggleButton> : StyleFor<SteelBlue, ButtonBase>
 {};
-template<class Theme>
-struct FromTheme<ChoiceButton, Theme> : FromTheme<ButtonBase, Theme>
+template<>
+struct StyleFor<SteelBlue, ChoiceButton> : StyleFor<SteelBlue, ButtonBase>
 {};
-} // namespace style
 } // namespace boto
 
 #endif // BOTO_BUTTONSTYLE_HPP

@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 #include "ControlStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -21,36 +21,33 @@ struct IntBox;
 struct DoubleBox;
 struct FloatBox;
 
-namespace style {
-
-template<class Theme>
-struct FromTheme<InputBoxBase, Theme>
+template<>
+struct StyleFor<SteelBlue, InputBoxBase>
 {
-  constexpr static InputBoxStyle get()
+  static InputBoxStyle get(Theme& theme)
   {
     return {
-      themeFor<Control, Theme>().withBackgroundColor({240, 240, 240, 255}),
-      themeFor<Control, Theme>().withBackgroundColor({255, 255, 255, 255}),
+      theme.of<Control>().withBackgroundColor({240, 240, 240, 255}),
+      theme.of<Control>().withBackgroundColor({255, 255, 255, 255}),
     };
   }
 };
 
-template<class Theme>
-struct FromTheme<TextBox, Theme> : FromTheme<InputBoxBase, Theme>
+template<>
+struct StyleFor<SteelBlue, TextBox> : StyleFor<SteelBlue, InputBoxBase>
 {};
-template<class Theme>
-struct FromTheme<NumberBox, Theme> : FromTheme<InputBoxBase, Theme>
+template<>
+struct StyleFor<SteelBlue, NumberBox> : StyleFor<SteelBlue, InputBoxBase>
 {};
-template<class Theme>
-struct FromTheme<IntBox, Theme> : FromTheme<NumberBox, Theme>
+template<>
+struct StyleFor<SteelBlue, IntBox> : StyleFor<SteelBlue, NumberBox>
 {};
-template<class Theme>
-struct FromTheme<DoubleBox, Theme> : FromTheme<NumberBox, Theme>
+template<>
+struct StyleFor<SteelBlue, DoubleBox> : StyleFor<SteelBlue, NumberBox>
 {};
-template<class Theme>
-struct FromTheme<FloatBox, Theme> : FromTheme<NumberBox, Theme>
+template<>
+struct StyleFor<SteelBlue, FloatBox> : StyleFor<SteelBlue, NumberBox>
 {};
-}
 } // namespace boto
 
 #endif // BOTO_INPUTBOXSTYLE_HPP_

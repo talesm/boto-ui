@@ -3,7 +3,7 @@
 
 #include "EdgeSize.hpp"
 #include "GroupStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -58,22 +58,19 @@ struct PanelStyle
 
 struct Panel;
 
-namespace style {
 /// Default panel style
-template<class Theme>
-struct FromTheme<Panel, Theme>
+template<>
+struct StyleFor<SteelBlue, Panel>
 {
-  constexpr static PanelStyle get()
+  static PanelStyle get(Theme& theme)
   {
-    auto boxStyle = themeFor<Element, Theme>();
     return {
-      boxStyle,
+      theme.of<Element>(),
       EdgeSize::all(2),
-      themeFor<Group, Theme>(),
+      theme.of<Group>(),
     };
   }
 };
-}
 
 } // namespace boto
 

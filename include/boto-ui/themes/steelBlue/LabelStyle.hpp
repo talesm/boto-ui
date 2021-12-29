@@ -2,25 +2,23 @@
 #define BOTO_LABELSTYLE_HPP_
 
 #include "ControlStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
 struct Label;
 
-namespace style {
-template<class Theme>
-struct FromTheme<Label, Theme>
+template<>
+struct StyleFor<SteelBlue, Label>
 {
-  constexpr static ControlStyle get()
+  static ControlStyle get(Theme& theme)
   {
-    return themeFor<Control, Theme>()
+    return theme.of<Control>()
       .withBorderSize(EdgeSize::all(0))
       .withPadding(EdgeSize::all(2))
       .withBackgroundColor({});
   }
 };
-} // namespace style
 
 } // namespace boto
 

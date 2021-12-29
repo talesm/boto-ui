@@ -3,7 +3,7 @@
 
 #include <string_view>
 #include "EdgeSize.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 #include "elements/Element.hpp"
 #include "elements/Text.hpp"
 

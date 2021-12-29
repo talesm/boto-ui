@@ -2,7 +2,6 @@
 #define BOTO_ELEMENTS_TEXT_HPP_
 
 #include <SDL.h>
-#include "Theme.hpp"
 #include "presenters/TextPresenter.hpp"
 
 namespace boto {

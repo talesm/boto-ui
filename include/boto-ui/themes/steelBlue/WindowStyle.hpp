@@ -1,10 +1,9 @@
 #pragma once
 
-#include "ButtonStyle.hpp"
 #include "ControlStyle.hpp"
 #include "PanelStyle.hpp"
 #include "ScrollableStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -63,26 +62,20 @@ struct WindowStyle
 
 struct Window;
 
-namespace style {
-
-/// Default panel style
-template<class Theme>
-struct FromTheme<Window, Theme>
+template<>
+struct StyleFor<SteelBlue, Window>
 {
-  constexpr static WindowStyle get()
+  static WindowStyle get(Theme& theme)
   {
-    auto labelStyle = themeFor<Label, Theme>();
-    auto buttonStyle = themeFor<Button, Theme>();
+    auto labelStyle = theme.of<Label>();
+    auto buttonStyle = theme.of<Button>();
     return {
-      themeFor<Panel, Theme>(),
-      themeFor<Label, Theme>()
-        .withBorder(EdgeSize::all(1))
+      theme.of<Panel>(),
+      labelStyle.withBorder(EdgeSize::all(1))
         .withBorderColor(BorderColorStyle::all(labelStyle.text.color))
         .withBackgroundColor(buttonStyle.normal.decoration.paint.background),
     };
   }
 };
-
-} // namespace style
 
 } // namespace boto

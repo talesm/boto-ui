@@ -3,9 +3,10 @@
 
 #include <SDL.h>
 #include "EdgeSize.hpp"
-#include "Theme.hpp"
 #include "core/DisplayList.hpp"
 #include "core/Status.hpp"
+#include "core/Theme.hpp"
+#include "elements/presenters/ElementPresenter.hpp"
 
 namespace boto {
 
@@ -105,12 +106,11 @@ presentElement(DisplayList& dList,
 
 struct Element;
 
-namespace style {
 /// Default element style
 template<>
-struct FromTheme<Element, SteelBlue>
+struct StyleFor<SteelBlue, Element>
 {
-  constexpr static ElementStyle get()
+  constexpr static ElementStyle get(Theme&)
   {
     return {
       EdgeSize::all(1),
@@ -121,7 +121,6 @@ struct FromTheme<Element, SteelBlue>
     };
   }
 };
-} // namespace style
 } // namespace boto
 
 #endif // BOTO_THEMES_STEELBLUE_ELEMENTSTYLE_HPP_

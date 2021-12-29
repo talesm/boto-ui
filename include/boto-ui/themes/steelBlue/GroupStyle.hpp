@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Theme.hpp"
 #include "core/Layout.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -22,12 +22,11 @@ struct GroupStyle
 
 class Group;
 
-namespace style {
 /// Default panel style
-template<class Theme>
-struct FromTheme<Group, Theme>
+template<>
+struct StyleFor<SteelBlue, Group>
 {
-  constexpr static GroupStyle get()
+  constexpr static GroupStyle get(Theme&)
   {
     return {
       2,                // Element spacing
@@ -35,6 +34,5 @@ struct FromTheme<Group, Theme>
     };
   }
 };
-} // namespace style
 
 } // namespace boto

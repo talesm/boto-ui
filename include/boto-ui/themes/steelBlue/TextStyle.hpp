@@ -2,8 +2,8 @@
 #define BOTO_THEMES_STEELBLUE_TEXTSTYLE_HPP_
 
 #include "Font.hpp"
-#include "Theme.hpp"
 #include "core/DisplayList.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -77,18 +77,15 @@ presentText(DisplayList& dList,
 
 struct Text;
 
-namespace style {
-
 /// Default text style
-template<class Theme>
-struct FromTheme<Text, Theme>
+template<>
+struct StyleFor<SteelBlue, Text>
 {
-  constexpr static TextStyle get()
+  static TextStyle get(Theme& theme)
   {
     return {{nullptr, 8, 8, 16}, {45, 72, 106, 255}, 0};
   }
 };
-}
 } // namespace boto
 
 #endif // BOTO_TEXTSTYLE_HPP_

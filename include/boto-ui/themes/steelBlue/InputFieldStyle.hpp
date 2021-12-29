@@ -3,7 +3,7 @@
 
 #include "InputBoxStyle.hpp"
 #include "LabelStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -18,36 +18,30 @@ struct IntField;
 struct DoubleField;
 struct FloatField;
 
-namespace style {
-
-template<class Box, class Theme>
+template<class Box>
 struct FieldFromThemeBase
 {
-  constexpr static InputFieldStyle get()
+  static InputFieldStyle get(Theme& theme)
   {
-    return {
-      themeFor<Box, Theme>(),
-      themeFor<Label, Theme>(),
-    };
+    return {theme.of<Box>(), theme.of<Label>()};
   }
 };
 
-template<class Theme>
-struct FromTheme<TextField, Theme> : FieldFromThemeBase<TextBox, Theme>
+template<>
+struct StyleFor<SteelBlue, TextField> : FieldFromThemeBase<TextBox>
 {};
 
-template<class Theme>
-struct FromTheme<IntField, Theme> : FieldFromThemeBase<IntBox, Theme>
+template<>
+struct StyleFor<SteelBlue, IntField> : FieldFromThemeBase<IntBox>
 {};
 
-template<class Theme>
-struct FromTheme<DoubleField, Theme> : FieldFromThemeBase<DoubleBox, Theme>
+template<>
+struct StyleFor<SteelBlue, DoubleField> : FieldFromThemeBase<DoubleBox>
 {};
 
-template<class Theme>
-struct FromTheme<FloatField, Theme> : FieldFromThemeBase<FloatBox, Theme>
+template<>
+struct StyleFor<SteelBlue, FloatField> : FieldFromThemeBase<FloatBox>
 {};
-} // namespace style
 
 } // namespace boto
 

@@ -1,6 +1,8 @@
 #ifndef BOTO_HPP_
 #define BOTO_HPP_
 
+#include "themes/steelBlue/steelBlue.hpp"
+
 #include "Font.hpp"
 #include "core/Frame.hpp"
 #include "core/State.hpp"

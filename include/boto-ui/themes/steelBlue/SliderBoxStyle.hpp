@@ -5,7 +5,7 @@
 #include "ButtonStyle.hpp"
 #include "InputBoxStyle.hpp"
 #include "PanelStyle.hpp"
-#include "Theme.hpp"
+#include "core/Theme.hpp"
 
 namespace boto {
 
@@ -26,17 +26,15 @@ struct SliderBoxStyle
 struct SliderBoxBar;
 struct SliderBox;
 
-namespace style {
-
-template<class Theme>
-struct FromTheme<SliderBoxBar, Theme>
+template<>
+struct StyleFor<SteelBlue, SliderBoxBar>
 {
-  constexpr static SliderBoxBarStyle get()
+  static SliderBoxBarStyle get(Theme& theme)
   {
-    auto buttonStyle = themeFor<Button, Theme>().normal.decoration;
+    auto buttonStyle = theme.of<Button>().normal.decoration;
     return {
-      themeFor<Panel, Theme>().withPadding(EdgeSize::all(0)),
-      themeFor<Element, Theme>()
+      theme.of<Panel>().withPadding(EdgeSize::all(0)),
+      theme.of<Element>()
         .withBackgroundColor(buttonStyle.paint.background)
         .withBorderSize(buttonStyle.border)
         .withBorderColor(buttonStyle.paint.border),
@@ -44,15 +42,14 @@ struct FromTheme<SliderBoxBar, Theme>
     };
   }
 };
-template<class Theme>
-struct FromTheme<SliderBox, Theme>
+template<>
+struct StyleFor<SteelBlue, SliderBox>
 {
-  constexpr static SliderBoxStyle get()
+  static SliderBoxStyle get(Theme& theme)
   {
-    return {themeFor<Button, Theme>(), themeFor<SliderBoxBar, Theme>()};
+    return {theme.of<Button>(), theme.of<SliderBoxBar>()};
   }
 };
-} // namespace style
 
 } // namespace boto
 
