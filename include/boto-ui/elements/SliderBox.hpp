@@ -15,7 +15,7 @@ inline std::optional<SDL_Point>
 sliderBoxBarCaret(Target target,
                   std::string_view id,
                   const SDL_Rect& r,
-                  const ElementStyle& style = themeFor<Element>())
+                  const ElementStyle& style)
 {
   element(target, r, style);
   static SDL_Point mouseOffset;
@@ -41,6 +41,11 @@ sliderBoxBarCaret(Target target,
   }
   return delta;
 }
+inline std::optional<SDL_Point>
+sliderBoxBarCaret(Target target, std::string_view id, const SDL_Rect& r)
+{
+  return sliderBoxBarCaret(target, id, r, target.styleFor<Element>());
+}
 
 /// SliderBoxBar's orientation
 enum Orientation : bool
@@ -58,10 +63,10 @@ sliderBoxBar(Target target,
              int max,
              const SDL_Rect& r,
              Orientation orientation,
-             const SliderBoxBarStyle& style = themeFor<SliderBoxBar>())
+             const SliderBoxBarStyle& style)
 {
   SDL_assert(value != nullptr);
-  auto g = panel(target, id, r, Layout::NONE, style.panel);
+  auto g = panel(target, id, r, style.panel.withLayout(Layout::NONE));
 
   // TODO handle min>=max
   int distance = max - min;
@@ -120,6 +125,24 @@ sliderBoxBar(Target target,
   }
   return true;
 }
+inline bool
+sliderBoxBar(Target target,
+             std::string_view id,
+             int* value,
+             int min,
+             int max,
+             const SDL_Rect& r,
+             Orientation orientation)
+{
+  return sliderBoxBar(target,
+                      id,
+                      value,
+                      min,
+                      max,
+                      r,
+                      orientation,
+                      target.styleFor<SliderBoxBar>());
+}
 
 /// An horizontal slider box
 /// @ingroup elements
@@ -129,8 +152,8 @@ sliderBox(Target target,
           int* value,
           int min,
           int max,
-          SDL_Rect r = {0},
-          const SliderBoxStyle& style = themeFor<SliderBox>())
+          SDL_Rect r,
+          const SliderBoxStyle& style)
 {
   auto& buttonStyle = style.buttons.normal;
   if (r.w == 0) {
@@ -176,6 +199,18 @@ sliderBox(Target target,
   return action;
 }
 
+inline bool
+sliderBox(Target target,
+          std::string_view id,
+          int* value,
+          int min,
+          int max,
+          const SDL_Rect& r = {0})
+{
+  return sliderBox(
+    target, id, value, min, max, r, target.styleFor<SliderBox>());
+}
+
 /// A vertical slider box
 /// @ingroup elements
 inline bool
@@ -184,8 +219,8 @@ sliderBoxV(Target target,
            int* value,
            int min,
            int max,
-           SDL_Rect r = {0},
-           const SliderBoxStyle& style = themeFor<SliderBox>())
+           SDL_Rect r,
+           const SliderBoxStyle& style)
 {
   auto& buttonStyle = style.buttons.normal;
   if (r.h == 0) {
@@ -227,6 +262,17 @@ sliderBoxV(Target target,
                  VERTICAL,
                  style.bar);
   return action;
+}
+inline bool
+sliderBoxV(Target target,
+           std::string_view id,
+           int* value,
+           int min,
+           int max,
+           const SDL_Rect& r = {0})
+{
+  return sliderBoxV(
+    target, id, value, min, max, r, target.styleFor<SliderBox>());
 }
 
 } // namespace boto

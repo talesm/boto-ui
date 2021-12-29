@@ -116,9 +116,9 @@ inline WindowImpl
 window(Target target,
        std::string_view id,
        std::string_view title,
-       SDL_Rect r = {0},
-       const WindowStyle& style = themeFor<Window>())
+       SDL_Rect r = {0})
 {
+  const WindowStyle& style = target.styleFor<Window>();
   r = makeWindowRect(r, target);
   PanelImpl superElement =
     panel(target, id, r, style.panel.withLayout(Layout::VERTICAL));
@@ -133,37 +133,9 @@ window(Target target,
 /// @copydoc window()
 /// @ingroup groups
 inline WindowImpl
-window(Target target,
-       std::string_view id,
-       const SDL_Rect& r = {0},
-       const WindowStyle& style = themeFor<Window>())
+window(Target target, std::string_view id, const SDL_Rect& r = {0})
 {
-  return window(target, id, id, r, style);
-}
-
-/// @copydoc window()
-/// @ingroup groups
-inline WindowImpl
-window(Target target,
-       std::string_view id,
-       std::string_view title,
-       const SDL_Rect& r,
-       Layout layout,
-       const WindowStyle& style = themeFor<Window>())
-{
-  return window(target, id, title, r, style.withLayout(layout));
-}
-
-/// @copydoc window()
-/// @ingroup groups
-inline WindowImpl
-window(Target target,
-       std::string_view id,
-       const SDL_Rect& r,
-       Layout layout,
-       const WindowStyle& style = themeFor<Window>())
-{
-  return window(target, id, id, r, layout);
+  return window(target, id, id, r);
 }
 
 using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
@@ -191,7 +163,7 @@ using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
 //   std::string_view title,
 //   SDL_Point* scrollOffset,
 //   SDL_Rect r = {0},
-//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+//   const ScrollableWindowStyle& style = target.styleOf<ScrollableWindow>())
 // {
 //   r = makeWindowRect(r, target);
 //   WindowImpl superElement = window(target, id, r, style);
@@ -212,7 +184,7 @@ using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
 //   std::string_view id,
 //   SDL_Point* scrollOffset,
 //   const SDL_Rect& r = {0},
-//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+//   const ScrollableWindowStyle& style = target.styleOf<ScrollableWindow>())
 // {
 //   return scrollableWindow(target, id, id, scrollOffset, r, style);
 // }
@@ -227,7 +199,7 @@ using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
 //   SDL_Point* scrollOffset,
 //   const SDL_Rect& r,
 //   Layout layout,
-//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+//   const ScrollableWindowStyle& style = target.styleOf<ScrollableWindow>())
 // {
 //   return scrollableWindow(
 //     target, id, title, scrollOffset, r, style.withLayout(layout));
@@ -242,7 +214,7 @@ using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
 //   SDL_Point* scrollOffset,
 //   const SDL_Rect& r,
 //   Layout layout,
-//   const ScrollableWindowStyle& style = themeFor<ScrollableWindow>())
+//   const ScrollableWindowStyle& style = target.styleOf<ScrollableWindow>())
 // {
 //   return scrollableWindow(target, id, id, scrollOffset, r, layout);
 // }

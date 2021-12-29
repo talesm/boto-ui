@@ -33,17 +33,17 @@ sliderField(Target target,
             int* value,
             int min,
             int max,
-            const SDL_Point& p = {0},
-            const SliderFieldStyle& style = themeFor<SliderField>())
+            const SDL_Point& p = {0})
 {
-  auto& buttons = style.scroll.buttons.normal;
+  auto& style = target.styleFor<SliderBox>();
+  auto& buttons = style.buttons.normal;
   auto adv = makeInputSize(p,
                            buttons.text.font,
                            buttons.text.scale,
                            buttons.padding + buttons.decoration.border);
   SDL_Rect box{p.x, p.y, adv.x, adv.y};
-  auto g = labeledGroup(target, id, labelText, box, style.label);
-  return sliderBox(g, id, value, min, max, box, style.scroll);
+  auto g = labeledGroup(target, id, labelText, box);
+  return sliderBox(g, id, value, min, max, box);
 }
 /// @copydoc sliderField()
 /// @ingroup elements
@@ -53,10 +53,9 @@ sliderField(Target target,
             int* value,
             int min,
             int max,
-            const SDL_Point& p = {0},
-            const SliderFieldStyle& style = themeFor<SliderField>())
+            const SDL_Point& p = {0})
 {
-  return sliderField(target, id, id, value, min, max, p, style);
+  return sliderField(target, id, id, value, min, max, p);
 }
 } // namespace boto
 

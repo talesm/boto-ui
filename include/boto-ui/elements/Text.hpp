@@ -17,16 +17,18 @@ namespace boto {
  * @param style
  */
 inline void
-character(Target target,
-          char ch,
-          const SDL_Point& p,
-          const TextStyle& style = themeFor<Text>())
+character(Target target, char ch, const SDL_Point& p, const TextStyle& style)
 {
   auto st = adjustDefaultFont(style, target.getFont());
   auto sz = measure(ch, st.font, 0);
   auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
   presentCharacter(
     target.getDisplayList(), ch, {el.rect.x, el.rect.y}, Status::NONE, st);
+}
+inline void
+character(Target target, char ch, const SDL_Point& p)
+{
+  return character(target, ch, p, target.styleFor<Text>());
 }
 
 /**

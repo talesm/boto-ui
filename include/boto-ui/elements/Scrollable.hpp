@@ -89,8 +89,8 @@ inline ScrollableImpl
 scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
-           SDL_Rect r = {0},
-           const ScrollableStyle& style = themeFor<Scrollable>())
+           SDL_Rect r,
+           const ScrollableStyle& style)
 {
   r = makeScrollableRect(r, target);
   auto superElement = target.container(id, r, {}, {}, Layout::NONE, 0);
@@ -104,6 +104,14 @@ scrollable(Target target,
     group(superElement, "client", r, *scrollOffset, {}, style.client);
   return {std::move(superElement), std::move(subElement)};
 }
+inline ScrollableImpl
+scrollable(Target target,
+           std::string_view id,
+           SDL_Point* scrollOffset,
+           SDL_Rect r = {0})
+{
+  return scrollable(target, id, scrollOffset, r, target.styleFor<Scrollable>());
+}
 /// @copydoc scrollable()
 /// @ingroup groups
 inline ScrollableImpl
@@ -111,10 +119,13 @@ scrollable(Target target,
            std::string_view id,
            SDL_Point* scrollOffset,
            const SDL_Rect& r,
-           Layout layout,
-           const ScrollableStyle& style = themeFor<Scrollable>())
+           Layout layout)
 {
-  return scrollable(target, id, scrollOffset, r, style.withLayout(layout));
+  return scrollable(target,
+                    id,
+                    scrollOffset,
+                    r,
+                    target.styleFor<Scrollable>().withLayout(layout));
 }
 
 using ScrollablePanelImpl = Wrapper<PanelImpl, Container>;
@@ -137,8 +148,8 @@ inline ScrollablePanelImpl
 scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,
-                SDL_Rect r = {0},
-                const ScrollablePanelStyle& style = themeFor<ScrollablePanel>())
+                SDL_Rect r,
+                const ScrollablePanelStyle& style)
 {
   r = makeScrollableRect(r, target);
   auto& client = style.client;
@@ -168,6 +179,19 @@ scrollablePanel(Target target,
                           client);
   return {std::move(superElement), std::move(subElement)};
 }
+
+/// @copydoc scrollablePanel()
+/// @ingroup groups
+inline ScrollablePanelImpl
+scrollablePanel(Target target,
+                std::string_view id,
+                SDL_Point* scrollOffset,
+                SDL_Rect r = {0})
+{
+  return scrollablePanel(
+    target, id, scrollOffset, r, target.styleFor<ScrollablePanel>());
+}
+
 /// @copydoc scrollablePanel()
 /// @ingroup groups
 inline ScrollablePanelImpl
@@ -175,10 +199,13 @@ scrollablePanel(Target target,
                 std::string_view id,
                 SDL_Point* scrollOffset,
                 const SDL_Rect& r,
-                Layout layout,
-                const ScrollablePanelStyle& style = themeFor<ScrollablePanel>())
+                Layout layout)
 {
-  return scrollablePanel(target, id, scrollOffset, r, style.withLayout(layout));
+  return scrollablePanel(target,
+                         id,
+                         scrollOffset,
+                         r,
+                         target.styleFor<ScrollablePanel>().withLayout(layout));
 }
 ///@}
 } // namespace boto

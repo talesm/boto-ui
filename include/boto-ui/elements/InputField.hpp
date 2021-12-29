@@ -15,7 +15,7 @@ labeledGroup(Target target,
              std::string_view id,
              std::string_view labelText,
              SDL_Rect r,
-             const ControlStyle& style = themeFor<Label>())
+             const ControlStyle& style)
 {
   SDL_Point labelPos = {r.w + 1, 0};
   r.w += measure(labelText, style.text.font, style.text.scale).x + 1;
@@ -24,6 +24,14 @@ labeledGroup(Target target,
   label(g, labelText, labelPos, style);
   return g;
 }
+inline auto
+labeledGroup(Target target,
+             std::string_view id,
+             std::string_view labelText,
+             const SDL_Rect& r)
+{
+  return labeledGroup(target, id, labelText, r, target.styleFor<Label>());
+}
 
 /// A text field element
 /// @ingroup elements
@@ -33,12 +41,12 @@ textField(Target target,
           std::string_view labelText,
           char* value,
           size_t maxSize,
-          const SDL_Point& p = {0},
-          const InputFieldStyle& style = themeFor<TextField>())
+          const SDL_Point& p = {0})
 {
+  auto& style = target.styleFor<TextField>();
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
-  return textBox(g, id, value, maxSize, box, style.box);
+  return textBox(g, id, value, maxSize, box);
 }
 
 /// A text field element
@@ -48,10 +56,9 @@ textField(Target target,
           std::string_view id,
           char* value,
           size_t maxSize,
-          const SDL_Point& p = {0},
-          const InputFieldStyle& style = themeFor<TextField>())
+          const SDL_Point& p = {0})
 {
-  return textField(target, id, id, value, maxSize, p, style);
+  return textField(target, id, id, value, maxSize, p);
 }
 
 /// A text field element
@@ -61,12 +68,12 @@ textField(Target target,
           std::string_view id,
           std::string_view labelText,
           std::string* value,
-          const SDL_Point& p = {0},
-          const InputFieldStyle& style = themeFor<TextField>())
+          const SDL_Point& p = {0})
 {
+  auto& style = target.styleFor<TextField>();
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
-  return textBox(g, id, value, box, style.box);
+  return textBox(g, id, value, box);
 }
 
 /// A text field element
@@ -75,10 +82,9 @@ inline bool
 textField(Target target,
           std::string_view id,
           std::string* value,
-          const SDL_Point& p = {0},
-          const InputFieldStyle& style = themeFor<TextField>())
+          const SDL_Point& p = {0})
 {
-  return textField(target, id, id, value, p, style);
+  return textField(target, id, id, value, p);
 }
 
 /// An integer field element
@@ -88,12 +94,12 @@ numberField(Target target,
             std::string_view id,
             std::string_view labelText,
             int* value,
-            const SDL_Point& p = {0},
-            const InputFieldStyle& style = themeFor<IntField>())
+            const SDL_Point& p = {0})
 {
+  auto& style = target.styleFor<IntField>();
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
-  return numberBox(g, id, value, box, style.box);
+  return numberBox(g, id, value, box);
 }
 
 /// An integer field element
@@ -102,10 +108,9 @@ inline bool
 numberField(Target target,
             std::string_view id,
             int* value,
-            const SDL_Point& p = {0},
-            const InputFieldStyle& style = themeFor<IntField>())
+            const SDL_Point& p = {0})
 {
-  return numberField(target, id, id, value, p, style);
+  return numberField(target, id, id, value, p);
 }
 
 /// A double field element
@@ -115,12 +120,12 @@ numberField(Target target,
             std::string_view id,
             std::string_view labelText,
             double* value,
-            const SDL_Point& p = {0},
-            const InputFieldStyle& style = themeFor<DoubleField>())
+            const SDL_Point& p = {0})
 {
+  auto& style = target.styleFor<DoubleField>();
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
-  return numberBox(g, id, value, box, style.box);
+  return numberBox(g, id, value, box);
 }
 
 /// A double field element
@@ -129,10 +134,9 @@ inline bool
 numberField(Target target,
             std::string_view id,
             double* value,
-            const SDL_Point& p = {0},
-            const InputFieldStyle& style = themeFor<DoubleField>())
+            const SDL_Point& p = {0})
 {
-  return numberField(target, id, id, value, p, style);
+  return numberField(target, id, id, value, p);
 }
 
 /// A float field element
@@ -142,12 +146,12 @@ numberField(Target target,
             std::string_view id,
             std::string_view labelText,
             float* value,
-            const SDL_Point& p = {0},
-            const InputFieldStyle& style = themeFor<FloatField>())
+            const SDL_Point& p = {0})
 {
+  auto& style = target.styleFor<FloatField>();
   SDL_Rect box{makeInputRect({p.x, p.y, 0, 0}, style.box.normal)};
   auto g = labeledGroup(target, id, labelText, box, style.label);
-  return numberBox(g, id, value, box, style.box);
+  return numberBox(g, id, value, box);
 }
 
 /// A float field element
@@ -156,10 +160,9 @@ inline bool
 numberField(Target target,
             std::string_view id,
             float* value,
-            const SDL_Point& p = {0},
-            const InputFieldStyle& style = themeFor<FloatField>())
+            const SDL_Point& p = {0})
 {
-  return numberField(target, id, id, value, p, style);
+  return numberField(target, id, id, value, p);
 }
 } // namespace boto
 

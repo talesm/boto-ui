@@ -24,8 +24,8 @@ buttonBase(Target target,
            std::string_view id,
            std::string_view str,
            bool pushed,
-           const SDL_Point& p = {0},
-           const ButtonStyle& style = themeFor<ButtonBase>())
+           const SDL_Point& p,
+           const ButtonStyle& style)
 {
   if (str.empty()) {
     str = id;
@@ -44,6 +44,15 @@ buttonBase(Target target,
     RequestEvent::NONE,
     decideButtonColors(style, pushed, state.status.test(Status::GRABBED)));
   return state.event == Event::ACTION;
+}
+inline bool
+buttonBase(Target target,
+           std::string_view id,
+           std::string_view str,
+           bool pushed,
+           const SDL_Point& p = {0})
+{
+  return buttonBase(target, id, str, pushed, p, target.styleFor<ButtonBase>());
 }
 
 /**
@@ -65,20 +74,25 @@ inline bool
 button(Target target,
        std::string_view id,
        std::string_view str,
-       const SDL_Point& p = {0},
-       const ButtonStyle& style = themeFor<Button>())
+       const SDL_Point& p,
+       const ButtonStyle& style)
 {
-  return buttonBase(target, id, str, false, p, style);
+  return buttonBase(target, id, str, false, p, target.styleFor<Button>());
+}
+inline bool
+button(Target target,
+       std::string_view id,
+       std::string_view str,
+       const SDL_Point& p = {0})
+{
+  return button(target, id, str, p, target.styleFor<Button>());
 }
 /// @copydoc button()
 /// @ingroup elements
 inline bool
-button(Target target,
-       std::string_view id,
-       const SDL_Point& p = {0},
-       const ButtonStyle& style = themeFor<Button>())
+button(Target target, std::string_view id, const SDL_Point& p = {0})
 {
-  return button(target, id, id, p, style);
+  return button(target, id, id, p);
 }
 
 /**
@@ -103,10 +117,9 @@ toggleButton(Target target,
              std::string_view id,
              std::string_view str,
              bool* value,
-             const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<ToggleButton>())
+             const SDL_Point& p = {0})
 {
-  if (buttonBase(target, id, str, *value, p, style)) {
+  if (buttonBase(target, id, str, *value, p, target.styleFor<ToggleButton>())) {
     *value = !*value;
     return true;
   }
@@ -118,10 +131,9 @@ inline bool
 toggleButton(Target target,
              std::string_view id,
              bool* value,
-             const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<ToggleButton>())
+             const SDL_Point& p = {0})
 {
-  return toggleButton(target, id, id, value, p, style);
+  return toggleButton(target, id, id, value, p);
 }
 
 /**
@@ -150,11 +162,12 @@ choiceButton(Target target,
              std::string_view str,
              T* value,
              U option,
-             const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<ChoiceButton>())
+             const SDL_Point& p = {0})
 {
   bool selected = *value == option;
-  if (buttonBase(target, id, str, selected, p, style) && !selected) {
+  if (buttonBase(
+        target, id, str, selected, p, target.styleFor<ChoiceButton>()) &&
+      !selected) {
     *value = option;
     return true;
   }
@@ -168,10 +181,9 @@ choiceButton(Target target,
              std::string_view id,
              T* value,
              U option,
-             const SDL_Point& p = {0},
-             const ButtonStyle& style = themeFor<ChoiceButton>())
+             const SDL_Point& p = {0})
 {
-  return choiceButton(target, id, id, value, option, p, style);
+  return choiceButton(target, id, id, value, option, p);
 }
 
 } // namespace boto

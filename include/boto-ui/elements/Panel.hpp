@@ -60,8 +60,8 @@ makePanelRect(const SDL_Rect& r, Target target)
 inline PanelImpl
 panel(Target target,
       std::string_view id,
-      const SDL_Rect& r = {0},
-      const PanelStyle& style = themeFor<Panel>())
+      const SDL_Rect& r,
+      const PanelStyle& style)
 {
   auto g = group(target,
                  id,
@@ -73,16 +73,17 @@ panel(Target target,
     PanelPresenter{style},
   };
 }
+inline PanelImpl
+panel(Target target, std::string_view id, const SDL_Rect& r = {0})
+{
+  return panel(target, id, r, target.styleFor<Panel>());
+}
 /// @copydoc panel
 /// @ingroup groups
 inline PanelImpl
-panel(Target target,
-      std::string_view id,
-      const SDL_Rect& r,
-      Layout layout,
-      const PanelStyle& style = themeFor<Panel>())
+panel(Target target, std::string_view id, const SDL_Rect& r, Layout layout)
 {
-  return panel(target, id, r, style.withLayout(layout));
+  return panel(target, id, r, target.styleFor<Panel>().withLayout(layout));
 }
 } // namespace boto
 

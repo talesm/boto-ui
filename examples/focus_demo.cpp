@@ -8,12 +8,12 @@ yesOrNo(boto::Target target, bool value)
     boto::label(target,
                 "Yes",
                 {5},
-                boto::themeFor<boto::Label>().withText({20, 128, 100, 255}));
+                target.styleFor<boto::Label>().withText({20, 128, 100, 255}));
   } else {
     boto::label(target,
                 "No",
                 {5},
-                boto::themeFor<boto::Label>().withText({200, 100, 20, 255}));
+                target.styleFor<boto::Label>().withText({200, 100, 20, 255}));
   }
 }
 

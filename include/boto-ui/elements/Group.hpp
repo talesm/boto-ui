@@ -26,11 +26,20 @@ group(Target target,
       std::string_view id,
       const SDL_Rect& r,
       const SDL_Point& offset,
-      const SDL_Point& endPadding = {},
-      const GroupStyle& style = themeFor<Group>())
+      const SDL_Point& endPadding,
+      const GroupStyle& style)
 {
   return target.container(
     id, r, offset, endPadding, style.layout, style.elementSpacing);
+}
+inline Container
+group(Target target,
+      std::string_view id,
+      const SDL_Rect& r,
+      const SDL_Point& offset,
+      const SDL_Point& endPadding = {})
+{
+  return group(target, id, r, offset, endPadding, target.styleFor<Group>());
 }
 
 inline Container
@@ -38,7 +47,7 @@ group(Target target,
       std::string_view id,
       const SDL_Rect& r,
       const EdgeSize& padding,
-      const GroupStyle& style = themeFor<Group>())
+      const GroupStyle& style)
 {
   return target.container(id,
                           r,
@@ -47,51 +56,35 @@ group(Target target,
                           style.layout,
                           style.elementSpacing);
 }
-inline Container
-group(Target target,
-      std::string_view id,
-      const SDL_Rect& r = {0},
-      const GroupStyle& style = themeFor<Group>())
-{
-  return target.container(id, r, {}, {}, style.layout, style.elementSpacing);
-}
 
-/// @copydoc group
-/// @ingroup groups
 inline Container
 group(Target target,
       std::string_view id,
       const SDL_Rect& r,
-      Layout layout,
-      const GroupStyle& style = themeFor<Group>())
+      const EdgeSize& padding)
 {
-  return group(target, id, r, style.withLayout(layout));
+  return group(target, id, r, padding, target.styleFor<Group>());
+}
+inline Container
+group(Target target,
+      std::string_view id,
+      const SDL_Rect& r,
+      const GroupStyle& style)
+{
+  return target.container(id, r, {}, {}, style.layout, style.elementSpacing);
+}
+inline Container
+group(Target target, std::string_view id, const SDL_Rect& r = {})
+{
+  return group(target, id, r, target.styleFor<Group>());
 }
 
 /// @copydoc group
 /// @ingroup groups
 inline Container
-offsetGroup(Target target,
-            std::string_view id,
-            const SDL_Point& offset,
-            const SDL_Rect& r,
-            const GroupStyle& style = themeFor<Group>())
+group(Target target, std::string_view id, const SDL_Rect& r, Layout layout)
 {
-  return target.container(
-    id, r, offset, {}, style.layout, style.elementSpacing);
-}
-
-/// @copydoc group
-/// @ingroup groups
-inline Container
-offsetGroup(Target target,
-            std::string_view id,
-            const SDL_Point& offset,
-            const SDL_Rect& r,
-            Layout layout,
-            const GroupStyle& style = themeFor<Group>())
-{
-  return offsetGroup(target, id, offset, r, style.withLayout(layout));
+  return group(target, id, r, target.styleFor<Group>().withLayout(layout));
 }
 
 } // namespace boto

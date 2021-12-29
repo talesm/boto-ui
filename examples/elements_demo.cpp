@@ -73,7 +73,7 @@ main(int argc, char** argv)
     boto::label(p,
                 "Hello Styled World",
                 {5},
-                boto::themeFor<boto::Label>()
+                state.styleFor<boto::Label>()
                   .withText({0xf0, 0x80, 0x80, 0xff})
                   .withScale(1));
 
@@ -114,11 +114,11 @@ main(int argc, char** argv)
     }
 
     // Example changing background color of the next panel
-    auto panelStyle =
-      boto::themeFor<boto::Panel>().withBackgroundColor({224, 255, 224, 255});
+    auto panelStyle = state.styleFor<boto::Panel>()
+                        .withBackgroundColor({224, 255, 224, 255})
+                        .withLayout(boto::Layout::HORIZONTAL);
     // And also making it grow horizontally
-    if (auto g =
-          boto::panel(p, "group2", {0}, boto::Layout::HORIZONTAL, panelStyle)) {
+    if (auto g = boto::panel(p, "group2", {0}, panelStyle)) {
       boto::label(g, "Grouped Label");
       boto::button(g, "Grouped button");
     }

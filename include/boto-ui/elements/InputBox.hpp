@@ -58,7 +58,7 @@ textBoxBase(Target target,
             std::string_view id,
             std::string_view value,
             SDL_Rect r,
-            const InputBoxStyle& style = themeFor<InputBoxBase>())
+            const InputBoxStyle& style)
 {
   static size_t cursorPos = 0;
   static size_t maxPos = 0;
@@ -126,8 +126,8 @@ textBox(Target target,
         std::string_view id,
         char* value,
         size_t maxSize,
-        const SDL_Rect& r = {0},
-        const InputBoxStyle& style = themeFor<TextBox>())
+        const SDL_Rect& r,
+        const InputBoxStyle& style)
 {
   auto len = strlen(value);
   auto change = textBoxBase(target, id, {value, len}, r, style);
@@ -155,6 +155,15 @@ textBox(Target target,
   }
   return true;
 }
+inline bool
+textBox(Target target,
+        std::string_view id,
+        char* value,
+        size_t maxSize,
+        const SDL_Rect& r = {0})
+{
+  return textBox(target, id, value, maxSize, r, target.styleFor<TextBox>());
+}
 
 /// A text box
 /// @ingroup elements
@@ -162,10 +171,9 @@ inline bool
 textBox(Target target,
         std::string_view id,
         std::string* value,
-        const SDL_Rect& r = {0},
-        const InputBoxStyle& style = themeFor<TextBox>())
+        const SDL_Rect& r = {0})
 {
-  auto change = textBoxBase(target, id, *value, r, style);
+  auto change = textBoxBase(target, id, *value, r, target.styleFor<TextBox>());
   if (change.erase == 0 && change.insert.empty()) {
     return false;
   }
@@ -245,14 +253,10 @@ public:
 /// An int Box
 /// @ingroup elements
 inline bool
-numberBox(Target target,
-          std::string_view id,
-          int* value,
-          SDL_Rect r = {0},
-          const InputBoxStyle& style = themeFor<IntBox>())
+numberBox(Target target, std::string_view id, int* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
-  BufferedInputBox bufferedBox{target, id, r, style};
+  BufferedInputBox bufferedBox{target, id, r, target.styleFor<IntBox>()};
   if (bufferedBox.wantsRefill()) {
     if (bufferedBox.incAmount != 0) {
       *value += bufferedBox.incAmount;
@@ -272,14 +276,10 @@ numberBox(Target target,
 /// A double box
 /// @ingroup elements
 inline bool
-numberBox(Target target,
-          std::string_view id,
-          double* value,
-          SDL_Rect r = {0},
-          const InputBoxStyle& style = themeFor<DoubleBox>())
+numberBox(Target target, std::string_view id, double* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
-  BufferedInputBox bufferedBox{target, id, r, style};
+  BufferedInputBox bufferedBox{target, id, r, target.styleFor<DoubleBox>()};
   if (bufferedBox.wantsRefill()) {
     if (bufferedBox.incAmount != 0) {
       *value += bufferedBox.incAmount;
@@ -305,14 +305,10 @@ numberBox(Target target,
 /// A float box
 /// @ingroup elements
 inline bool
-numberBox(Target target,
-          std::string_view id,
-          float* value,
-          SDL_Rect r = {0},
-          const InputBoxStyle& style = themeFor<FloatBox>())
+numberBox(Target target, std::string_view id, float* value, SDL_Rect r = {0})
 {
   SDL_assert(value != nullptr);
-  BufferedInputBox bufferedBox{target, id, r, style};
+  BufferedInputBox bufferedBox{target, id, r, target.styleFor<FloatBox>()};
   if (bufferedBox.wantsRefill()) {
     if (bufferedBox.incAmount != 0) {
       *value += bufferedBox.incAmount;
