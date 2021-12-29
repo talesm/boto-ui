@@ -42,13 +42,18 @@ inline void
 text(Target target,
      std::string_view str,
      const SDL_Point& p,
-     const TextStyle& style = themeFor<Text>())
+     const TextStyle& style)
 {
   auto st = adjustDefaultFont(style, target.getFont());
   auto sz = measure(str, st.font, 0);
   auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
   presentText(
     target.getDisplayList(), str, {el.rect.x, el.rect.y}, Status::NONE, st);
+}
+inline void
+text(Target target, std::string_view str, const SDL_Point& p)
+{
+  return text(target, str, p, target.styleFor<Text>());
 }
 } // namespace boto
 

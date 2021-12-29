@@ -1,15 +1,11 @@
 #ifndef BOTO_THEME_HPP_
 #define BOTO_THEME_HPP_
 
+#include "core/Theme.hpp"
+
 namespace boto {
 
 namespace style {
-
-struct SteelBlue;
-
-#ifndef BOTO_THEME
-#define BOTO_THEME boto::style::SteelBlue
-#endif
 
 template<class Element, class Theme>
 struct FromTheme;
@@ -28,6 +24,15 @@ themeFor()
 {
   return style::FromTheme<Element, Theme>::get();
 }
+
+template<class T>
+struct StyleFor<SteelBlue, T>
+{
+  static auto get(ThemeT<SteelBlue>& theme)
+  {
+    return style::FromTheme<T, SteelBlue>::get();
+  }
+};
 
 } // namespace boto
 

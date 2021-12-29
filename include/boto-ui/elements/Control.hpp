@@ -42,9 +42,9 @@ inline const EventTargetState&
 control(Target target,
         std::string_view id,
         std::string_view str,
-        const SDL_Rect& r = {0},
-        RequestEvent req = RequestEvent::INPUT,
-        const ControlStyle& style = themeFor<Control>())
+        const SDL_Rect& r,
+        RequestEvent req,
+        const ControlStyle& style)
 {
   auto sz = computeSize(str, style, {r.w, r.h});
   auto& el = target.check(id, {r.x, r.y, sz.x, sz.y}, req);
@@ -63,10 +63,15 @@ control(Target target,
 inline void
 control(Target target,
         std::string_view str,
-        const SDL_Rect& r = {0},
-        const ControlStyle& style = themeFor<Control>())
+        const SDL_Rect& r,
+        const ControlStyle& style)
 {
   control(target, str, str, r, RequestEvent::INPUT, style);
+}
+inline void
+control(Target target, std::string_view str, const SDL_Rect& r = {0})
+{
+  control(target, str, str, r, RequestEvent::INPUT, target.styleFor<Control>());
 }
 
 } // namespace boto

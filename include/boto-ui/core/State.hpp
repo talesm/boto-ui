@@ -5,9 +5,10 @@
 #include <optional>
 #include <string_view>
 #include <SDL.h>
+#include "DisplayList.hpp"
+#include "EventDispatcher.hpp"
 #include "Font.hpp"
-#include "core/DisplayList.hpp"
-#include "core/EventDispatcher.hpp"
+#include "Theme.hpp"
 #include "util/CookieBase.hpp"
 
 namespace boto {
@@ -17,6 +18,12 @@ class ContainerState;
 class Container;
 class Frame;
 class Target;
+
+template<>
+struct StyleTypeT<BOTO_THEME, Font>
+{
+  using type = Font;
+};
 
 /**
  * @brief The mouse action and status for a element in a frame
@@ -63,7 +70,9 @@ public:
   State(SDL_Renderer* renderer)
     : renderer(renderer)
     , font(loadDefaultFont(renderer))
-  {}
+  {
+    theme.set<Font>(loadDefaultFont(renderer));
+  }
 
   /**
    * @brief Render the ui
@@ -169,6 +178,12 @@ public:
     void operator()(State* state) { state->popContainer(); }
   };
 
+  template<class T>
+  const auto& styleFor()
+  {
+    return theme.of<T>();
+  }
+
 private:
   void endFrame();
   void popContainer();
@@ -210,6 +225,7 @@ private:
   Font font;
   bool inFrame = false;
   std::vector<ContainerState> containers;
+  Theme theme;
 };
 
 inline void

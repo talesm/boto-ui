@@ -3,10 +3,17 @@
 
 #include <any>
 #include <map>
+#include <stdexcept>
 #include <typeindex>
 #include <typeinfo>
 
 namespace boto {
+
+struct SteelBlue;
+
+#ifndef BOTO_THEME
+#define BOTO_THEME boto::SteelBlue
+#endif
 
 template<class THEME>
 class ThemeT;
@@ -26,7 +33,7 @@ template<class THEME, class T>
 struct StyleTypeT
 {
   using type = std::decay_t<decltype(
-    StyleFor<THEME, T>::get(std::declval<ThemeT<THEME>>()))>;
+    StyleFor<THEME, T>::get(std::declval<ThemeT<THEME>&>()))>;
 };
 
 template<class THEME, class T>
@@ -128,6 +135,8 @@ struct StyleFor<THEME, Focused<Grabbed<T>>>
     return theme.template of<Grabbed<Focused<T>>>();
   }
 };
+
+using Theme = ThemeT<BOTO_THEME>;
 
 } // namespace boto
 

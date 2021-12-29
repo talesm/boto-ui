@@ -17,13 +17,16 @@ namespace boto {
  * automatically evaluated
  * @param style
  */
+template<class STYLE>
 inline void
-label(Target target,
-      std::string_view str,
-      const SDL_Point& p = {0},
-      const ControlStyle& style = themeFor<Label>())
+label(Target target, std::string_view str, const SDL_Point& p, STYLE style)
 {
   control(target, {}, str, {p.x, p.y, 0, 0}, RequestEvent::HOVER, style);
+}
+inline void
+label(Target target, std::string_view str, const SDL_Point& p = {0})
+{
+  label(target, str, p, target.styleFor<Label>());
 }
 /**
  * @brief A centered label
@@ -38,7 +41,7 @@ inline void
 centeredLabel(Target target,
               std::string_view str,
               SDL_Rect r,
-              const ControlStyle& style = themeFor<Label>())
+              const ControlStyle& style)
 {
   auto textSz = measure(str, style.text.font, style.text.scale);
   SDL_Point minElementSz =
@@ -58,6 +61,11 @@ centeredLabel(Target target,
         (clientSz.y - textSz.y) / 2 + style.padding.top},
        style);
   element(target, r, style);
+}
+inline void
+centeredLabel(Target target, std::string_view str, const SDL_Rect& r)
+{
+  centeredLabel(target, str, r, target.styleFor<Label>());
 }
 } // namespace boto
 

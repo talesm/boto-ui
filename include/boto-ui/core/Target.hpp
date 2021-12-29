@@ -213,6 +213,12 @@ public:
 
   int ticks() const { return state->ticks(); }
 
+  template<class T>
+  const auto& styleFor()
+  {
+    return state->theme.of<T>();
+  }
+
 private:
   State* state;
   size_t stackSize;
