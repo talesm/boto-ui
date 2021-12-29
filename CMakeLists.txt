@@ -57,6 +57,7 @@ add_executable(botoui-tests-core
   tests/unit/core/DisplayList.cpp
   tests/unit/core/EventDispatcher.cpp
   tests/unit/core/State.cpp
+  tests/unit/core/Theme.cpp
 )
 target_link_libraries(botoui-tests-core botoui-tests)
 

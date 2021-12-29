@@ -13,10 +13,14 @@ The goal is review and reorganize the code and make it more consistent with its 
 - [x] Wrap push and pop clip into a Proper guard type;
 - [x] Move event related stuff to new core class EventDispatcher;
 - [ ] ~~When frame is created it sets a thread_local where the current target resides~~
-- [ ] Create Theme class, that stores all styles
-- [ ] Move nextPos, nextSize and etc to the targetStack
-- [ ] Move styling utils to targetStack (nextStyle, nextColor, etc)
-- [ ] Simplify target to use a functor to decide how to advance
+- [x] Create Theme class, that stores all styles
+- [ ] Make Theme accessible through State and Target:
+  - [ ] Add a bridge to old format (themeFor())
+  - [ ] Replace all themeFor to (state|target).styleFor() calls;
+- [ ] Move nextPos, nextSize and etc to the state
+  - [ ] Check for Clear on element push or pop.
+  - [ ] Make all widgets to check for these. (Or at least the hello example)
+- [ ] Move styling utils to state/target (nextStyle, nextColor, etc)
 - [ ] Refactor Style hierarchy with 4 fundamental Style concepts (Box, Text, Element and Control) and the respective render* functions to them
 - [x] Move current main back to a branch;
 - [x] Group source files into subdirectories;
@@ -24,6 +28,8 @@ The goal is review and reorganize the code and make it more consistent with its 
 Wishlist
 --------
 
+- [ ] Simplify target to use a functor to decide how to advance
+- [ ] When a style changes, make all its dependencies change too.
 - [ ] Dynamic Styles
 - [ ] Persistent elements (conventional UI)
 - [ ] selectable
