@@ -89,7 +89,7 @@ public:
   /**
    * @brief Get the last input text
    *
-   * To check if the text was for the current element and frame, use check()
+   * To check if the text was for the current element and frame, use element()
    *
    * @return std::string_view
    */

@@ -17,7 +17,7 @@ sliderBoxBarCaret(Target target,
                   const SDL_Rect& r,
                   const ElementStyle& style)
 {
-  auto& state = target.check(id, r, RequestEvent::GRAB);
+  auto& state = target.element(id, r, RequestEvent::GRAB);
   presentElement(target.getDisplayList(), state.rect, state.status, style);
   if (state.status != Status::GRABBED) {
     return {};
@@ -93,7 +93,7 @@ sliderBoxBar(Target target,
     return true;
   }
   g.end();
-  auto action = target.check(id, r, RequestEvent::GRAB).event;
+  auto action = target.element(id, r, RequestEvent::GRAB).event;
   if (action != Event::ACTION) {
     return false;
   }

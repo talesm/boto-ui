@@ -47,7 +47,7 @@ control(Target target,
         const ControlStyle& style)
 {
   auto sz = computeSize(str, style, {r.w, r.h});
-  auto& el = target.check(id, {r.x, r.y, sz.x, sz.y}, req);
+  auto& el = target.element(id, {r.x, r.y, sz.x, sz.y}, req);
 
   auto& dList = target.getDisplayList();
   auto clip = dList.clip(el.rect);

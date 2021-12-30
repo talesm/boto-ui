@@ -18,7 +18,7 @@ template<class STYLE>
 inline const EventTargetState&
 element(Target target, const SDL_Rect& r, STYLE style)
 {
-  auto& el = target.check({}, r, RequestEvent::HOVER);
+  auto& el = target.element({}, r, RequestEvent::HOVER);
   presentElement(target.getDisplayList(), el.rect, el.status, style);
   return el;
 }

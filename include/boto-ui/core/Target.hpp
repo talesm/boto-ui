@@ -44,17 +44,14 @@ public:
    * @param req the events it might accept
    * @return EventTargetState
    */
-  const EventTargetState& check(std::string_view id,
-                                const SDL_Rect& r,
-                                RequestEvent req = RequestEvent::INPUT)
+  const EventTargetState& element(std::string_view id,
+                                  const SDL_Rect& r,
+                                  RequestEvent req = RequestEvent::INPUT)
   {
     SDL_assert(state->containers.size() == stackSize);
-    if (id.empty()) {
-      lastElementState = state->element(r, req);
-      lastElementId = {};
-    } else if (id != lastElementId) {
-      lastElementState = state->element(id, r, req);
+    if (id.empty() || id != lastElementId) {
       lastElementId = id;
+      lastElementState = state->element(lastElementId, r, req);
     }
     return lastElementState;
   }
@@ -86,7 +83,7 @@ public:
   /**
    * @brief Get the last input text
    *
-   * To check if the text was for the current element and frame, use check()
+   * To check if the text was for the current element and frame, use element()
    *
    * @return std::string_view
    */

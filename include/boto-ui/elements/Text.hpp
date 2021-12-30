@@ -19,7 +19,7 @@ inline void
 character(Target target, char ch, const SDL_Point& p, const TextStyle& style)
 {
   auto sz = measure(ch, style.font, 0);
-  auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
+  auto& el = target.element({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
   presentCharacter(
     target.getDisplayList(), ch, {el.rect.x, el.rect.y}, Status::NONE, style);
 }
@@ -45,7 +45,7 @@ text(Target target,
      const TextStyle& style)
 {
   auto sz = measure(str, style.font, 0);
-  auto& el = target.check({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
+  auto& el = target.element({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
   presentText(
     target.getDisplayList(), str, {el.rect.x, el.rect.y}, Status::NONE, style);
 }
