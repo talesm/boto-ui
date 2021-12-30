@@ -40,7 +40,7 @@ public:
    * @brief Check the leaf element for events
    *
    * @param id element id
-   * @param r the element local rect (Use State.checkMouse() for global rect)
+   * @param r the element local rect (Use State.container() for global rect)
    * @param req the events it might accept
    * @return EventTargetState
    */
@@ -85,7 +85,7 @@ public:
    * @brief Check the mouse action/status for element in this group
    *
    * @param id element id
-   * @param r the element local rect (Use State.checkMouse() for global rect)
+   * @param r the element local rect (Use State.check() for global rect)
    * @return MouseAction
    * @deprecated description
    */
