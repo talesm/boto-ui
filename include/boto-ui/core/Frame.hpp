@@ -72,7 +72,6 @@ State::endFrame()
 {
   SDL_assert(isInFrame() == true);
   inFrame = false;
-  tKeysym = {};
   dispatcher.reset();
 }
 } // namespace boto

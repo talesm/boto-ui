@@ -18,6 +18,7 @@ public:
   {}
 
   constexpr bool operator==(FlagsBase rhs) const { return flags == rhs.flags; }
+  constexpr bool operator!=(FlagsBase rhs) const { return flags != rhs.flags; }
 
   constexpr bool test(FlagsBase rhs) const { return flags & rhs.flags; }
 

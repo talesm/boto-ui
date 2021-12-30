@@ -208,19 +208,9 @@ public:
     , rect(makeInputRect(r, style.normal))
     , style(style)
   {
-    bool clicked = target.checkMouse(id, rect) == MouseAction::GRAB;
-    active = target.isActive(id);
-    refillBuffer = !active || clicked;
-    if (active && target.checkText(id) == TextAction::KEYDOWN) {
-      auto keysym = target.lastKeyDown();
-      if (keysym.sym == SDLK_UP) {
-        incAmount = 1;
-        refillBuffer = true;
-      } else if (keysym.sym == SDLK_DOWN) {
-        incAmount = -1;
-        refillBuffer = true;
-      }
-    }
+    auto& state = target.check(id, rect, boto::RequestEvent::INPUT);
+    active = state.status == Status::FOCUSED;
+    refillBuffer = !active || state.event == Event::GRAB;
   }
 
   /// If true you must convert the backing value to string and fill this' buffer

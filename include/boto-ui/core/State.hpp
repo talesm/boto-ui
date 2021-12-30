@@ -20,37 +20,6 @@ class Frame;
 class Target;
 
 /**
- * @brief The mouse action and status for a element in a frame
- *
- */
-enum class MouseAction
-{
-  NONE,   ///< Default status
-  GRAB,   ///< The mouse was just grabbed at this element
-  HOLD,   ///< The mouse grabbed this element an is holding inside its bounds
-  ACTION, ///< The mouse was just released inside its bounds (do something!)
-  CANCEL, ///< The mouse was just released outside its bounds
-  DRAG,   ///< The mouse had this grabbed, but was moved to outside its bounds
-};
-
-/**
- * @brief The text action and status for a element in a frame
- *
- */
-enum class TextAction
-{
-  NONE,    ///< Default status
-  INPUT,   ///< text input
-  KEYDOWN, ///< erased last character
-};
-
-struct ElementState
-{
-  DisplayList::Clip clip;
-  EventDispatcher::EventTarget eventTarget;
-};
-
-/**
  * @brief Stores the ui state
  *
  * This should be the only state that needs to be preserved between the program
@@ -120,22 +89,11 @@ public:
   /**
    * @brief Get the last input text
    *
-   * To check if the text was for the current element and frame, use checkText()
-   * or Group.checkText().
+   * To check if the text was for the current element and frame, use check()
    *
    * @return std::string_view
    */
   std::string_view input() const { return dispatcher.input(); }
-
-  /**
-   * @brief Get the last key
-   *
-   * To check if the text was for the current element and frame, use checkText()
-   * or Group.checkText().
-   *
-   * @return SDL_Keysym
-   */
-  SDL_Keysym lastKeyDown() const { return tKeysym; }
 
   /**
    * @brief Last mouse position
@@ -212,8 +170,6 @@ private:
   DisplayList dList;
   EventDispatcher dispatcher;
 
-  SDL_Keysym tKeysym;
-
   Uint32 ticksCount;
 
   Font font;
@@ -286,7 +242,6 @@ State::event(SDL_Event& ev)
     default:
       break;
     }
-    tKeysym = ev.key.keysym;
   default:
     break;
   }

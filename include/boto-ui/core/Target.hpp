@@ -82,54 +82,13 @@ public:
   }
 
   /**
-   * @brief Check the mouse action/status for element in this group
-   *
-   * @param id element id
-   * @param r the element local rect (Use State.check() for global rect)
-   * @return MouseAction
-   * @deprecated description
-   */
-  MouseAction checkMouse(std::string_view id, SDL_Rect r);
-
-  /**
-   * @brief Check if given contained element is active
-   *
-   * @param id the id to check
-   * @return true
-   * @return false
-   */
-  bool hasFocus(std::string_view id)
-  {
-    return check(id, {}).status.test(Status::FOCUSED);
-  }
-  bool isActive(std::string_view id) { return hasFocus(id); }
-
-  /**
-   * @brief Check the text action/status for element in this group
-   *
-   * @param id the element id
-   * @return TextAction
-   */
-  TextAction checkText(std::string_view id);
-
-  /**
    * @brief Get the last input text
    *
-   * To check if the text was for the current element and frame, use checkText()
-   * or Frame.checkText().
+   * To check if the text was for the current element and frame, use check()
    *
    * @return std::string_view
    */
   std::string_view input() const { return state->input(); }
-  /**
-   * @brief Get the last key down
-   *
-   * To check if the text was for the current element and frame, use checkText()
-   * or Frame.checkText().
-   *
-   * @return std::string_view
-   */
-  SDL_Keysym lastKeyDown() const { return state->lastKeyDown(); }
 
   /**
    * @brief Last mouse position
@@ -225,42 +184,6 @@ private:
   std::string_view lastElementId;
   EventTargetState lastElementState;
 };
-
-inline MouseAction
-Target::checkMouse(std::string_view id, SDL_Rect r)
-{
-  auto& elState = check(id, r);
-  switch (elState.event) {
-  case Event::GRAB:
-    return MouseAction::GRAB;
-  case Event::ACTION:
-    return MouseAction::ACTION;
-  case Event::CANCEL:
-    return MouseAction::CANCEL;
-  default:
-    if (!elState.status.test(Status::GRABBED)) {
-      return MouseAction::NONE;
-    }
-    return elState.status.test(Status::HOVERED) ? MouseAction::HOLD
-                                                : MouseAction::DRAG;
-  }
-}
-
-inline TextAction
-Target::checkText(std::string_view id)
-{
-  auto& elState = check(id, {});
-  switch (elState.event) {
-  case Event::INPUT:
-    return TextAction::INPUT;
-  case Event::END_LINE:
-  case Event::SPACE:
-  case Event::BACKSPACE:
-    return TextAction::KEYDOWN;
-  default:
-    return TextAction::NONE;
-  }
-}
 
 } // namespace boto
 

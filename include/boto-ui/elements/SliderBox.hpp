@@ -17,19 +17,16 @@ sliderBoxBarCaret(Target target,
                   const SDL_Rect& r,
                   const ElementStyle& style)
 {
-  element(target, r, style);
-  static SDL_Point mouseOffset;
-  auto action = target.checkMouse(id, r);
-  if (action == MouseAction::HOLD) {
-    return {{0, 0}};
+  auto& state = target.check(id, r, RequestEvent::GRAB);
+  presentElement(target.getDisplayList(), state.rect, state.status, style);
+  if (state.status != Status::GRABBED) {
+    return {};
   }
-  if (action == MouseAction::GRAB) {
+  static SDL_Point mouseOffset;
+  if (state.event == Event::GRAB) {
     auto pos = target.pointerPosition();
     mouseOffset = {pos.x - r.x, pos.y - r.y};
     return {{0, 0}};
-  }
-  if (action != MouseAction::DRAG) {
-    return {};
   }
   auto pos = target.pointerPosition();
   SDL_Point delta{pos.x - r.x - mouseOffset.x, pos.y - r.y - mouseOffset.y};
@@ -96,8 +93,8 @@ sliderBoxBar(Target target,
     return true;
   }
   g.end();
-  auto action = target.checkMouse(id, r);
-  if (action != MouseAction::ACTION) {
+  auto action = target.check(id, r, RequestEvent::GRAB).event;
+  if (action != Event::ACTION) {
     return false;
   }
   SDL_Point mPos = target.pointerPosition();
