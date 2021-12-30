@@ -72,13 +72,15 @@ public:
    */
   Container container(std::string_view id,
                       const SDL_Rect& r,
+                      RequestEvent req,
                       const SDL_Point& offset = {},
                       const SDL_Point& endPadding = {},
                       Layout layout = Layout::NONE,
                       int elementSpacing = 0)
   {
     SDL_assert(state->containers.size() == stackSize);
-    return state->container(id, r, offset, endPadding, layout, elementSpacing);
+    return state->container(
+      id, r, req, offset, endPadding, layout, elementSpacing);
   }
 
   /**

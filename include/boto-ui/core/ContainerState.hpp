@@ -14,6 +14,21 @@ constexpr int Undefined = INT_MAX / 2;
 
 struct ContainerState
 {
+  ContainerState(EventDispatcher::EventTarget&& eventTarget,
+                 DisplayList::Clip&& clip,
+                 const SDL_Rect& r,
+                 const SDL_Point& internalOffset = {},
+                 const SDL_Point& endPadding = {},
+                 int elementSpacing = 0,
+                 Layout layout = Layout::NONE)
+    : eventTarget(std::move(eventTarget))
+    , clip(std::move(clip))
+    , offset({r.x + internalOffset.x, r.y + internalOffset.y})
+    , endPos(offset)
+    , endPadding(endPadding)
+    , elementSpacing(elementSpacing)
+    , layout(layout)
+  {}
   ContainerState(DisplayList& dList,
                  EventDispatcher& dispatcher,
                  std::string_view id,
@@ -22,13 +37,13 @@ struct ContainerState
                  const SDL_Point& endPadding = {},
                  Layout layout = Layout::NONE,
                  int elementSpacing = 0)
-    : eventTarget(dispatcher.check(RequestEvent::INPUT, r, id))
-    , clip(dList.clip(r))
-    , offset({r.x + internalOffset.x, r.y + internalOffset.y})
-    , endPos(offset)
-    , endPadding(endPadding)
-    , elementSpacing(elementSpacing)
-    , layout(layout)
+    : ContainerState(dispatcher.check(RequestEvent::INPUT, r, id),
+                     dList.clip(r),
+                     r,
+                     internalOffset,
+                     endPadding,
+                     elementSpacing,
+                     layout)
   {}
 
   ContainerState()

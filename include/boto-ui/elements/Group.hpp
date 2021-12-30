@@ -29,8 +29,13 @@ group(Target target,
       const SDL_Point& endPadding,
       const GroupStyle& style)
 {
-  return target.container(
-    id, r, offset, endPadding, style.layout, style.elementSpacing);
+  return target.container(id,
+                          r,
+                          RequestEvent::INPUT,
+                          offset,
+                          endPadding,
+                          style.layout,
+                          style.elementSpacing);
 }
 inline Container
 group(Target target,
@@ -51,6 +56,7 @@ group(Target target,
 {
   return target.container(id,
                           r,
+                          RequestEvent::INPUT,
                           {padding.left, padding.top},
                           {padding.right, padding.bottom},
                           style.layout,
@@ -71,7 +77,8 @@ group(Target target,
       const SDL_Rect& r,
       const GroupStyle& style)
 {
-  return target.container(id, r, {}, {}, style.layout, style.elementSpacing);
+  return target.container(
+    id, r, RequestEvent::INPUT, {}, {}, style.layout, style.elementSpacing);
 }
 inline Container
 group(Target target, std::string_view id, const SDL_Rect& r = {})

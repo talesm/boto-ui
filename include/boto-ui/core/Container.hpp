@@ -36,7 +36,7 @@ public:
             int elementSpacing = 0)
     : Container(
         frame.get()
-          ->container(id, r, offset, endPadding, layout, elementSpacing))
+          ->container(id, r, {}, offset, endPadding, layout, elementSpacing))
   {
     SDL_assert(cookie.get()->containers.size() - 1 == index);
   }
@@ -49,7 +49,8 @@ public:
             Layout layout = Layout::NONE,
             int elementSpacing = 0)
     : Container(
-        c.get()->container(id, r, offset, endPadding, layout, elementSpacing))
+        c.get()
+          ->container(id, r, {}, offset, endPadding, layout, elementSpacing))
   {
     SDL_assert(cookie.get()->containers.size() - 1 == index);
   }
@@ -79,6 +80,7 @@ State::element(std::string_view id, SDL_Rect r, RequestEvent req)
 inline Container
 State::container(std::string_view id,
                  SDL_Rect r,
+                 RequestEvent req,
                  const SDL_Point& offset,
                  const SDL_Point& endPadding,
                  Layout layout,
@@ -89,8 +91,13 @@ State::container(std::string_view id,
     r.x += caret.x;
     r.y += caret.y;
   }
-  containers.emplace_back(
-    dList, dispatcher, id, r, offset, endPadding, layout, elementSpacing);
+  containers.emplace_back(dispatcher.check(req, r, id),
+                          dList.clip(r),
+                          r,
+                          offset,
+                          endPadding,
+                          elementSpacing,
+                          layout);
   return {this, containers.size() - 1};
 }
 

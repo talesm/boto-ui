@@ -93,7 +93,8 @@ scrollable(Target target,
            const ScrollableStyle& style)
 {
   r = makeScrollableRect(r, target);
-  auto superElement = target.container(id, r, {}, {}, Layout::NONE, 0);
+  auto superElement =
+    target.container(id, r, RequestEvent::INPUT, {}, {}, Layout::NONE, 0);
   r = decorateBars(superElement,
                    r,
                    scrollOffset,
