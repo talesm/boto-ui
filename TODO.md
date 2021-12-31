@@ -17,11 +17,9 @@ The goal is review and reorganize the code and make it more consistent with its 
 - [x] Make Theme accessible through State and Target:
   - [x] Add a bridge to old format (themeFor())
   - [x] Replace all themeFor to (state|target).styleFor() calls;
-- [ ] Move nextPos, nextSize and etc to the state
-  - [ ] Check for Clear on element push or pop.
-  - [ ] Make all widgets to check for these. (Or at least the hello example)
-- [ ] Move styling utils to state/target (nextStyle, nextColor, etc)
+- [ ] ~~Move nextPos, nextSize and etc to the state~~
 - [ ] Refactor Style hierarchy with 4 fundamental Style concepts (Box, Text, Element and Control) and the respective render* functions to them
+- [ ] Ensure everything works again
 - [x] Move current main back to a branch;
 - [x] Group source files into subdirectories;
 
@@ -29,6 +27,7 @@ Wishlist
 --------
 
 - [ ] Simplify target to use a functor to decide how to advance
+- [ ] Move styling utils to state/target (nextStyle, nextColor, etc)
 - [ ] When a style changes, make all its dependencies change too.
 - [ ] Dynamic Styles
 - [ ] Persistent elements (conventional UI)
