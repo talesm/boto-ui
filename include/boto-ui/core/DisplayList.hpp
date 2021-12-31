@@ -48,11 +48,12 @@ public:
   }
 
   template<class F>
-  void visit(F visitor) const
+  size_t visit(F visitor) const
   {
     for (auto it = items.rbegin(); it != items.rend(); it++) {
       visitor(*it);
     }
+    return items.size();
   }
 
   void push(SDL_Rect rect,

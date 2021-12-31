@@ -19,7 +19,7 @@ inline void
 element(Target target, const SDL_Rect& r, STYLE style)
 {
   auto el = target.element({}, r, RequestEvent::HOVER);
-  presentElement(target.getDisplayList(), el.rect, el.status, style);
+  presentElement(target.getDisplayList(), el.rect, style);
 }
 inline void
 element(Target target, const SDL_Rect& r)

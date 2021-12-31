@@ -16,8 +16,7 @@ struct PanelPresenter
   void operator()(Container& c)
   {
     auto& state = c.state();
-    presentElement(
-      c.get()->displayList(), state.rect(), state.eventTarget.status(), style);
+    presentElement(c.get()->displayList(), state.rect(), style);
   }
 };
 

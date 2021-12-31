@@ -57,7 +57,7 @@ control(Target target,
               {offset.left + el.rect.x, offset.top + el.rect.y},
               el.status,
               style.text);
-  presentElement(dList, el.rect, el.status, style);
+  presentElement(dList, el.rect, style);
 }
 inline void
 control(Target target,

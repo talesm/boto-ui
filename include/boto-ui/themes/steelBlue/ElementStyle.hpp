@@ -82,10 +82,7 @@ struct ElementStyle
 };
 
 inline void
-presentElement(DisplayList& dList,
-               const SDL_Rect& r,
-               StatusFlags status,
-               const ElementStyle& style)
+presentElement(DisplayList& dList, const SDL_Rect& r, const ElementStyle& style)
 {
   auto c = style.paint.background;
   auto e = style.paint.border.right;
