@@ -44,7 +44,7 @@ presentCharacter(DisplayList& dList,
                    (ch / font.cols) * font.charH,
                    font.charW,
                    font.charH};
-  dList.push(dstRect, style.color, SDL_BLENDMODE_BLEND, font.texture, srcRect);
+  dList.push(dstRect, font.texture, style.color, srcRect);
   return adv;
 }
 

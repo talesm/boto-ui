@@ -17,8 +17,7 @@ presentElement(DisplayList& dList, const SDL_Rect& r, SDL_Color color)
 inline void
 presentElement(DisplayList& dList, const SDL_Rect& r, SDL_Texture* texture)
 {
-  dList.push(
-    r, {255, 255, 255, 255}, SDL_BLENDMODE_BLEND, texture, {0, 0, r.w, r.h});
+  dList.push(r, texture, {255, 255, 255, 255}, {0, 0, r.w, r.h});
 }
 
 } // namespace boto

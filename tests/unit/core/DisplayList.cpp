@@ -8,10 +8,10 @@ TEST_CASE("DisplayList visits from last to first", "[display-list]")
   dList.push({0, 0, 10, 10}, {0}, SDL_BLENDMODE_BLEND);
   if (auto cl = dList.clip({0, 0, 50, 50})) {
     dList.push({10, 10, 20, 20},
-               {0},
-               SDL_BLENDMODE_BLEND,
                reinterpret_cast<SDL_Texture*>(16),
-               {0, 0, 10, 10});
+               {0},
+               {0, 0, 10, 10},
+               SDL_BLENDMODE_BLEND);
   }
   int i = 0;
   dList.visit([&](const auto& item) {

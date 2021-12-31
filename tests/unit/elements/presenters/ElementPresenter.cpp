@@ -21,7 +21,7 @@ operator==(const SDL_Color& lhs, const SDL_Color& rhs)
 TEST_CASE("Color Presenter")
 {
   DisplayList dList;
-  presentElement(dList, {0, 0, 10, 10}, {1, 2, 3, 4});
+  presentElement(dList, {0, 0, 10, 10}, SDL_Color{1, 2, 3, 4});
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::COLOR_BOX);
     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});

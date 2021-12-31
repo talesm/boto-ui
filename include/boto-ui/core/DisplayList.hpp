@@ -23,9 +23,9 @@ struct DisplayListItem
 {
   DisplayListAction action;
   SDL_Rect rect;
-  SDL_Rect srcRect;
-  SDL_BlendMode mode;
   SDL_Texture* texture;
+  SDL_BlendMode mode;
+  SDL_Rect srcRect;
   SDL_Color color;
 };
 
@@ -57,19 +57,19 @@ public:
   }
 
   void push(SDL_Rect rect,
-            SDL_Color color,
-            SDL_BlendMode mode,
             SDL_Texture* texture,
-            SDL_Rect srcRect)
+            SDL_Color color,
+            SDL_Rect srcRect,
+            SDL_BlendMode mode = SDL_BLENDMODE_BLEND)
   {
     if (!clipRects.empty() && !SDL_HasIntersection(&clipRects.back(), &rect))
       return;
     items.push_back({
       texture ? DisplayListAction::TEXTURE_BOX : DisplayListAction::COLOR_BOX,
       rect,
-      srcRect,
-      mode,
       texture,
+      mode,
+      srcRect,
       color,
     });
   }
@@ -78,7 +78,7 @@ public:
             SDL_Color color,
             SDL_BlendMode mode = SDL_BLENDMODE_BLEND)
   {
-    push(rect, color, mode, nullptr, {0});
+    push(rect, nullptr, color, {}, mode);
   }
 
   using Clip = CookieBase<DisplayList, UnClipper>;
