@@ -192,6 +192,12 @@ State::render()
       SDL_SetTextureAlphaMod(item.texture, c.a);
       SDL_SetTextureBlendMode(item.texture, item.mode);
       SDL_SetTextureColorMod(item.texture, c.r, c.g, c.b);
+      SDL_RenderCopy(renderer, item.texture, &item.srcRect, nullptr);
+      break;
+    case DisplayListAction::PARTIAL_TEXTURE_BOX:
+      SDL_SetTextureAlphaMod(item.texture, c.a);
+      SDL_SetTextureBlendMode(item.texture, item.mode);
+      SDL_SetTextureColorMod(item.texture, c.r, c.g, c.b);
       SDL_RenderCopy(renderer, item.texture, &item.srcRect, &item.rect);
       break;
     }

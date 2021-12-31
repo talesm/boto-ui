@@ -4,6 +4,7 @@
 #include "Font.hpp"
 #include "core/DisplayList.hpp"
 #include "core/Theme.hpp"
+#include "elements/presenters/TextPresenter.hpp"
 
 namespace boto {
 
@@ -65,8 +66,6 @@ presentText(DisplayList& dList,
   }
   return adv;
 }
-
-struct Text;
 
 /// Default text style
 template<>

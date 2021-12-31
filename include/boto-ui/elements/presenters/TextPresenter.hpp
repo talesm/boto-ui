@@ -2,10 +2,13 @@
 #define BOTO_ELEMENTS_TEXTPRESENTER_HPP_
 
 #include <string_view>
+#include "ElementPresenter.hpp"
 #include "Font.hpp"
 #include "core/Theme.hpp"
 
 namespace boto {
+
+struct Text;
 
 // TODO generic default character & default text()
 } // namespace boto

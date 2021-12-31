@@ -21,7 +21,7 @@ TEST_CASE("DisplayList visits from last to first", "[display-list]")
       REQUIRE(item.rect.w == 50);
       break;
     case 1:
-      REQUIRE(item.action == boto::DisplayListAction::TEXTURE_BOX);
+      REQUIRE(item.action == boto::DisplayListAction::PARTIAL_TEXTURE_BOX);
       REQUIRE(item.rect.x == 10);
       break;
     case 2:

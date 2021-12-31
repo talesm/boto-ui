@@ -17,16 +17,17 @@ enum class DisplayListAction
   SET_CLIP,
   COLOR_BOX,
   TEXTURE_BOX,
+  PARTIAL_TEXTURE_BOX,
 };
 
 struct DisplayListItem
 {
   DisplayListAction action;
   SDL_Rect rect;
-  SDL_Texture* texture;
-  SDL_BlendMode mode;
-  SDL_Rect srcRect;
   SDL_Color color;
+  SDL_BlendMode mode;
+  SDL_Texture* texture;
+  SDL_Rect srcRect;
 };
 
 class DisplayList
@@ -62,23 +63,27 @@ public:
             SDL_Rect srcRect,
             SDL_BlendMode mode = SDL_BLENDMODE_BLEND)
   {
-    if (!clipRects.empty() && !SDL_HasIntersection(&clipRects.back(), &rect))
-      return;
-    items.push_back({
-      texture ? DisplayListAction::TEXTURE_BOX : DisplayListAction::COLOR_BOX,
-      rect,
-      texture,
-      mode,
-      srcRect,
-      color,
-    });
+    doPush(DisplayListAction::PARTIAL_TEXTURE_BOX,
+           rect,
+           color,
+           mode,
+           texture,
+           srcRect);
+  }
+
+  void push(SDL_Rect rect,
+            SDL_Texture* texture,
+            SDL_Color color,
+            SDL_BlendMode mode = SDL_BLENDMODE_BLEND)
+  {
+    doPush(DisplayListAction::TEXTURE_BOX, rect, color, mode, texture);
   }
 
   void push(SDL_Rect rect,
             SDL_Color color,
             SDL_BlendMode mode = SDL_BLENDMODE_BLEND)
   {
-    push(rect, nullptr, color, {}, mode);
+    doPush(DisplayListAction::COLOR_BOX, rect, color, mode);
   }
 
   using Clip = CookieBase<DisplayList, UnClipper>;
@@ -104,6 +109,25 @@ private:
     auto& back = clipRects.back();
     items.push_back({DisplayListAction::SET_CLIP, back});
     clipRects.pop_back();
+  }
+
+  void doPush(DisplayListAction action,
+              SDL_Rect rect,
+              SDL_Color color,
+              SDL_BlendMode mode,
+              SDL_Texture* texture = nullptr,
+              SDL_Rect srcRect = {})
+  {
+    if (!clipRects.empty() && !SDL_HasIntersection(&clipRects.back(), &rect))
+      return;
+    items.push_back({
+      action,
+      rect,
+      color,
+      mode,
+      texture,
+      srcRect,
+    });
   }
 };
 
