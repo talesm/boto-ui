@@ -93,13 +93,7 @@ public:
    *
    * @return SDL_Point the last mouse pos
    */
-  SDL_Point pointerPosition() const
-  {
-    auto pos = state->pointerPosition();
-    pos.x -= lastElementState.rect.x;
-    pos.x -= lastElementState.rect.y;
-    return pos;
-  }
+  SDL_Point pointerPosition() const { return state->pointerPosition(); }
 
   /// Get the target's displayList
   DisplayList& getDisplayList() const { return state->displayList(); }
