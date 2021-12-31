@@ -104,8 +104,6 @@ presentElement(DisplayList& dList,
   dList.push({r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz}, c);
 }
 
-struct Element;
-
 /// Default element style
 template<>
 struct StyleFor<SteelBlue, Element>

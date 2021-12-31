@@ -5,6 +5,8 @@
 #include "core/Theme.hpp"
 
 namespace boto {
+// Tag
+struct Element;
 
 inline void
 presentElement(DisplayList& dList,
