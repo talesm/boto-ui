@@ -38,20 +38,19 @@ struct StyleFor<SteelBlue, ButtonBase>
   {
     auto buttonBox = theme.of<Control>()
                        .withBorder(EdgeSize::all(2))
-                       .withBackgroundColor({176, 195, 222, 255})
-                       .withBorderColor({
+                       .withDecoration({
+                         {176, 195, 222, 255},
                          {255, 255, 255, 255},
                          {255, 255, 255, 255},
                          {0, 0, 0, 255},
                          {0, 0, 0, 255},
                        });
-    auto buttonBoxGrabbed = buttonBox.withBackgroundColor({147, 173, 210, 255});
+    auto buttonBoxGrabbed = buttonBox.withBackground({147, 173, 210, 255});
     return {
       buttonBox,
       buttonBoxGrabbed,
-      buttonBox.withBorderColor(buttonBox.decoration.paint.border.invert()),
-      buttonBoxGrabbed.withBorderColor(
-        buttonBox.decoration.paint.border.invert()),
+      buttonBox.invertBorders(),
+      buttonBoxGrabbed.invertBorders(),
     };
   }
 };

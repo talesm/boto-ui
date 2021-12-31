@@ -96,14 +96,13 @@ struct ScrollablePanelStyle
   {
     return withClient(client.withDecoration(decoration));
   }
-  constexpr ScrollablePanelStyle withBackgroundColor(SDL_Color background) const
+  constexpr ScrollablePanelStyle withBackground(SDL_Color background) const
   {
-    return withClient(client.withBackgroundColor(background));
+    return withClient(client.withBackground(background));
   }
-  constexpr ScrollablePanelStyle withBorderColor(
-    const BorderColorStyle& border) const
+  constexpr ScrollablePanelStyle withBorder(SDL_Color border) const
   {
-    return withClient(client.withBorderColor(border));
+    return withClient(client.withBorder(border));
   }
 };
 

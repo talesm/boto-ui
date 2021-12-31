@@ -115,7 +115,7 @@ main(int argc, char** argv)
 
     // Example changing background color of the next panel
     auto panelStyle = state.styleFor<boto::Panel>()
-                        .withBackgroundColor({224, 255, 224, 255})
+                        .withBackground({224, 255, 224, 255})
                         .withLayout(boto::Layout::HORIZONTAL);
     // And also making it grow horizontally
     if (auto g = boto::panel(p, "group2", {0}, panelStyle)) {

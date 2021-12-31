@@ -10,85 +10,58 @@
 
 namespace boto {
 
-struct BorderColorStyle
+// Border style
+struct ElementStyle
 {
+  EdgeSize border;
+  SDL_Color background;
   SDL_Color left;
   SDL_Color top;
   SDL_Color right;
   SDL_Color bottom;
 
-  constexpr BorderColorStyle withLeft(SDL_Color c) const
-  {
-    return {c, top, right, bottom};
-  }
-  constexpr BorderColorStyle withTop(SDL_Color c) const
-  {
-    return {left, c, right, bottom};
-  }
-  constexpr BorderColorStyle withRight(SDL_Color c) const
-  {
-    return {left, top, c, bottom};
-  }
-  constexpr BorderColorStyle withBotton(SDL_Color c) const
-  {
-    return {left, top, right, c};
-  }
-  constexpr BorderColorStyle invert() const
-  {
-    return {right, bottom, left, top};
-  }
-
-  static constexpr BorderColorStyle all(SDL_Color c) { return {c, c, c, c}; }
-};
-
-// Style for element state
-struct ElementPaintStyle
-{
-  SDL_Color background;
-  BorderColorStyle border;
-
-  constexpr ElementPaintStyle withBackground(SDL_Color background) const
-  {
-    return {background, border};
-  }
-  constexpr ElementPaintStyle withBorder(const BorderColorStyle& border) const
-  {
-    return {background, border};
-  }
-};
-
-// Border style
-struct ElementStyle
-{
-  EdgeSize border;
-  ElementPaintStyle paint;
-
   constexpr ElementStyle withBorderSize(const EdgeSize& border) const
   {
-    return {border, paint};
+    return {border, background, right, bottom, left, top};
   }
-  constexpr ElementStyle withPaint(const ElementPaintStyle& paint) const
+  constexpr ElementStyle withBackground(SDL_Color background) const
   {
-    return {border, paint};
+    return {border, background, left, top, right, bottom};
   }
-  constexpr ElementStyle withBackgroundColor(SDL_Color background) const
+  constexpr ElementStyle withLeft(SDL_Color left) const
   {
-    return withPaint(paint.withBackground(background));
+    return {border, background, left, top, right, bottom};
   }
-  constexpr ElementStyle withBorderColor(const BorderColorStyle& border) const
+  constexpr ElementStyle withTop(SDL_Color top) const
   {
-    return withPaint(paint.withBorder(border));
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyle withRight(SDL_Color right) const
+  {
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyle withBottom(SDL_Color bottom) const
+  {
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyle invertBorders() const
+  {
+    return {border, background, right, bottom, left, top};
+  }
+  constexpr ElementStyle withBorder(const SDL_Color& color) const
+  {
+    return {border, background, color, color, color, color};
   }
 };
 
 inline void
 presentElement(DisplayList& dList, const SDL_Rect& r, const ElementStyle& style)
 {
-  auto c = style.paint.background;
-  auto e = style.paint.border.right;
-  auto n = style.paint.border.top;
-  auto w = style.paint.border.left;
-  auto s = style.paint.border.bottom;
+  auto c = style.background;
+  auto e = style.right;
+  auto n = style.top;
+  auto w = style.left;
+  auto s = style.bottom;
   auto esz = style.border.right;
   auto nsz = style.border.top;
   auto wsz = style.border.left;
@@ -109,10 +82,11 @@ struct StyleFor<SteelBlue, Element>
   {
     return {
       EdgeSize::all(1),
-      {
-        {219, 228, 240, 240},
-        BorderColorStyle::all({45, 72, 106, 255}),
-      },
+      {219, 228, 240, 240},
+      {45, 72, 106, 255},
+      {45, 72, 106, 255},
+      {45, 72, 106, 255},
+      {45, 72, 106, 255},
     };
   }
 };

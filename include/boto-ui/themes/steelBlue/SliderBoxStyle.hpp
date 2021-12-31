@@ -34,10 +34,7 @@ struct StyleFor<SteelBlue, SliderBoxBar>
     auto buttonStyle = theme.of<Button>().normal.decoration;
     return {
       theme.of<Panel>().withPadding(EdgeSize::all(0)),
-      theme.of<Element>()
-        .withBackgroundColor(buttonStyle.paint.background)
-        .withBorderSize(buttonStyle.border)
-        .withBorderColor(buttonStyle.paint.border),
+      buttonStyle,
       buttonStyle.border.left + buttonStyle.border.right + 2,
     };
   }

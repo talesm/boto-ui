@@ -27,8 +27,8 @@ struct StyleFor<SteelBlue, InputBoxBase>
   static InputBoxStyle get(Theme& theme)
   {
     return {
-      theme.of<Control>().withBackgroundColor({240, 240, 240, 255}),
-      theme.of<Control>().withBackgroundColor({255, 255, 255, 255}),
+      theme.of<Control>().withBackground({240, 240, 240, 255}),
+      theme.of<Control>().withBackground({255, 255, 255, 255}),
     };
   }
 };

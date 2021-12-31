@@ -16,7 +16,7 @@ struct StyleFor<SteelBlue, Label>
     return theme.of<Control>()
       .withBorderSize(EdgeSize::all(0))
       .withPadding(EdgeSize::all(2))
-      .withBackgroundColor({});
+      .withBackground({});
   }
 };
 

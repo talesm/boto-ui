@@ -38,19 +38,37 @@ struct ControlStyle
   {
     return withText(text.withScale(scale));
   }
-
   constexpr ControlStyle withText(SDL_Color color) const
   {
     return withText(text.withColor(color));
   }
-  constexpr ControlStyle withBackgroundColor(SDL_Color c) const
+  constexpr ControlStyle withBackground(SDL_Color c) const
   {
-    return withDecoration(decoration.withBackgroundColor(c));
+    return withDecoration(decoration.withBackground(c));
   }
-  constexpr ControlStyle withBorderColor(
-    const BorderColorStyle& borderColor) const
+  constexpr ControlStyle withBorder(SDL_Color borderColor) const
   {
-    return withDecoration(decoration.withBorderColor(borderColor));
+    return withDecoration(decoration.withBorder(borderColor));
+  }
+  constexpr ControlStyle withLeft(SDL_Color color) const
+  {
+    return withDecoration(decoration.withLeft(color));
+  }
+  constexpr ControlStyle withTop(SDL_Color color) const
+  {
+    return withDecoration(decoration.withTop(color));
+  }
+  constexpr ControlStyle withRight(SDL_Color color) const
+  {
+    return withDecoration(decoration.withRight(color));
+  }
+  constexpr ControlStyle withBottom(SDL_Color color) const
+  {
+    return withDecoration(decoration.withBottom(color));
+  }
+  constexpr ControlStyle invertBorders() const
+  {
+    return withDecoration(decoration.invertBorders());
   }
   constexpr ControlStyle withBorderSize(EdgeSize border) const
   {

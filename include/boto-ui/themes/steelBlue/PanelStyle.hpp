@@ -27,13 +27,13 @@ struct PanelStyle
   {
     return withDecoration(decoration.withBorderSize(border));
   }
-  constexpr PanelStyle withBackgroundColor(SDL_Color background) const
+  constexpr PanelStyle withBackground(SDL_Color background) const
   {
-    return withDecoration(decoration.withBackgroundColor(background));
+    return withDecoration(decoration.withBackground(background));
   }
-  constexpr PanelStyle withBorderColor(const BorderColorStyle& border) const
+  constexpr PanelStyle withBorder(SDL_Color border) const
   {
-    return withDecoration(decoration.withBorderColor(border));
+    return withDecoration(decoration.withBorder(border));
   }
 
   constexpr PanelStyle withClient(const GroupStyle& client) const

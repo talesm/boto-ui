@@ -40,13 +40,13 @@ struct WindowStyle
   {
     return withPanel(panel.withDecoration(decoration));
   }
-  constexpr WindowStyle withBackgroundColor(SDL_Color background) const
+  constexpr WindowStyle withBackground(SDL_Color background) const
   {
-    return withPanel(panel.withBackgroundColor(background));
+    return withPanel(panel.withBackground(background));
   }
-  constexpr WindowStyle withBorderColor(const BorderColorStyle& border) const
+  constexpr WindowStyle withBorder(SDL_Color border) const
   {
-    return withPanel(panel.withBorderColor(border));
+    return withPanel(panel.withBorder(border));
   }
 
   constexpr WindowStyle withElementSpacing(int elementSpacing) const
@@ -72,8 +72,8 @@ struct StyleFor<SteelBlue, Window>
     return {
       theme.of<Panel>(),
       labelStyle.withBorder(EdgeSize::all(1))
-        .withBorderColor(BorderColorStyle::all(labelStyle.text.color))
-        .withBackgroundColor(buttonStyle.normal.decoration.paint.background),
+        .withBorder(labelStyle.text.color)
+        .withBackground(buttonStyle.normal.decoration.background),
     };
   }
 };
