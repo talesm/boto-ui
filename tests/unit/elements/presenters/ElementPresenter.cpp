@@ -81,3 +81,31 @@ TEST_CASE("Tinted Partial Texture Presenter")
   });
   REQUIRE(c == 1);
 }
+
+struct DummyThemeType;
+using DummyTheme = ThemeT<DummyThemeType>;
+TEST_CASE("Default Presenter")
+{
+  DummyTheme theme;
+  DisplayList dList;
+  SECTION("Background Color")
+  {
+    presentElement(dList, {0, 0, 10, 10}, theme.of<BackgroundColor>());
+    auto c = dList.visit([&](const DisplayListItem& el) {
+      REQUIRE(el.action == DisplayListAction::COLOR_BOX);
+      REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
+      REQUIRE(el.color == SDL_Color{255, 255, 255, 255});
+    });
+    REQUIRE(c == 1);
+  }
+  SECTION("Border Color")
+  {
+    presentElement(dList, {0, 0, 10, 10}, theme.of<BorderColor>());
+    auto c = dList.visit([&](const DisplayListItem& el) {
+      REQUIRE(el.action == DisplayListAction::COLOR_BOX);
+      REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
+      REQUIRE(el.color == SDL_Color{0, 0, 0, 255});
+    });
+    REQUIRE(c == 1);
+  }
+}

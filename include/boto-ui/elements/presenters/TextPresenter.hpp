@@ -13,14 +13,17 @@ struct TextColor;
 template<class THEME>
 struct StyleFor<THEME, TextColor>
 {
-  static SDL_Color get(ThemeT<THEME>& theme) { return {0, 0, 0, 255}; }
+  constexpr static SDL_Color get(ThemeT<THEME>& t)
+  {
+    return t.template of<DefaultColor>();
+  }
 };
 struct TextScale;
 
 template<class THEME>
 struct StyleFor<THEME, TextScale>
 {
-  static int get(ThemeT<THEME>& theme) { return 0; }
+  constexpr static int get(ThemeT<THEME>& theme) { return 0; }
 };
 
 struct TextStyle
