@@ -38,7 +38,7 @@ computeSize(std::string_view str,
  * @param r the control dimensions
  * @param style
  */
-inline const EventTargetState&
+inline void
 control(Target target,
         std::string_view id,
         std::string_view str,
@@ -47,7 +47,7 @@ control(Target target,
         const ControlStyle& style)
 {
   auto sz = computeSize(str, style, {r.w, r.h});
-  auto& el = target.element(id, {r.x, r.y, sz.x, sz.y}, req);
+  auto el = target.element(id, {r.x, r.y, sz.x, sz.y}, req);
 
   auto& dList = target.getDisplayList();
   auto clip = dList.clip(el.rect);
@@ -58,7 +58,6 @@ control(Target target,
               el.status,
               style.text);
   presentElement(dList, el.rect, el.status, style);
-  return el;
 }
 inline void
 control(Target target,

@@ -43,16 +43,16 @@ public:
    * @param req the events it might accept
    * @return EventTargetState
    */
-  const EventTargetState& element(std::string_view id,
-                                  const SDL_Rect& r,
-                                  RequestEvent req = RequestEvent::INPUT)
+  EventTargetState element(std::string_view id,
+                           const SDL_Rect& r,
+                           RequestEvent req = RequestEvent::INPUT)
   {
     SDL_assert(state->containers.size() == stackSize);
-    if (id.empty() || id != lastElementId) {
-      lastElementId = id;
-      lastElementState = state->element(lastElementId, r, req);
+    if (!id.empty() && id == lastElementId) {
+      throw std::runtime_error{"Can not use the same id twice"};
     }
-    return lastElementState;
+    lastElementId = id;
+    return state->element(lastElementId, r, req);
   }
 
   /**
@@ -75,6 +75,7 @@ public:
                       int elementSpacing = 0)
   {
     SDL_assert(state->containers.size() == stackSize);
+    lastElementId = {};
     return state->container(
       id, r, req, offset, endPadding, layout, elementSpacing);
   }
@@ -174,7 +175,6 @@ private:
   State* state;
   size_t stackSize;
   std::string_view lastElementId;
-  EventTargetState lastElementState;
 };
 
 } // namespace boto

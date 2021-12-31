@@ -15,17 +15,16 @@ namespace boto {
  * @param style
  */
 template<class STYLE>
-inline const EventTargetState&
+inline void
 element(Target target, const SDL_Rect& r, STYLE style)
 {
-  auto& el = target.element({}, r, RequestEvent::HOVER);
+  auto el = target.element({}, r, RequestEvent::HOVER);
   presentElement(target.getDisplayList(), el.rect, el.status, style);
-  return el;
 }
-inline const EventTargetState&
+inline void
 element(Target target, const SDL_Rect& r)
 {
-  return element(target, r, target.styleFor<Element>());
+  element(target, r, target.styleFor<Element>());
 }
 
 } // namespace boto

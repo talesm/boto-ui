@@ -208,7 +208,7 @@ public:
     , rect(makeInputRect(r, style.normal))
     , style(style)
   {
-    auto& state = target.element(id, rect, boto::RequestEvent::INPUT);
+    auto state = target.element(id, rect, boto::RequestEvent::INPUT);
     active = state.status == Status::FOCUSED;
     refillBuffer = !active || state.event == Event::GRAB;
   }
