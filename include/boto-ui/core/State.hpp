@@ -32,7 +32,6 @@ public:
   /// Ctor
   State(SDL_Renderer* renderer)
     : renderer(renderer)
-    , font(loadDefaultFont(renderer))
   {
     theme.set<Font>(loadDefaultFont(renderer));
   }
@@ -117,8 +116,8 @@ public:
   /// Ticks count
   Uint32 ticks() const { return ticksCount; }
 
-  const Font& getFont() const { return font; }
-  void setFont(const Font& f) { font = f; }
+  const Font& getFont() { return theme.of<Font>(); }
+  void setFont(const Font& f) { theme.set<Font>(f); }
 
   struct FrameGuard
   {
@@ -166,7 +165,6 @@ private:
 
   Uint32 ticksCount;
 
-  Font font;
   bool inFrame = false;
   std::vector<ContainerState> containers;
   Theme theme;
