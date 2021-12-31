@@ -60,7 +60,7 @@ centeredLabel(Target target,
        {(clientSz.x - textSz.x) / 2 + style.padding.left,
         (clientSz.y - textSz.y) / 2 + style.padding.top},
        style);
-  element(target, r, style);
+  element(target, r, style.decoration);
 }
 inline void
 centeredLabel(Target target, std::string_view str, const SDL_Rect& r)

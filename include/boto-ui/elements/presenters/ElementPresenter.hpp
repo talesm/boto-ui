@@ -1,6 +1,7 @@
 #ifndef BOTO_ELEMENTS_ELEMENTPRESENTER_HPP
 #define BOTO_ELEMENTS_ELEMENTPRESENTER_HPP
 
+#include "EdgeSize.hpp"
 #include "core/DisplayList.hpp"
 #include "core/Theme.hpp"
 
@@ -63,6 +64,76 @@ presentElement(DisplayList& dList,
   dList.push(r, style.texture, style.color, style.srcRect);
 }
 
+template<class BoxStyle>
+struct ElementStyleT
+{
+  EdgeSize border;
+  BoxStyle background;
+  BoxStyle left;
+  BoxStyle top;
+  BoxStyle right;
+  BoxStyle bottom;
+
+  constexpr ElementStyleT withBorderSize(const EdgeSize& border) const
+  {
+    return {border, background, right, bottom, left, top};
+  }
+  constexpr ElementStyleT withBackground(const BoxStyle& background) const
+  {
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyleT withLeft(const BoxStyle& left) const
+  {
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyleT withTop(const BoxStyle& top) const
+  {
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyleT withRight(const BoxStyle& right) const
+  {
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyleT withBottom(const BoxStyle& bottom) const
+  {
+    return {border, background, left, top, right, bottom};
+  }
+  constexpr ElementStyleT invertBorders() const
+  {
+    return {border, background, right, bottom, left, top};
+  }
+  constexpr ElementStyleT withBorder(const BoxStyle& color) const
+  {
+    return {border, background, color, color, color, color};
+  }
+};
+
+using ElementStyle = ElementStyleT<SDL_Color>;
+
+template<class BoxStyle>
+inline void
+presentElement(DisplayList& dList,
+               const SDL_Rect& r,
+               const ElementStyleT<BoxStyle>& style)
+{
+  auto c = style.background;
+  auto e = style.right;
+  auto n = style.top;
+  auto w = style.left;
+  auto s = style.bottom;
+  int esz = style.border.right;
+  int nsz = style.border.top;
+  int wsz = style.border.left;
+  int ssz = style.border.bottom;
+  presentElement(dList, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, s);
+  presentElement(dList, {r.x + r.w - esz, r.y + 1, esz, r.h - 2}, e);
+  presentElement(dList, {r.x + 1, r.y, r.w - 2, nsz}, n);
+  presentElement(dList, {r.x, r.y + 1, wsz, r.h - 2}, w);
+  presentElement(
+    dList, {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz}, c);
+}
+
+struct BorderSize;
 struct BackgroundColor;
 struct DefaultColor;
 struct BorderColor;
@@ -71,6 +142,12 @@ struct TopBorderColor;
 struct RightBorderColor;
 struct BottomBorderColor;
 struct Element;
+
+template<class THEME>
+struct StyleFor<THEME, BorderSize>
+{
+  constexpr static EdgeSize get(ThemeT<THEME>&) { return EdgeSize::all(1); }
+};
 
 template<class THEME>
 struct StyleFor<THEME, BackgroundColor>
@@ -125,6 +202,21 @@ struct StyleFor<THEME, BottomBorderColor>
   constexpr static auto get(ThemeT<THEME>& t)
   {
     return t.template of<BorderColor>();
+  }
+};
+template<class THEME>
+struct StyleFor<THEME, Element>
+{
+  constexpr static ElementStyle get(ThemeT<THEME>& t)
+  {
+    return {
+      t.template of<BorderSize>(),
+      t.template of<BackgroundColor>(),
+      t.template of<LeftBorderColor>(),
+      t.template of<TopBorderColor>(),
+      t.template of<RightBorderColor>(),
+      t.template of<BottomBorderColor>(),
+    };
   }
 };
 } // namespace boto

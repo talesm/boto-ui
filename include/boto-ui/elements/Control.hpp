@@ -54,7 +54,7 @@ control(Target target,
   auto offset = style.decoration.border + style.padding;
   presentText(
     dList, str, {offset.left + el.rect.x, offset.top + el.rect.y}, style.text);
-  presentElement(dList, el.rect, style);
+  presentElement(dList, el.rect, style.decoration);
 }
 inline void
 control(Target target,

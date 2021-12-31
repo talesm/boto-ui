@@ -108,4 +108,65 @@ TEST_CASE("Default Presenter")
     });
     REQUIRE(c == 1);
   }
+  SECTION("Border Color")
+  {
+    presentElement(dList, {0, 0, 10, 10}, theme.of<Element>());
+    int c = 0;
+    dList.visit([&](const DisplayListItem& el) {
+      REQUIRE(el.action == DisplayListAction::COLOR_BOX);
+      if (c == 0) {
+        REQUIRE(el.color == SDL_Color{255, 255, 255, 255});
+        REQUIRE(el.rect == SDL_Rect{1, 1, 8, 8});
+      } else {
+        REQUIRE(el.color == SDL_Color{0, 0, 0, 255});
+        switch (c) {
+        case 1:
+          REQUIRE(el.rect == SDL_Rect{0, 1, 1, 8});
+          break;
+        case 2:
+          REQUIRE(el.rect == SDL_Rect{1, 0, 8, 1});
+          break;
+        case 3:
+          REQUIRE(el.rect == SDL_Rect{9, 1, 1, 8});
+          break;
+        case 4:
+          REQUIRE(el.rect == SDL_Rect{1, 9, 8, 1});
+          break;
+        }
+      }
+      c++;
+    });
+    REQUIRE(c == 5);
+  }
+  SECTION("Border 0 Color")
+  {
+    presentElement(dList,
+                   {0, 0, 10, 10},
+                   theme.of<Element>().withBorderSize(EdgeSize::all(0)));
+    auto c = dList.visit([&](const DisplayListItem& el) {
+      REQUIRE(el.action == DisplayListAction::COLOR_BOX);
+      // if (c == 0) {
+      //   REQUIRE(el.color == SDL_Color{255, 255, 255, 255});
+      //   REQUIRE(el.rect == SDL_Rect{1, 1, 8, 8});
+      // } else {
+      //   REQUIRE(el.color == SDL_Color{0, 0, 0, 255});
+      //   switch (c) {
+      //   case 1:
+      //     REQUIRE(el.rect == SDL_Rect{0, 1, 1, 8});
+      //     break;
+      //   case 2:
+      //     REQUIRE(el.rect == SDL_Rect{1, 0, 8, 1});
+      //     break;
+      //   case 3:
+      //     REQUIRE(el.rect == SDL_Rect{9, 1, 1, 8});
+      //     break;
+      //   case 4:
+      //     REQUIRE(el.rect == SDL_Rect{1, 9, 8, 1});
+      //     break;
+      //   }
+      // }
+      // c++;
+    });
+    REQUIRE(c == 1);
+  }
 }

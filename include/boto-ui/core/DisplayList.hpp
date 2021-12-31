@@ -118,8 +118,11 @@ private:
               SDL_Texture* texture = nullptr,
               SDL_Rect srcRect = {})
   {
-    if (!clipRects.empty() && !SDL_HasIntersection(&clipRects.back(), &rect))
+    if (rect.w <= 0 || rect.h <= 0 ||
+        (!clipRects.empty() &&
+         !SDL_HasIntersection(&clipRects.back(), &rect))) {
       return;
+    }
     items.push_back({
       action,
       rect,
