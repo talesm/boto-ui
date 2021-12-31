@@ -52,8 +52,7 @@ centeredLabel(Target target,
   if (r.h == 0) {
     r.h = minElementSz.y;
   }
-  SDL_Point clientSz =
-    clientSize(style.padding + style.decoration.border, {r.w, r.h});
+  SDL_Point clientSz = clientSize(r, style.padding + style.decoration.border);
 
   text(target,
        str,

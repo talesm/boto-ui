@@ -120,7 +120,7 @@ window(Target target,
   r = makeWindowRect(r, target);
   PanelImpl superElement =
     panel(target, id, r, style.panel.withLayout(Layout::VERTICAL));
-  auto clRect = clientRect(style.panel.decoration.border, r);
+  auto clRect = clientRectRelative(r, style.panel.decoration.border);
   centeredLabel(superElement, title, {clRect.x, clRect.y, clRect.w, 8}, style);
   clRect.y += 8;
   clRect.h -= 8;
@@ -166,7 +166,7 @@ using ScrollableWindowImpl = Wrapper<WindowImpl, ScrollableImpl>;
 //   r = makeWindowRect(r, target);
 //   WindowImpl superElement = window(target, id, r, style);
 
-//   auto clRect = clientRect(style.panel.client.decoration.border, r);
+//   auto clRect = clientRectRelative(r, style.panel.client.decoration.border);
 //   clRect.y += 8;
 //   clRect.h -= 8;
 //   ScrollableImpl subElement =

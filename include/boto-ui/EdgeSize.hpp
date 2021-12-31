@@ -41,24 +41,35 @@ struct EdgeSize
 };
 
 constexpr SDL_Point
-elementSize(const EdgeSize& edge, const SDL_Point& client = {0})
+elementSize(const EdgeSize& edge, const SDL_Point& client = {})
 {
   return {edge.left + edge.right + client.x, edge.top + edge.bottom + client.y};
 }
 constexpr SDL_Point
-clientSize(const EdgeSize& edge, const SDL_Point& element)
+clientSize(const SDL_Point& sz, EdgeSize edge)
 {
   auto width = edge.left + edge.right;
   auto height = edge.top + edge.bottom;
-  return {element.x > width ? element.x - width : 0,
-          element.y > height ? element.y - height : 0};
+  return {sz.x > width ? sz.x - width : 0, sz.y > height ? sz.y - height : 0};
+}
+constexpr SDL_Point
+clientSize(const SDL_Rect& r, EdgeSize edge)
+{
+  return clientSize(SDL_Point{r.w, r.h}, edge);
 }
 
-static constexpr SDL_Rect
-clientRect(const EdgeSize& edge, const SDL_Rect& element)
+/// @deprecated use clientRect() instead
+constexpr SDL_Rect
+clientRectRelative(const SDL_Rect& element, EdgeSize edge)
 {
-  auto sz = clientSize(edge, {element.w, element.h});
+  auto sz = clientSize(SDL_Point{element.w, element.h}, edge);
   return {edge.left, edge.top, sz.x, sz.y};
+}
+constexpr SDL_Rect
+clientRect(const SDL_Rect& r, EdgeSize edge)
+{
+  auto sz = clientSize(r, edge);
+  return {r.x + edge.left, r.y + edge.top, sz.x, sz.y};
 }
 } // namespace boto
 

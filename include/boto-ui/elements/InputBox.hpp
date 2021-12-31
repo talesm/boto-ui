@@ -77,8 +77,7 @@ textBoxBase(Target target,
   auto& currentStyle = active ? style.active : style.normal;
 
   // This creates an auto scroll effect if value text don't fit in the box;
-  auto clientSz =
-    clientSize(currentStyle.padding + EdgeSize::all(1), {r.w, r.h});
+  auto clientSz = clientSize(r, currentStyle.padding + EdgeSize::all(1));
   auto contentSz =
     measure(value, currentStyle.text.font, currentStyle.text.scale);
   int deltaX = contentSz.x - clientSz.x;

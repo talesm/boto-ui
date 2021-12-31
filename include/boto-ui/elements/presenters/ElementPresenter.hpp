@@ -108,6 +108,26 @@ struct ElementStyleT
   }
 };
 
+template<class BoxStyle>
+constexpr SDL_Point
+clientSize(const SDL_Point& sz, const ElementStyleT<BoxStyle>& style)
+{
+  return clientSize(sz, style.border);
+}
+template<class BoxStyle>
+constexpr SDL_Point
+clientSize(const SDL_Rect& r, const ElementStyleT<BoxStyle>& style)
+{
+  return clientSize(r, style.border);
+}
+
+template<class BoxStyle>
+constexpr SDL_Point
+clientRect(const SDL_Rect& r, const ElementStyleT<BoxStyle>& style)
+{
+  return clientRect(r, style.border);
+}
+
 using ElementStyle = ElementStyleT<SDL_Color>;
 
 template<class BoxStyle>
