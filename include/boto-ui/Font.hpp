@@ -18,14 +18,20 @@ struct Font
 
 /// Measure the given character
 constexpr SDL_Point
-measure(char ch, const Font& font, int scale)
+measure(const Font& font, int scale = 0)
+{
+  return {font.charW << scale, font.charH << scale};
+}
+
+constexpr SDL_Point
+measure(char ch, const Font& font, int scale = 0)
 {
   return {font.charW << scale, font.charH << scale};
 }
 
 /// Measure the given text
 constexpr SDL_Point
-measure(std::string_view text, const Font& font, int scale)
+measure(std::string_view text, const Font& font, int scale = 0)
 {
   return {int((font.charW << scale) * text.size()), font.charH << scale};
 }

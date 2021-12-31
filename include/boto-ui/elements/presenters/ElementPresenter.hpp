@@ -37,33 +37,28 @@ presentElement(DisplayList& dList,
 struct PartialTextureStyle
 {
   SDL_Texture* texture;
-  SDL_Rect srcRect;
-};
-
-struct TintedPartialTextureStyle
-{
-  SDL_Texture* texture;
   SDL_Color color;
   SDL_Rect srcRect;
 
-  constexpr TintedPartialTextureStyle(SDL_Texture* texture,
-                                      SDL_Color color,
-                                      SDL_Rect srcRect)
+  constexpr PartialTextureStyle(SDL_Texture* texture,
+                                SDL_Color color,
+                                const SDL_Rect& srcRect)
     : texture(texture)
     , color(color)
     , srcRect(srcRect)
   {}
 
-  constexpr TintedPartialTextureStyle(const PartialTextureStyle& style)
-    : texture(style.texture)
+  constexpr PartialTextureStyle(SDL_Texture* texture, const SDL_Rect& srcRect)
+    : texture(texture)
     , color{255, 255, 255, 255}
-    , srcRect(style.srcRect)
+    , srcRect(srcRect)
   {}
 };
+
 inline void
 presentElement(DisplayList& dList,
                const SDL_Rect& r,
-               const TintedPartialTextureStyle& style)
+               const PartialTextureStyle& style)
 {
   dList.push(r, style.texture, style.color, style.srcRect);
 }

@@ -9,73 +9,12 @@
 namespace boto {
 
 // Text style
-struct TextStyle
-{
-  Font font;
-  SDL_Color color;
-  int scale; // 0: 1x, 1: 2x, 2: 4x, 3: 8x, and so on
-
-  constexpr TextStyle withFont(const Font& font) const
-  {
-    return {font, color, scale};
-  }
-
-  constexpr TextStyle withColor(SDL_Color color) const
-  {
-    return {font, color, scale};
-  }
-
-  constexpr TextStyle withScale(int scale) const
-  {
-    return {font, color, scale};
-  }
-};
-
-inline SDL_Point
-presentCharacter(DisplayList& dList,
-                 char ch,
-                 const SDL_Point& p,
-                 StatusFlags status,
-                 const TextStyle& style)
-{
-  auto& font = style.font;
-  auto adv = measure(ch, font, style.scale);
-  SDL_Rect dstRect{p.x, p.y, adv.x, adv.y};
-  SDL_Rect srcRect{(ch % font.cols) * font.charW,
-                   (ch / font.cols) * font.charH,
-                   font.charW,
-                   font.charH};
-  dList.push(dstRect, font.texture, style.color, srcRect);
-  return adv;
-}
-
-inline SDL_Point
-presentText(DisplayList& dList,
-            std::string_view str,
-            SDL_Point p,
-            StatusFlags status,
-            const TextStyle& style)
-{
-  SDL_Point adv = {0};
-  for (auto ch : str) {
-    auto chAdv = presentCharacter(dList, ch, {p.x + adv.x, p.y}, status, style);
-    p.x += chAdv.x;
-    if (chAdv.y > p.y) {
-      p.y = chAdv.y;
-    }
-  }
-  return adv;
-}
-
-/// Default text style
 template<>
-struct StyleFor<SteelBlue, Text>
+struct StyleFor<SteelBlue, TextColor>
 {
-  static TextStyle get(Theme& theme)
-  {
-    return {theme.of<Font>(), {45, 72, 106, 255}, 0};
-  }
+  static SDL_Color get(ThemeT<SteelBlue>& theme) { return {45, 72, 106, 255}; }
 };
+
 } // namespace boto
 
 #endif // BOTO_TEXTSTYLE_HPP_

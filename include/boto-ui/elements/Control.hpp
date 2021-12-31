@@ -52,11 +52,8 @@ control(Target target,
   auto& dList = target.getDisplayList();
   auto clip = dList.clip(el.rect);
   auto offset = style.decoration.border + style.padding;
-  presentText(dList,
-              str,
-              {offset.left + el.rect.x, offset.top + el.rect.y},
-              el.status,
-              style.text);
+  presentText(
+    dList, str, {offset.left + el.rect.x, offset.top + el.rect.y}, style.text);
   presentElement(dList, el.rect, style);
 }
 inline void

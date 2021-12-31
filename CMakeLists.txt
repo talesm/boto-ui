@@ -68,6 +68,7 @@ target_link_libraries(botoui-tests-handlers botoui-tests)
 
 add_executable(botoui-tests-presenters
   tests/unit/elements/presenters/ElementPresenter.cpp
+  tests/unit/elements/presenters/TextPresenter.cpp
 )
 target_link_libraries(botoui-tests-presenters botoui-tests)
 
