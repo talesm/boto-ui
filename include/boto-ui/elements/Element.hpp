@@ -6,6 +6,14 @@
 
 namespace boto {
 
+template<class ELEMENT = Element>
+void
+presentElement(Target& target, const SDL_Rect& r, StatusFlags status)
+{
+  return presentElement(
+    target.displayList(), r, elementStyle<ELEMENT>(target.theme(), status));
+}
+
 /**
  * @brief A stylizable box
  * @ingroup elements
@@ -26,17 +34,8 @@ inline EventTargetState
 element(Target target, std::string_view id, const SDL_Rect& r, RequestEvent req)
 {
   auto el = target.element(id, r, req);
-  presentElement<ELEMENT>(
-    target.displayList(), el.rect, elementStyle<ELEMENT>(target, el.status));
+  presentElement<ELEMENT>(target, el.rect, el.status);
   return el;
-}
-template<class ELEMENT = Element>
-inline EventTargetState
-element(Target target,
-        const SDL_Rect& r,
-        RequestEvent req = RequestEvent::HOVER)
-{
-  return element<ELEMENT>(target, {}, r, req);
 }
 
 } // namespace boto
