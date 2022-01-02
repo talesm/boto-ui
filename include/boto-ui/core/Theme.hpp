@@ -44,9 +44,6 @@ class ThemeT
 {
 public:
   template<class T>
-  using Tag = T*;
-
-  template<class T>
   const StyleType<THEME, T>& of()
   {
     auto it = styles.find(tag<T>());
@@ -100,10 +97,8 @@ struct StyleFor<THEME, Grabbed<T>>
 template<class THEME, class T>
 struct StyleFor<THEME, Grabbed<Hovered<T>>>
 {
-  static StyleType<THEME, Hovered<Grabbed<T>>> get(ThemeT<THEME>& theme)
-  {
-    return theme.template of<Hovered<Grabbed<T>>>();
-  }
+  static StyleType<THEME, Hovered<Grabbed<T>>> get(ThemeT<THEME>& theme) =
+    delete;
 };
 
 template<class T>
@@ -121,19 +116,15 @@ struct StyleFor<THEME, Focused<T>>
 template<class THEME, class T>
 struct StyleFor<THEME, Focused<Hovered<T>>>
 {
-  static StyleType<THEME, Hovered<Focused<T>>> get(ThemeT<THEME>& theme)
-  {
-    return theme.template of<Hovered<Focused<T>>>();
-  }
+  static StyleType<THEME, Hovered<Focused<T>>> get(ThemeT<THEME>& theme) =
+    delete;
 };
 
 template<class THEME, class T>
 struct StyleFor<THEME, Focused<Grabbed<T>>>
 {
-  static StyleType<THEME, Grabbed<Focused<T>>> get(ThemeT<THEME>& theme)
-  {
-    return theme.template of<Grabbed<Focused<T>>>();
-  }
+  static StyleType<THEME, Grabbed<Focused<T>>> get(ThemeT<THEME>& theme) =
+    delete;
 };
 
 using Theme = ThemeT<BOTO_THEME>;
