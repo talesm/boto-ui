@@ -1,16 +1,14 @@
 #ifndef BOTO_CORE_CONTAINERSTATE_HPP_
 #define BOTO_CORE_CONTAINERSTATE_HPP_
 
-#include <climits>
 #include <cmath>
 #include <string_view>
 #include "DisplayList.hpp"
 #include "EventDispatcher.hpp"
 #include "Layout.hpp"
+#include "util/Rect.hpp"
 
 namespace boto {
-
-constexpr int Undefined = INT_MAX / 2;
 
 struct ContainerState
 {
