@@ -6,6 +6,16 @@
 
 namespace boto {
 
+template<class ELEMENT = Text, class STR>
+SDL_Point
+presentText(Target& target, STR str, const SDL_Point& p, StatusFlags status)
+{
+  return presentText(target.displayList(),
+                     str,
+                     p,
+                     elementStyle<ELEMENT>(target.theme(), status));
+}
+
 /**
  * @brief Adds a character element
  * @ingroup elements
@@ -15,17 +25,26 @@ namespace boto {
  * @param p the position
  * @param style
  */
-inline void
-character(Target target, char ch, const SDL_Point& p, const TextStyle& style)
+template<class ELEMENT = Text>
+inline EventTargetState
+text(Target target,
+     std::string_view id,
+     char ch,
+     const SDL_Point& p,
+     RequestEvent req = RequestEvent::NONE)
 {
-  auto sz = measure(ch, style.font, 0);
-  auto el = target.element({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
-  presentText(target.displayList(), ch, {el.rect.x, el.rect.y}, style);
+  auto el = target.element(id, {p.x, p.y, Undefined, Undefined}, req);
+  presentText<ELEMENT>(target, ch, {el.rect.x, el.rect.y}, el.status);
+  return el;
 }
-inline void
-character(Target target, char ch, const SDL_Point& p)
+template<class ELEMENT = Text>
+inline EventTargetState
+text(Target target,
+     char ch,
+     const SDL_Point& p,
+     RequestEvent req = RequestEvent::NONE)
 {
-  return character(target, ch, p, target.styleFor<Text>());
+  return text<ELEMENT>(target, {}, ch, p, req);
 }
 
 /**
@@ -37,6 +56,27 @@ character(Target target, char ch, const SDL_Point& p)
  * @param p the position
  * @param style
  */
+template<class ELEMENT = Text>
+inline EventTargetState
+text(Target target,
+     std::string_view id,
+     std::string_view str,
+     const SDL_Point& p,
+     RequestEvent req = RequestEvent::NONE)
+{
+  auto el = target.element(id, {p.x, p.y, Undefined, Undefined}, req);
+  presentText<ELEMENT>(target, str, {el.rect.x, el.rect.y}, el.status);
+  return el;
+}
+template<class ELEMENT = Text>
+inline EventTargetState
+text(Target target,
+     std::string_view str,
+     const SDL_Point& p,
+     RequestEvent req = RequestEvent::NONE)
+{
+  return text<ELEMENT>(target, {}, str, p, req);
+}
 inline void
 text(Target target,
      std::string_view str,
