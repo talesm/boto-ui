@@ -28,11 +28,11 @@ makePanelSize(SDL_Point defaultSize, Target target)
 {
   if (defaultSize.x == 0) {
     defaultSize.x =
-      target.getLayout() == Layout::VERTICAL ? target.width() : Undefined;
+      target.layout() == Layout::VERTICAL ? target.width() : Undefined;
   }
   if (defaultSize.y == 0) {
     defaultSize.y =
-      target.getLayout() == Layout::HORIZONTAL ? target.height() : Undefined;
+      target.layout() == Layout::HORIZONTAL ? target.height() : Undefined;
   }
   return defaultSize;
 }

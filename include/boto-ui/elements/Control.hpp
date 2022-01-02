@@ -49,7 +49,7 @@ control(Target target,
   auto sz = computeSize(str, style, {r.w, r.h});
   auto el = target.element(id, {r.x, r.y, sz.x, sz.y}, req);
 
-  auto& dList = target.getDisplayList();
+  auto& dList = target.displayList();
   auto clip = dList.clip(el.rect);
   auto offset = style.decoration.border + style.padding;
   presentText(

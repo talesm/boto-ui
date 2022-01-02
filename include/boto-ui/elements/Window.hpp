@@ -79,10 +79,10 @@ namespace boto {
 inline SDL_Point
 makeWindowSize(SDL_Point defaultSize, Target target)
 {
-  if (defaultSize.x == 0 && target.getLayout() == Layout::VERTICAL) {
+  if (defaultSize.x == 0 && target.layout() == Layout::VERTICAL) {
     defaultSize.x = target.width();
   }
-  if (defaultSize.y == 0 && target.getLayout() == Layout::HORIZONTAL) {
+  if (defaultSize.y == 0 && target.layout() == Layout::HORIZONTAL) {
     defaultSize.y = target.height();
   }
   return defaultSize;

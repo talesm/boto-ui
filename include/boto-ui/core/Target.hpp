@@ -97,43 +97,17 @@ public:
   SDL_Point pointerPosition() const { return state->pointerPosition(); }
 
   /// Get the target's displayList
-  DisplayList& getDisplayList() const { return state->displayList(); }
+  DisplayList& displayList() const { return state->displayList(); }
 
-  /// Get the position where the next element can be added
-  SDL_Point getCaret() const
-  {
-    if (auto* c = state->getTop())
-      return c->caret();
-    return {};
-  }
-
-  /// Return true if there is a subtarget active.
-  /// You can not add an element to target if until that subtarget is
-  /// finished.
-  bool isLocked() const { return false; }
+  /// Get's theme
+  Theme& theme() const { return state->theme; }
 
   /// Return the layout
-  Layout getLayout() const
+  Layout layout() const
   {
     if (auto* c = state->getTop())
       return c->layout;
     return Layout::NONE;
-  }
-
-  /**
-   * @brief Return the initially given dimensions
-   *
-   * The x and y are relative to its parent, if any.
-   *
-   * The w and h are its size. A 0 value in either of these means the group will
-   * change it to what it considers good values for them, respectively.
-   */
-  const SDL_Rect& getRect() const
-  {
-    if (auto* c = state->getTop())
-      return c->eventTarget.rect();
-    static SDL_Rect defaultRect{0, 0, Undefined, Undefined};
-    return defaultRect;
   }
 
   /// Get the current size

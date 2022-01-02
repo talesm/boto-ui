@@ -18,7 +18,7 @@ sliderBoxBarCaret(Target target,
                   const ElementStyle& style)
 {
   auto state = target.element(id, r, RequestEvent::GRAB);
-  presentElement(target.getDisplayList(), state.rect, style);
+  presentElement(target.displayList(), state.rect, style);
   if (state.status != Status::GRABBED) {
     return {};
   }
