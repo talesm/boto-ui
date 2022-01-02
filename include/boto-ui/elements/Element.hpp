@@ -24,18 +24,33 @@ presentElement(Target& target, const SDL_Rect& r, StatusFlags status)
  */
 template<class STYLE>
 inline void
-element(Target target, const SDL_Rect& r, STYLE style)
+element(Target target,
+        std::string_view id,
+        const SDL_Rect& r,
+        RequestEvent req,
+        STYLE style)
 {
-  auto el = target.element({}, r, RequestEvent::HOVER);
+  auto el = target.element(id, r, req);
   presentElement(target.displayList(), el.rect, style);
 }
+template<class STYLE>
+inline void
+element(Target target, std::string_view id, const SDL_Rect& r, STYLE style)
+{
+  element(target, id, r, RequestEvent::HOVER, style);
+}
+template<class STYLE>
+inline void
+element(Target target, const SDL_Rect& r, STYLE style)
+{
+  element(target, {}, r, RequestEvent::HOVER, style);
+}
 template<class ELEMENT = Element>
-inline EventTargetState
+inline void
 element(Target target, std::string_view id, const SDL_Rect& r, RequestEvent req)
 {
   auto el = target.element(id, r, req);
   presentElement<ELEMENT>(target, el.rect, el.status);
-  return el;
 }
 
 } // namespace boto
