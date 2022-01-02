@@ -151,3 +151,45 @@ TEST_CASE("Default Presenter")
     REQUIRE(c == 1);
   }
 }
+
+struct DummyElement;
+
+namespace boto {
+template<>
+struct StyleFor<DummyThemeType, DummyElement>
+{
+  static constexpr int get(DummyTheme&) { return 0; }
+};
+template<class T>
+struct StyleFor<DummyThemeType, Hovered<T>>
+{
+  static constexpr int get(DummyTheme& t) { return t.template of<T>() | 1; }
+};
+template<class T>
+struct StyleFor<DummyThemeType, Grabbed<T>>
+{
+  static constexpr int get(DummyTheme& t) { return t.template of<T>() | 2; }
+};
+template<class T>
+struct StyleFor<DummyThemeType, Focused<T>>
+{
+  static constexpr int get(DummyTheme& t) { return t.template of<T>() | 4; }
+};
+} // namespace boto
+
+TEST_CASE("Ensure correctly handling of status")
+{
+  DummyTheme theme;
+  REQUIRE((elementStyle<DummyElement>(theme, Status::NONE)) == 0);
+  REQUIRE((elementStyle<DummyElement>(theme, Status::HOVERED)) == 1);
+  REQUIRE((elementStyle<DummyElement>(theme, Status::GRABBED)) == 2);
+  REQUIRE((elementStyle<DummyElement>(theme,
+                                      Status::GRABBED | Status::HOVERED)) == 3);
+  REQUIRE((elementStyle<DummyElement>(theme, Status::FOCUSED)) == 4);
+  REQUIRE((elementStyle<DummyElement>(theme,
+                                      Status::FOCUSED | Status::HOVERED)) == 5);
+  REQUIRE((elementStyle<DummyElement>(theme,
+                                      Status::FOCUSED | Status::GRABBED)) == 6);
+  REQUIRE((elementStyle<DummyElement>(
+            theme, Status::FOCUSED | Status::GRABBED | Status::HOVERED)) == 7);
+}

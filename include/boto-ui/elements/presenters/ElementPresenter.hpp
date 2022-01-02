@@ -3,12 +3,12 @@
 
 #include "EdgeSize.hpp"
 #include "core/DisplayList.hpp"
+#include "core/Status.hpp"
 #include "core/Theme.hpp"
 
 namespace boto {
 
 // Tag
-
 inline void
 presentElement(DisplayList& dList, const SDL_Rect& r, SDL_Color color)
 {
@@ -239,6 +239,35 @@ struct StyleFor<THEME, Element>
     };
   }
 };
+
+template<class ELEMENT = Element, class THEME>
+const StyleType<THEME, ELEMENT>&
+elementStyle(ThemeT<THEME>& theme, StatusFlags status)
+{
+  if (status.test(Status::FOCUSED)) {
+    if (status.test(Status::GRABBED)) {
+      if (status.test(Status::HOVERED)) {
+        return theme.template of<Hovered<Grabbed<Focused<ELEMENT>>>>();
+      }
+      return theme.template of<Grabbed<Focused<ELEMENT>>>();
+    }
+    if (status.test(Status::HOVERED)) {
+      return theme.template of<Hovered<Focused<ELEMENT>>>();
+    }
+    return theme.template of<Focused<ELEMENT>>();
+  }
+  if (status.test(Status::GRABBED)) {
+    if (status.test(Status::HOVERED)) {
+      return theme.template of<Hovered<Grabbed<ELEMENT>>>();
+    }
+    return theme.template of<Grabbed<ELEMENT>>();
+  }
+  if (status.test(Status::HOVERED)) {
+    return theme.template of<Hovered<ELEMENT>>();
+  }
+  return theme.template of<ELEMENT>();
+}
+
 } // namespace boto
 
 #endif // BOTO_ELEMENTS_ELEMENTPRESENTER_HPP

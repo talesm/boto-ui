@@ -5,6 +5,18 @@
 #include "presenters/ElementPresenter.hpp"
 
 namespace boto {
+template<class ELEMENT = Element>
+const auto&
+elementStyle(State& state, StatusFlags status)
+{
+  return elementStyle<ELEMENT>(state.theme, status);
+}
+template<class ELEMENT = Element>
+const auto&
+elementStyle(Target& target, StatusFlags status)
+{
+  return elementStyle<ELEMENT>(*target.state, status);
+}
 
 /**
  * @brief A stylizable box
@@ -21,10 +33,22 @@ element(Target target, const SDL_Rect& r, STYLE style)
   auto el = target.element({}, r, RequestEvent::HOVER);
   presentElement(target.getDisplayList(), el.rect, style);
 }
-inline void
-element(Target target, const SDL_Rect& r)
+template<class ELEMENT = Element>
+inline EventTargetState
+element(Target target, std::string_view id, const SDL_Rect& r, RequestEvent req)
 {
-  element(target, r, target.styleFor<Element>());
+  auto el = target.element(id, r, req);
+  presentElement(
+    target.getDisplayList(), el.rect, elementStyle<ELEMENT>(target, el.status));
+  return el;
+}
+template<class ELEMENT = Element>
+inline EventTargetState
+element(Target target,
+        const SDL_Rect& r,
+        RequestEvent req = RequestEvent::HOVER)
+{
+  return element<ELEMENT>(target, {}, r, req);
 }
 
 } // namespace boto
