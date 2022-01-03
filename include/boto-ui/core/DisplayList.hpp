@@ -4,8 +4,8 @@
 #include <vector>
 #include <SDL_blendmode.h>
 #include <SDL_pixels.h>
-#include <SDL_rect.h>
 #include "util/CookieBase.hpp"
+#include "util/Rect.hpp"
 
 struct SDL_Texture;
 typedef struct SDL_Texture SDL_Texture;
@@ -96,9 +96,7 @@ public:
     } else {
       auto& back = clipRects.back();
       items.push_back({DisplayListAction::SET_CLIP, back});
-      SDL_Rect result;
-      SDL_IntersectRect(&back, &clip, &result);
-      clipRects.push_back(result);
+      clipRects.push_back(intersection(back, clip));
     }
     return {this};
   }

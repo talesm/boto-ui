@@ -12,6 +12,7 @@
 #include "core/EventTargetState.hpp"
 #include "core/Status.hpp"
 #include "util/CookieBase.hpp"
+#include "util/Rect.hpp"
 
 namespace boto {
 /**
@@ -310,7 +311,7 @@ EventDispatcher::checkHover(RequestEvent req,
   if (hadHover ||
       !(elementStack.empty() ||
         elementStack.back().status.test(Status::HOVERED)) ||
-      !SDL_PointInRect(&pointerPos, &rect)) {
+      !pointInRect(pointerPos, rect)) {
     if (req == RequestEvent::HOVER) {
       return Status::NONE;
     }
