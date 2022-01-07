@@ -1,5 +1,5 @@
-#ifndef BOTO_ELEMENTS_CONTROLPRESENTER_HPP
-#define BOTO_ELEMENTS_CONTROLPRESENTER_HPP
+#ifndef BOTO_CONTROLPRESENTER_HPP_
+#define BOTO_CONTROLPRESENTER_HPP_
 
 #include "ControlPresenter.hpp"
 #include "EdgeSize.hpp"
@@ -44,4 +44,4 @@ presentControl(DisplayList& dList,
 
 } // namespace boto
 
-#endif // BOTO_ELEMENTS_CONTROLPRESENTER_HPP
+#endif // BOTO_CONTROLPRESENTER_HPP_

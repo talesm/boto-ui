@@ -1,5 +1,5 @@
-#ifndef BOTO_ELEMENTS_ELEMENTPRESENTER_HPP
-#define BOTO_ELEMENTS_ELEMENTPRESENTER_HPP
+#ifndef BOTO_ELEMENTPRESENTER_HPP_
+#define BOTO_ELEMENTPRESENTER_HPP_
 
 #include "EdgeSize.hpp"
 #include "core/DisplayList.hpp"
@@ -270,4 +270,4 @@ elementStyle(ThemeT<THEME>& theme, StatusFlags status)
 
 } // namespace boto
 
-#endif // BOTO_ELEMENTS_ELEMENTPRESENTER_HPP
+#endif // BOTO_ELEMENTPRESENTER_HPP_

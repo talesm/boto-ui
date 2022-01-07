@@ -1,5 +1,5 @@
-#ifndef BOTO_ELEMENTS_TEXTPRESENTER_HPP_
-#define BOTO_ELEMENTS_TEXTPRESENTER_HPP_
+#ifndef BOTO_TEXTPRESENTER_HPP_
+#define BOTO_TEXTPRESENTER_HPP_
 
 #include <string_view>
 #include "ElementPresenter.hpp"
@@ -109,4 +109,4 @@ presentText(DisplayList& dList,
 
 } // namespace boto
 
-#endif // BOTO_ELEMENTS_TEXTPRESENTER_HPP_
+#endif // BOTO_TEXTPRESENTER_HPP_
