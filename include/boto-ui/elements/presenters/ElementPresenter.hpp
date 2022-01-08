@@ -8,7 +8,7 @@
 
 namespace boto {
 
-inline SDL_Point
+constexpr SDL_Point
 measure(SDL_Color c)
 {
   return {};
@@ -20,6 +20,11 @@ present(DisplayList& dList, const SDL_Rect& r, SDL_Color color)
   dList.push(r, color);
 }
 
+constexpr SDL_Point
+measure(SDL_Texture* t)
+{
+  return {};
+}
 inline void
 present(DisplayList& dList, const SDL_Rect& r, SDL_Texture* texture)
 {
@@ -32,6 +37,11 @@ struct TintedTextureStyle
   SDL_Color color;
 };
 
+constexpr SDL_Point
+measure(const TintedTextureStyle& style)
+{
+  return {};
+}
 inline void
 present(DisplayList& dList, const SDL_Rect& r, const TintedTextureStyle& style)
 {
@@ -59,6 +69,11 @@ struct PartialTextureStyle
   {}
 };
 
+constexpr SDL_Point
+measure(const PartialTextureStyle& style)
+{
+  return {};
+}
 inline void
 present(DisplayList& dList, const SDL_Rect& r, const PartialTextureStyle& style)
 {
@@ -108,6 +123,13 @@ struct ElementStyleT
     return {border, background, color, color, color, color};
   }
 };
+
+template<class BoxStyle>
+constexpr SDL_Point
+measure(const ElementStyleT<BoxStyle>& style)
+{
+  return measure(style.border);
+}
 
 template<class BoxStyle>
 constexpr SDL_Point

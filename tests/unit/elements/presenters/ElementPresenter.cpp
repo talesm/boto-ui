@@ -23,7 +23,9 @@ TEST_CASE("Color Presenter")
 TEST_CASE("Texture Presenter")
 {
   DisplayList dList;
-  present(dList, {0, 0, 10, 10}, (SDL_Texture*)0xdeadbeef);
+  auto style = (SDL_Texture*)0xdeadbeef;
+  REQUIRE(measure(style) == SDL_Point{0, 0});
+  present(dList, {0, 0, 10, 10}, style);
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::TEXTURE_BOX);
     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -112,6 +114,7 @@ TEST_CASE("Default Presenter")
   }
   SECTION("Border Color")
   {
+    REQUIRE(measure(theme.of<Element>()) == SDL_Point{2, 2});
     present(dList, {0, 0, 10, 10}, theme.of<Element>());
     int c = 0;
     dList.visit([&](const DisplayListItem& el) {

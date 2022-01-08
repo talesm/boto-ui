@@ -52,6 +52,14 @@ element(Target target, std::string_view id, const SDL_Rect& r, RequestEvent req)
   auto el = target.element(id, r, req);
   present<ELEMENT>(target, el.rect, el.status);
 }
+template<class ELEMENT = Element>
+inline void
+element(Target target, std::string_view id, RequestEvent req)
+{
+  auto& style = elementStyle<ELEMENT>(target.theme());
+  auto sz = measure(style);
+  return element(target, id, {0, 0, sz.x, sz.y}, req);
+}
 
 } // namespace boto
 
