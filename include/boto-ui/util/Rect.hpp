@@ -15,9 +15,24 @@ operator==(const SDL_Rect& r1, const SDL_Rect& r2)
   return r1.x == r2.x && r1.y == r2.y && r1.w == r2.w && r1.h == r2.h;
 }
 constexpr bool
+operator!=(const SDL_Rect& r1, const SDL_Rect& r2)
+{
+  return !(r1 == r2);
+}
+constexpr bool
 operator==(const SDL_Point& p1, const SDL_Point& p2)
 {
   return p1.x == p2.x && p1.y == p2.y;
+}
+constexpr bool
+operator!=(const SDL_Point& p1, const SDL_Point& p2)
+{
+  return !(p1 == p2);
+}
+constexpr SDL_Point
+operator+(const SDL_Point& p1, const SDL_Point& p2)
+{
+  return {p1.x + p2.x, p1.y + p2.y};
 }
 
 constexpr bool
