@@ -12,16 +12,6 @@ using DummyTheme = ThemeT<DummyThemeType>;
 TEST_CASE("Default Control Style", "[presenters][control]")
 {
   DisplayList dList;
-  SECTION("Background Color")
-  {
-    presentControl(dList, {}, {0, 0, 10, 10}, SDL_Color{1, 2, 3, 4});
-    auto c = dList.visit([&](const DisplayListItem& el) {
-      REQUIRE(el.action == DisplayListAction::COLOR_BOX);
-      REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
-      REQUIRE(el.color == SDL_Color{1, 2, 3, 4});
-    });
-    REQUIRE(c == 1);
-  }
   SECTION("ControlStyleT")
   {
     SECTION("With only background & defined")

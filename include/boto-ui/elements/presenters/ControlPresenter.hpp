@@ -20,16 +20,6 @@ struct ControlStyleT
   nullptr_t text;
 };
 
-template<class STYLE>
-inline void
-presentControl(DisplayList& dList,
-               std::string_view text,
-               const SDL_Rect& r,
-               STYLE style)
-{
-  presentElement(dList, r, style);
-}
-
 template<class DECORATION>
 inline void
 presentControl(DisplayList& dList,
