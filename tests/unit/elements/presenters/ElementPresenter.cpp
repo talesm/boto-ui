@@ -10,7 +10,7 @@ TEST_CASE("Color Presenter")
 {
   DisplayList dList;
   SDL_Color style{1, 2, 3, 4};
-  REQUIRE(measureElement(style) == SDL_Point{0, 0});
+  REQUIRE(measure(style) == SDL_Point{0, 0});
   presentElement(dList, {0, 0, 10, 10}, style);
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::COLOR_BOX);

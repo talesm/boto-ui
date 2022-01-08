@@ -19,7 +19,7 @@ computeSize(std::string_view str,
   if (sz.x != 0 && sz.y != 0) {
     return sz;
   }
-  auto elementSz = measureElement(style.padding + style.decoration.border) +
+  auto elementSz = measure(style.padding + style.decoration.border) +
                    measure(str, style.text.font, style.text.scale);
   if (sz.x != 0) {
     elementSz.x = sz.x;

@@ -41,7 +41,7 @@ struct EdgeSize
 };
 
 constexpr SDL_Point
-measureElement(const EdgeSize& edge)
+measure(const EdgeSize& edge)
 {
   return {edge.left + edge.right, edge.top + edge.bottom};
 }

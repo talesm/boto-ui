@@ -9,7 +9,7 @@
 namespace boto {
 
 inline SDL_Point
-measureElement(SDL_Color c)
+measure(SDL_Color c)
 {
   return {};
 }

@@ -45,7 +45,7 @@ centeredLabel(Target target,
 {
   auto textSz = measure(str, style.text.font, style.text.scale);
   SDL_Point minElementSz =
-    measureElement(style.padding + style.decoration.border) + textSz;
+    measure(style.padding + style.decoration.border) + textSz;
   if (r.w == 0) {
     r.w = minElementSz.x;
   }
