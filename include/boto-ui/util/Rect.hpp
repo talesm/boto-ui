@@ -1,5 +1,5 @@
-#ifndef BOTO_UTIL_RECT_HPP_
-#define BOTO_UTIL_RECT_HPP_
+#ifndef BOTO_RECT_HPP_
+#define BOTO_RECT_HPP_
 
 #include <climits>
 #include <cmath>
@@ -8,6 +8,17 @@
 namespace boto {
 
 constexpr int Undefined = INT_MIN;
+
+constexpr bool
+operator==(const SDL_Rect& r1, const SDL_Rect& r2)
+{
+  return r1.x == r2.x && r1.y == r2.y && r1.w == r2.w && r1.h == r2.h;
+}
+constexpr bool
+operator==(const SDL_Point& p1, const SDL_Point& p2)
+{
+  return p1.x == p2.x && p1.y == p2.y;
+}
 
 constexpr bool
 pointInRect(const SDL_Point& p, const SDL_Rect& r)
@@ -38,4 +49,4 @@ intersection(const SDL_Rect& r1, const SDL_Rect& r2)
 
 } // namespace boto
 
-#endif // BOTO_UTIL_RECT_HPP_
+#endif // BOTO_RECT_HPP_
