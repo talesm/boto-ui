@@ -64,12 +64,12 @@ struct StyleFor<THEME, Text>
 };
 
 inline SDL_Point
-measureText(std::string_view str, const TextStyle& style)
+measure(std::string_view str, const TextStyle& style)
 {
   return measure(str, style.font, style.scale);
 }
 inline SDL_Point
-measureText(char ch, const TextStyle& style)
+measure(char ch, const TextStyle& style)
 {
   return measure(ch, style.font, style.scale);
 }
