@@ -15,13 +15,13 @@ measure(SDL_Color c)
 }
 // Tag
 inline void
-presentElement(DisplayList& dList, const SDL_Rect& r, SDL_Color color)
+present(DisplayList& dList, const SDL_Rect& r, SDL_Color color)
 {
   dList.push(r, color);
 }
 
 inline void
-presentElement(DisplayList& dList, const SDL_Rect& r, SDL_Texture* texture)
+present(DisplayList& dList, const SDL_Rect& r, SDL_Texture* texture)
 {
   dList.push(r, texture, {255, 255, 255, 255});
 }
@@ -33,9 +33,7 @@ struct TintedTextureStyle
 };
 
 inline void
-presentElement(DisplayList& dList,
-               const SDL_Rect& r,
-               const TintedTextureStyle& style)
+present(DisplayList& dList, const SDL_Rect& r, const TintedTextureStyle& style)
 {
   dList.push(r, style.texture, style.color);
 }
@@ -62,9 +60,7 @@ struct PartialTextureStyle
 };
 
 inline void
-presentElement(DisplayList& dList,
-               const SDL_Rect& r,
-               const PartialTextureStyle& style)
+present(DisplayList& dList, const SDL_Rect& r, const PartialTextureStyle& style)
 {
   dList.push(r, style.texture, style.color, style.srcRect);
 }
@@ -137,9 +133,9 @@ using ElementStyle = ElementStyleT<SDL_Color>;
 
 template<class BoxStyle>
 inline void
-presentElement(DisplayList& dList,
-               const SDL_Rect& r,
-               const ElementStyleT<BoxStyle>& style)
+present(DisplayList& dList,
+        const SDL_Rect& r,
+        const ElementStyleT<BoxStyle>& style)
 {
   auto c = style.background;
   auto e = style.right;
@@ -150,12 +146,11 @@ presentElement(DisplayList& dList,
   int nsz = style.border.top;
   int wsz = style.border.left;
   int ssz = style.border.bottom;
-  presentElement(dList, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, s);
-  presentElement(dList, {r.x + r.w - esz, r.y + 1, esz, r.h - 2}, e);
-  presentElement(dList, {r.x + 1, r.y, r.w - 2, nsz}, n);
-  presentElement(dList, {r.x, r.y + 1, wsz, r.h - 2}, w);
-  presentElement(
-    dList, {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz}, c);
+  present(dList, {r.x + 1, r.y + r.h - ssz, r.w - 2, ssz}, s);
+  present(dList, {r.x + r.w - esz, r.y + 1, esz, r.h - 2}, e);
+  present(dList, {r.x + 1, r.y, r.w - 2, nsz}, n);
+  present(dList, {r.x, r.y + 1, wsz, r.h - 2}, w);
+  present(dList, {r.x + esz, r.y + nsz, r.w - esz - wsz, r.h - nsz - ssz}, c);
 }
 
 struct BorderSize;

@@ -1,5 +1,5 @@
-#ifndef BOTO_ELEMENTS_TEXT_HPP_
-#define BOTO_ELEMENTS_TEXT_HPP_
+#ifndef BOTO_TEXT_HPP_
+#define BOTO_TEXT_HPP_
 
 #include <SDL.h>
 #include "presenters/TextPresenter.hpp"
@@ -8,12 +8,12 @@ namespace boto {
 
 template<class ELEMENT = Text, class STR>
 SDL_Point
-presentText(Target& target, STR str, const SDL_Point& p, StatusFlags status)
+present(Target& target, STR str, const SDL_Point& p, StatusFlags status)
 {
-  return presentText(target.displayList(),
-                     str,
-                     p,
-                     elementStyle<ELEMENT>(target.theme(), status));
+  return present(target.displayList(),
+                 str,
+                 p,
+                 elementStyle<ELEMENT>(target.theme(), status));
 }
 
 /**
@@ -34,7 +34,7 @@ text(Target target,
      RequestEvent req = RequestEvent::NONE)
 {
   auto el = target.element(id, {p.x, p.y, Undefined, Undefined}, req);
-  presentText<ELEMENT>(target, ch, {el.rect.x, el.rect.y}, el.status);
+  present<ELEMENT>(target, ch, {el.rect.x, el.rect.y}, el.status);
   return el;
 }
 template<class ELEMENT = Text>
@@ -65,7 +65,7 @@ text(Target target,
      RequestEvent req = RequestEvent::NONE)
 {
   auto el = target.element(id, {p.x, p.y, Undefined, Undefined}, req);
-  presentText<ELEMENT>(target, str, {el.rect.x, el.rect.y}, el.status);
+  present<ELEMENT>(target, str, {el.rect.x, el.rect.y}, el.status);
   return el;
 }
 template<class ELEMENT = Text>
@@ -85,7 +85,7 @@ text(Target target,
 {
   auto sz = measure(str, style.font, 0);
   auto el = target.element({}, {p.x, p.y, sz.x, sz.y}, RequestEvent::NONE);
-  presentText(target.displayList(), str, {el.rect.x, el.rect.y}, style);
+  present(target.displayList(), str, {el.rect.x, el.rect.y}, style);
 }
 inline void
 text(Target target, std::string_view str, const SDL_Point& p)
@@ -94,4 +94,4 @@ text(Target target, std::string_view str, const SDL_Point& p)
 }
 } // namespace boto
 
-#endif // BOTO_ELEMENTS_TEXT_HPP_
+#endif // BOTO_TEXT_HPP_

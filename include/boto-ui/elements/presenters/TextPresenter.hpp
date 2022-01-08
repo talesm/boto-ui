@@ -74,10 +74,7 @@ measureText(char ch, const TextStyle& style)
   return measure(ch, style.font, style.scale);
 }
 inline SDL_Point
-presentText(DisplayList& dList,
-            char ch,
-            const SDL_Point& p,
-            const TextStyle& style)
+present(DisplayList& dList, char ch, const SDL_Point& p, const TextStyle& style)
 {
   auto& font = style.font;
   auto adv = measure(font, style.scale);
@@ -88,21 +85,21 @@ presentText(DisplayList& dList,
     font.charW,
     font.charH,
   };
-  presentElement(
+  present(
     dList, dstRect, PartialTextureStyle{font.texture, style.color, srcRect});
   return adv;
 }
 
 inline SDL_Point
-presentText(DisplayList& dList,
-            std::string_view str,
-            const SDL_Point& p,
-            const TextStyle& style)
+present(DisplayList& dList,
+        std::string_view str,
+        const SDL_Point& p,
+        const TextStyle& style)
 {
   auto& font = style.font;
   SDL_Point adv{0, measure(font, style.scale).y};
   for (auto ch : str) {
-    adv.x += presentText(dList, ch, {p.x + adv.x, p.y}, style).x;
+    adv.x += present(dList, ch, {p.x + adv.x, p.y}, style).x;
   }
   return {adv.x, adv.y};
 }

@@ -11,7 +11,7 @@ TEST_CASE("Color Presenter")
   DisplayList dList;
   SDL_Color style{1, 2, 3, 4};
   REQUIRE(measure(style) == SDL_Point{0, 0});
-  presentElement(dList, {0, 0, 10, 10}, style);
+  present(dList, {0, 0, 10, 10}, style);
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::COLOR_BOX);
     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -23,7 +23,7 @@ TEST_CASE("Color Presenter")
 TEST_CASE("Texture Presenter")
 {
   DisplayList dList;
-  presentElement(dList, {0, 0, 10, 10}, (SDL_Texture*)0xdeadbeef);
+  present(dList, {0, 0, 10, 10}, (SDL_Texture*)0xdeadbeef);
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::TEXTURE_BOX);
     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -36,9 +36,9 @@ TEST_CASE("Texture Presenter")
 TEST_CASE("Tinted Texture Presenter")
 {
   DisplayList dList;
-  presentElement(dList,
-                 {0, 0, 10, 10},
-                 TintedTextureStyle{(SDL_Texture*)0xdeadbeef, {1, 2, 3, 4}});
+  present(dList,
+          {0, 0, 10, 10},
+          TintedTextureStyle{(SDL_Texture*)0xdeadbeef, {1, 2, 3, 4}});
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::TEXTURE_BOX);
     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -51,9 +51,9 @@ TEST_CASE("Tinted Texture Presenter")
 TEST_CASE("Partial Texture Presenter")
 {
   DisplayList dList;
-  presentElement(dList,
-                 {0, 0, 10, 10},
-                 PartialTextureStyle{(SDL_Texture*)0xdeadbeef, {1, 2, 3, 4}});
+  present(dList,
+          {0, 0, 10, 10},
+          PartialTextureStyle{(SDL_Texture*)0xdeadbeef, {1, 2, 3, 4}});
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::PARTIAL_TEXTURE_BOX);
     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -67,13 +67,13 @@ TEST_CASE("Partial Texture Presenter")
 TEST_CASE("Tinted Partial Texture Presenter")
 {
   DisplayList dList;
-  presentElement(dList,
-                 {0, 0, 10, 10},
-                 PartialTextureStyle{
-                   (SDL_Texture*)0xdeadbeef,
-                   {1, 2, 3, 4},
-                   {5, 6, 7, 8},
-                 });
+  present(dList,
+          {0, 0, 10, 10},
+          PartialTextureStyle{
+            (SDL_Texture*)0xdeadbeef,
+            {1, 2, 3, 4},
+            {5, 6, 7, 8},
+          });
   auto c = dList.visit([&](const DisplayListItem& el) {
     REQUIRE(el.action == DisplayListAction::PARTIAL_TEXTURE_BOX);
     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -92,7 +92,7 @@ TEST_CASE("Default Presenter")
   DisplayList dList;
   SECTION("Background Color")
   {
-    presentElement(dList, {0, 0, 10, 10}, theme.of<BackgroundColor>());
+    present(dList, {0, 0, 10, 10}, theme.of<BackgroundColor>());
     auto c = dList.visit([&](const DisplayListItem& el) {
       REQUIRE(el.action == DisplayListAction::COLOR_BOX);
       REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -102,7 +102,7 @@ TEST_CASE("Default Presenter")
   }
   SECTION("Border Color")
   {
-    presentElement(dList, {0, 0, 10, 10}, theme.of<BorderColor>());
+    present(dList, {0, 0, 10, 10}, theme.of<BorderColor>());
     auto c = dList.visit([&](const DisplayListItem& el) {
       REQUIRE(el.action == DisplayListAction::COLOR_BOX);
       REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -112,7 +112,7 @@ TEST_CASE("Default Presenter")
   }
   SECTION("Border Color")
   {
-    presentElement(dList, {0, 0, 10, 10}, theme.of<Element>());
+    present(dList, {0, 0, 10, 10}, theme.of<Element>());
     int c = 0;
     dList.visit([&](const DisplayListItem& el) {
       REQUIRE(el.action == DisplayListAction::COLOR_BOX);
@@ -142,9 +142,9 @@ TEST_CASE("Default Presenter")
   }
   SECTION("Border 0 Color")
   {
-    presentElement(dList,
-                   {0, 0, 10, 10},
-                   theme.of<Element>().withBorderSize(EdgeSize::all(0)));
+    present(dList,
+            {0, 0, 10, 10},
+            theme.of<Element>().withBorderSize(EdgeSize::all(0)));
     auto c = dList.visit([&](const DisplayListItem& el) {
       REQUIRE(el.action == DisplayListAction::COLOR_BOX);
       REQUIRE(el.color == SDL_Color{255, 255, 255, 255});

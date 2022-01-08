@@ -8,9 +8,9 @@ namespace boto {
 
 template<class ELEMENT = Element>
 void
-presentElement(Target& target, const SDL_Rect& r, StatusFlags status)
+present(Target& target, const SDL_Rect& r, StatusFlags status)
 {
-  return presentElement(
+  return present(
     target.displayList(), r, elementStyle<ELEMENT>(target.theme(), status));
 }
 
@@ -31,7 +31,7 @@ element(Target target,
         STYLE style)
 {
   auto el = target.element(id, r, req);
-  presentElement(target.displayList(), el.rect, style);
+  present(target.displayList(), el.rect, style);
 }
 template<class STYLE>
 inline void
@@ -50,7 +50,7 @@ inline void
 element(Target target, std::string_view id, const SDL_Rect& r, RequestEvent req)
 {
   auto el = target.element(id, r, req);
-  presentElement<ELEMENT>(target, el.rect, el.status);
+  present<ELEMENT>(target, el.rect, el.status);
 }
 
 } // namespace boto

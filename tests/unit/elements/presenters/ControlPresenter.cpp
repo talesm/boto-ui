@@ -17,7 +17,7 @@ TEST_CASE("Default Control Style", "[presenters][control]")
     SECTION("With only background & defined")
     {
       using ControlStyle = ControlStyleT<SDL_Color>;
-      presentControl(dList, {}, {0, 0, 10, 10}, ControlStyle{{1, 2, 3, 4}});
+      present(dList, {}, {0, 0, 10, 10}, ControlStyle{{1, 2, 3, 4}});
       auto c = dList.visit([&](const DisplayListItem& el) {
         REQUIRE(el.action == DisplayListAction::COLOR_BOX);
         REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -28,7 +28,7 @@ TEST_CASE("Default Control Style", "[presenters][control]")
     SECTION("With only background & undefined")
     {
       using ControlStyle = ControlStyleT<SDL_Color>;
-      presentControl(
+      present(
         dList, {}, {0, 0, Undefined, Undefined}, ControlStyle{{1, 2, 3, 4}});
       auto c = dList.visit([&](const DisplayListItem& el) {});
       REQUIRE(c == 0);
@@ -36,7 +36,7 @@ TEST_CASE("Default Control Style", "[presenters][control]")
   }
   // SECTION("Border Color")
   // {
-  //   presentElement(dList, {0, 0, 10, 10}, theme.of<BorderColor>());
+  //   present(dList, {0, 0, 10, 10}, theme.of<BorderColor>());
   //   auto c = dList.visit([&](const DisplayListItem& el) {
   //     REQUIRE(el.action == DisplayListAction::COLOR_BOX);
   //     REQUIRE(el.rect == SDL_Rect{0, 0, 10, 10});
@@ -46,7 +46,7 @@ TEST_CASE("Default Control Style", "[presenters][control]")
   // }
   // SECTION("Border Color")
   // {
-  //   presentElement(dList, {0, 0, 10, 10}, theme.of<Element>());
+  //   present(dList, {0, 0, 10, 10}, theme.of<Element>());
   //   int c = 0;
   //   dList.visit([&](const DisplayListItem& el) {
   //     REQUIRE(el.action == DisplayListAction::COLOR_BOX);
@@ -76,7 +76,7 @@ TEST_CASE("Default Control Style", "[presenters][control]")
   // }
   // SECTION("Border 0 Color")
   // {
-  //   presentElement(dList,
+  //   present(dList,
   //                  {0, 0, 10, 10},
   //                  theme.of<Element>().withBorderSize(EdgeSize::all(0)));
   //   auto c = dList.visit([&](const DisplayListItem& el) {

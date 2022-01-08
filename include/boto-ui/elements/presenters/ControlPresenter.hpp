@@ -22,13 +22,13 @@ struct ControlStyleT
 
 template<class DECORATION>
 inline void
-presentControl(DisplayList& dList,
-               std::string_view text,
-               const SDL_Rect& r,
-               const ControlStyleT<DECORATION>& style)
+present(DisplayList& dList,
+        std::string_view text,
+        const SDL_Rect& r,
+        const ControlStyleT<DECORATION>& style)
 {
   if (r.w != Undefined && r.h != Undefined) {
-    return presentElement(dList, r, style.decoration);
+    return present(dList, r, style.decoration);
   }
 }
 

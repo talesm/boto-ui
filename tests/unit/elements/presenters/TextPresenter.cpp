@@ -16,7 +16,7 @@ TEST_CASE("TextPresenter defaults")
   DisplayList dList;
   SECTION("Single null char")
   {
-    presentText(dList, '\0', {0, 0}, theme.of<Text>());
+    present(dList, '\0', {0, 0}, theme.of<Text>());
     auto c = dList.visit([&](const DisplayListItem& el) {
       REQUIRE(el.action == DisplayListAction::PARTIAL_TEXTURE_BOX);
       REQUIRE(el.rect == SDL_Rect{0, 0, 8, 8});
@@ -27,7 +27,7 @@ TEST_CASE("TextPresenter defaults")
   }
   SECTION("Single space char")
   {
-    presentText(dList, ' ', {0, 0}, theme.of<Text>());
+    present(dList, ' ', {0, 0}, theme.of<Text>());
     auto c = dList.visit([&](const DisplayListItem& el) {
       REQUIRE(el.action == DisplayListAction::PARTIAL_TEXTURE_BOX);
       REQUIRE(el.rect == SDL_Rect{0, 0, 8, 8});
@@ -38,7 +38,7 @@ TEST_CASE("TextPresenter defaults")
   }
   SECTION("Empty")
   {
-    presentText(dList, "", {0, 0}, theme.of<Text>());
+    present(dList, "", {0, 0}, theme.of<Text>());
     auto c = dList.visit([&](const DisplayListItem& el) {});
     REQUIRE(c == 0);
   }
