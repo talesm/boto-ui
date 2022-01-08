@@ -30,9 +30,9 @@ buttonBase(Target target,
   if (str.empty()) {
     str = id;
   }
-  auto sz = measureElement(
-    style.normal.padding + style.normal.decoration.border,
-    measure(str, style.normal.text.font, style.normal.text.scale));
+  auto sz =
+    measureElement(style.normal.padding + style.normal.decoration.border) +
+    measure(str, style.normal.text.font, style.normal.text.scale);
   SDL_Rect r{p.x, p.y, sz.x, sz.y};
   auto state = target.element(id, r, RequestEvent::INPUT);
 

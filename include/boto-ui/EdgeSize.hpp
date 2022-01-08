@@ -45,13 +45,7 @@ measureElement(const EdgeSize& edge)
 {
   return {edge.left + edge.right, edge.top + edge.bottom};
 }
-// Deprecated??
-template<class T>
-constexpr SDL_Point
-measureElement(T t, const SDL_Point& client)
-{
-  return measureElement(t) + client;
-}
+
 constexpr SDL_Point
 clientSize(const SDL_Point& sz, EdgeSize edge)
 {
