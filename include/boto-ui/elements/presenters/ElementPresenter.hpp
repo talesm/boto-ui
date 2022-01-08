@@ -8,6 +8,11 @@
 
 namespace boto {
 
+inline SDL_Point
+measureElement(SDL_Color c)
+{
+  return {};
+}
 // Tag
 inline void
 presentElement(DisplayList& dList, const SDL_Rect& r, SDL_Color color)

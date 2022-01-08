@@ -1,5 +1,5 @@
-#ifndef BOTO_EDGESIZE_HPP
-#define BOTO_EDGESIZE_HPP
+#ifndef BOTO_EDGESIZE_HPP_
+#define BOTO_EDGESIZE_HPP_
 
 #include <SDL.h>
 
@@ -41,9 +41,16 @@ struct EdgeSize
 };
 
 constexpr SDL_Point
-elementSize(const EdgeSize& edge, const SDL_Point& client = {})
+measureElement(const EdgeSize& edge)
 {
-  return {edge.left + edge.right + client.x, edge.top + edge.bottom + client.y};
+  return {edge.left + edge.right, edge.top + edge.bottom};
+}
+// Deprecated??
+template<class T>
+constexpr SDL_Point
+measureElement(T t, const SDL_Point& client)
+{
+  return measureElement(t) + client;
 }
 constexpr SDL_Point
 clientSize(const SDL_Point& sz, EdgeSize edge)
@@ -73,4 +80,4 @@ clientRect(const SDL_Rect& r, EdgeSize edge)
 }
 } // namespace boto
 
-#endif // BOTO_EDGESIZE_HPP
+#endif // BOTO_EDGESIZE_HPP_

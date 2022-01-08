@@ -22,7 +22,7 @@ makeInputSize(SDL_Point defaultSz,
   auto clientSz = measure('m', font, scale);
   clientSz.x *= 16;
 
-  auto elementSz = elementSize(padding, clientSz);
+  auto elementSz = measureElement(padding, clientSz);
 
   if (defaultSz.x == 0) {
     defaultSz.x = elementSz.x;
